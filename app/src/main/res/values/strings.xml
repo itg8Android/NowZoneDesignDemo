@@ -1,0 +1,45 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Nowzone </string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_base">Base</string>
+
+
+    <!-- For Home Page Strings Values -->
+    <string name="sleep">Sleep</string>
+    <string name="step">Step</string>
+    <string name="breath">Breath</string>
+    <string name="breath_rate">Breath Rate</string>
+    <string name="status">Status</string>
+    <string name="sleep_value">HRS</string>
+    <string name="calm">calm</string>
+    <string name="focus">focus</string>
+    <string name="stress">Stress</string>
+    <string name="step_value">Steps</string>
+    <string name="breath_value">Average</string>
+    <string name="minute">Per Minute</string>
+    <string name="title_activity_steps"></string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_sleep">Sleep</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <item name="fab_translationY_from_AppBarBoundFabBehavior" type="id" />
+
+    <string-array name="month">
+
+
+        <item>JAN</item>
+        <item> FEB</item>
+        <item>MARCH</item>
+        <item>APRI</item>
+        <item>MAY</item>
+        <item>JUNE</item>
+        <item>JULY</item>
+
+    </string-array>
+    <string name="title_activity_audio">Meditation</string>
+
+</resources>

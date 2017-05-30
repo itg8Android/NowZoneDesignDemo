@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <RelativeLayout
+            android:id="@+id/rl_main"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.8">
+
+            <TextView
+                android:id="@+id/txt_durations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:text="DURATIONS"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/txt_value" />
+
+
+            <TextView
+                android:id="@+id/txt_sleepValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_durations"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="11:30"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/txt_sleep_value" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/txt_sleepValue"
+                android:layout_below="@+id/txt_sleepValue"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text="In Bed"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_sleep_normal" />
+
+
+            <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+                android:id="@+id/txt_wakeupValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/txt_sleepValue"
+                android:layout_alignBottom="@+id/txt_sleepValue"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:layout_toEndOf="@+id/txt_durations"
+                android:text="8:30"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/txt_sleep_value" />
+
+            <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+                android:id="@+id/txt_wakeup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/txt_wakeupValue"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="OF Sleep"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_sleep_normal" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/rl_main"
+            android:layout_weight="1.2">
+
+            <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+                android:id="@+id/txt_goals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:text="GOALS"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/txt_value" />
+
+            <ProgressBar
+
+                android:id="@+id/img_hour"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp" />
+
+            <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_hour"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="8 HOUR"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_sleep_normal"
+                android:visibility="visible" />
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_overView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+ <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_break"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="BreakDown of Sleep"
+            android:textAllCaps="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value" />
+
+        <itg8.com.nowzonedesigndemo.sleep.widget_custom_progressbar.CustomProgressBar
+            android:id="@+id/custom_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/txt_break"
+            android:layout_margin="10dp"
+            android:max="100"
+            android:progress="0"
+            android:layout_centerInParent="true"
+            android:progressDrawable="@android:color/transparent" />
+
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_awake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/custom_progressbar"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:drawableLeft="@drawable/sleep_awake"
+            android:drawablePadding="05dp"
+            android:text="AWAKE"
+            android:textAllCaps="true"
+            android:textSize="@dimen/txt_value" />
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_awake"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="0:40"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value"
+            android:textStyle="bold" />
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_awake"
+            android:layout_marginLeft="04dp"
+            android:layout_toRightOf="@+id/txt_time"
+            android:gravity="center"
+            android:text="MIN"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value"
+            android:textStyle="bold" />
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_deep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/custom_progressbar"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:layout_marginRight="10dp"
+            android:drawableLeft="@drawable/sleep_deep"
+            android:drawablePadding="05dp"
+            android:text="DEEP"
+            android:textAllCaps="true"
+            android:textSize="@dimen/txt_value" />
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_timeDeep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_deep"
+            android:layout_marginRight="04dp"
+            android:layout_toLeftOf="@+id/txt_deep_time"
+            android:gravity="center"
+            android:text="02:00"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value"
+            android:textStyle="bold" />
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_deep_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/txt_deep"
+            android:layout_marginRight="10dp"
+            android:text="HR"
+            android:textAllCaps="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value"
+            android:textStyle="bold" />
+
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/custom_progressbar"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:drawableLeft="@drawable/sleep_light"
+            android:drawablePadding="05dp"
+            android:text="Light"
+            android:textAllCaps="true"
+            android:textSize="@dimen/txt_value" />
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:id="@+id/txt_light_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_light"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="04dp"
+            android:text="05:30"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value"
+            android:textStyle="bold" />
+
+        <itg8.com.nowzonedesigndemo.custom_widget.AutoSizeTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_light"
+            android:layout_toRightOf="@+id/txt_light_time"
+            android:text="HR"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value"
+            android:textStyle="bold" />
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,282 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="itg8.com.nowzonedesigndemo.steps.StepsFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/txt_run"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="RUNNING"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack" />
+
+            <RadioGroup
+
+                android:id="@+id/rbg_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_run"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RadioButton
+                    android:id="@+id/btn_natural"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/rbtn_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:padding="15dp"
+                    android:text="Daily"
+                    android:textColor="@drawable/rbtn_text_color" />
+
+                <RadioButton
+                    android:id="@+id/btn_unnatural"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/rbtn_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:padding="15dp"
+                    android:text=" Weekly"
+                    android:textColor="@drawable/rbtn_text_color" />
+            </RadioGroup>
+
+            <itg8.com.nowzonedesigndemo.sleep.widget_custom_progressbar.DonutProgress
+                android:id="@+id/circularProgressGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rbg_steps"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                custom:donut_progress="30" />
+
+
+            <android.support.percent.PercentRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/circularProgressGoal"
+                android:layout_margin="20dp">
+
+                <LinearLayout
+                    android:id="@+id/ll_percent_durations"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/ll_goals"
+                    android:layout_below="@+id/txt_durations"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    app:layout_widthPercent="100%">
+
+
+                    <RelativeLayout
+                        android:id="@+id/ll_percent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_widthPercent="50%">
+
+
+                        <TextView
+                            android:id="@+id/txt_duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:drawableLeft="@drawable/ic_timelapse"
+                            android:drawablePadding="03dp"
+                            android:gravity="center"
+                            android:text="DURATION"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/text_sleep_normal" />
+
+                        <TextView
+                            android:id="@+id/txt_duration_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/txt_duration"
+                            android:layout_below="@+id/txt_duration"
+                            android:layout_marginTop="03dp"
+                            android:text="35:42"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/txt_sleep_value" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/txt_duration_value"
+                            android:layout_below="@+id/txt_duration"
+                            android:layout_marginRight="04dp"
+                            android:layout_toRightOf="@+id/txt_duration_value"
+                            android:text=" min"
+                            android:textColor="@color/colorBlack" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_widthPercent="50%">
+
+                        <TextView
+                            android:id="@+id/txt_calories"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:drawableLeft="@drawable/ic_fire"
+                            android:drawablePadding="03dp"
+                            android:gravity="center"
+                            android:text="Calories"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/text_sleep_normal" />
+
+                        <TextView
+                            android:id="@+id/txt_calories_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txt_calories"
+                            android:layout_marginTop="03dp"
+                            android:text="806"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/txt_sleep_value" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/txt_calories_value"
+                            android:layout_below="@+id/txt_calories"
+                            android:layout_marginRight="04dp"
+                            android:layout_toRightOf="@+id/txt_calories_value"
+                            android:text=" kcal"
+                            android:textColor="@color/colorBlack" />
+
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll_percent_durations"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    app:layout_widthPercent="100%">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_average"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_widthPercent="50%">
+
+
+                        <TextView
+                            android:id="@+id/txt_average"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Avg Speed"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/text_sleep_normal" />
+
+                        <TextView
+                            android:id="@+id/txt_average_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/txt_average"
+                            android:layout_below="@+id/txt_average"
+                            android:layout_marginTop="03dp"
+                            android:text="14"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/txt_sleep_value" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/txt_average_value"
+                            android:layout_below="@+id/txt_average"
+                            android:layout_marginRight="04dp"
+                            android:layout_toRightOf="@+id/txt_average_value"
+                            android:text=" Km/h"
+                            android:textColor="@color/colorBlack" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_widthPercent="50%">
+
+                        <TextView
+                            android:id="@+id/txt_heart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Calories"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/text_sleep_normal" />
+
+                        <TextView
+                            android:id="@+id/txt_heart_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txt_heart"
+                            android:layout_marginTop="03dp"
+                            android:text="120"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/txt_sleep_value" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/txt_heart_value"
+                            android:layout_below="@+id/txt_heart"
+                            android:layout_marginRight="04dp"
+                            android:layout_toRightOf="@+id/txt_heart_value"
+                            android:text=" bpm"
+                            android:textColor="@color/colorBlack" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </android.support.percent.PercentRelativeLayout>
+        </RelativeLayout>
+    </FrameLayout>
+</LinearLayout>

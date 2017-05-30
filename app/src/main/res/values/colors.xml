@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#90CAF9</color>
+    <color name="color_wave">#24006bb7</color>
+    <color name="color_wave2">#27BEFB</color>
+    <color name="colorBlack">#000000</color>
+    <color name="color_center">#111188</color>
+    <color name="colorWhite">#ffffff</color>
+    <!--<color name="color_endColor">#2C1951</color>-->
+    <!--<color name="color_startColor">#2B164E</color>-->
+
+    <!--<color name="color_startColorblock2">#361f66</color>-->
+    <!--<color name="color_endColorblock2">#341c60</color> -->
+
+    <!--for th Step Activity-->
+
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="accent">#455A64</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="colorGreen">#43A047</color>
+    <color name="colorBlue">#03A9F4</color>
+    <color name="colorOrange">#ed7a56</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
+
+
+    <!--<color name="color_endColor">#21103C</color>-->
+    <color name="color_endColor">#10133c</color>
+    <!--<color name="color_startColor">#2C1951</color>-->
+    <!--<color name="color_startColor">#361f66</color>-->
+    <color name="color_startColor">#1f2066</color>
+
+    <color name="color_startColorblock2">#361f66</color>
+    <color name="color_startColorBack">#BB000000</color>
+    <color name="color_endColorblock2">#341c60</color>
+    <color name="color_green">#00CBAC</color>
+    <color name="color_sky">#00B0EC</color>
+    <color name="color_skin">#D4A280</color>
+
+
+</resources>

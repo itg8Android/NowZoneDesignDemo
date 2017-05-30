@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <!--For Home Page -->
+    <dimen name="paddingHomeText">4dp</dimen>
+    <dimen name="homeText">14dp</dimen>
+    <dimen name="marginHomeText">5dp</dimen>
+    <dimen name="elevationHomeText">03dp</dimen>
+    <dimen name="marginBottomHomeImage">30dp</dimen>
+    <dimen name="marginLeftHomeImage">10dp</dimen>
+    <dimen name="marginRightHomeImage">10dp</dimen>
+    <dimen name="txt_breath_value">30sp</dimen>
+    <dimen name="txt_sleep_value">2sp</dimen>
+    <dimen name="text_sleep_normal">19sp</dimen>
+    <dimen name="fabSize">56dp</dimen>
+
+
+    <dimen name="txt_value">12sp</dimen>
+    <dimen name="txt_lbl_dash_top">18sp</dimen>
+    <dimen name="txt_home">12sp</dimen>
+    <dimen name="txt_value_time">12sp</dimen>
+    <dimen name="txt_value_time_steps">18sp</dimen>
+    <dimen name="txt_lbl_dash_bottom">12sp</dimen>
+    <dimen name="txt_hr">12sp</dimen>
+
+
+
+    <dimen name="txt_value_sleep">14sp</dimen>
+
+
+
+    <dimen name="txt_active_value">40sp</dimen>
+
+
+
+</resources>
