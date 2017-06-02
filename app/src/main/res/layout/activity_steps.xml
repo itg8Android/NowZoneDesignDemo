@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:background="@drawable/wallpaper_3"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activities.MainActivity">
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wallpaper_back"
+    android:layout_above="@+id/navigation"
     android:fitsSystemWindows="true"
     tools:context="itg8.com.nowzonedesigndemo.steps.StepsActivity">
 
@@ -127,26 +136,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_steps"
-        android:id="@+id/layout_include"/>
-
-
-    <android.support.design.widget.BottomNavigationView
-
-        android:layout_marginTop="10dp"
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@android:color/transparent"
-        android:visibility="gone"
-
-        app:itemTextColor="@drawable/nav_item_color_state"
-        app:itemIconTint="@drawable/nav_item_color_state"
-
-
-        app:menu="@menu/navigation" />
-
 
     <!--app:layout_behavior="itg8.com.nowzonedesigndemo.steps.widget.QuickReturnFloaterBehavior"-->
 
@@ -160,4 +149,23 @@
         android:visibility="gone"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
+    <include
+        android:id="@+id/layout_include"
+        layout="@layout/content_steps" />
+
 </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:layout_marginTop="10dp"
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
+        android:visibility="visible"
+        android:layout_alignParentBottom="true"
+        app:itemTextColor="@drawable/nav_item_color_state"
+        app:itemIconTint="@drawable/nav_item_color_state"
+        app:menu="@menu/navigation" />
+</RelativeLayout>
