@@ -8,8 +8,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.transition.AutoTransition;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,16 +88,16 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+//        getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//        );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
         ButterKnife.bind(this);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
 
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -140,10 +136,10 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
                 break;
 
             case R.id.rgb_step_history:
-                imgGraph.setVisibility(View.VISIBLE);
+//                imgGraph.setVisibility(View.VISIBLE);
                 progressSteps.setVisibility(View.GONE);
                 navigation.setVisibility(View.VISIBLE);
-                fragment = new HistoryStepsFragment();
+                fragment = new HistoryMonthFragment();
                 break;
 
         }
