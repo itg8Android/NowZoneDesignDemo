@@ -11,6 +11,7 @@ public class CommonMethod {
 
 
     private static Typeface typeface;
+    public static String FROMWEEk="from_week";
 
     public static Typeface setFontDroidSans(Context context) {
         typeface = Typeface.createFromAsset(context.getAssets(), "fonts/DroidSans.ttf");
