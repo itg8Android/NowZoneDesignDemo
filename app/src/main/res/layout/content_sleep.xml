@@ -41,10 +41,10 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/ic_right_arrow" />
 
-        <ImageView
-            android:id="@+id/img_graph"
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barchart"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:layout_below="@+id/txt_day"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -55,7 +55,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/img_graph"
+            android:layout_below="@+id/barchart"
             android:id="@+id/rl_time">
 
         <TextView

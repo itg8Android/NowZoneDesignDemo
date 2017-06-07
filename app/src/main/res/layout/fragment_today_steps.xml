@@ -1,13 +1,18 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="itg8.com.nowzonedesigndemo.steps.TodayStepsFragment">
     <!--xmlns:custom="http://schemas.android.com/apk/res/itg8.com.nowzonedesigndemo"-->
 
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
 
 
         <RelativeLayout
@@ -61,7 +66,6 @@
                         android:id="@+id/card_avg_calories"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:cardElevation="6dp"
                         app:contentPadding="10dp"
                         app:cardBackgroundColor="@android:color/transparent"
                         app:cardPreventCornerOverlap="true"
@@ -120,7 +124,6 @@
                     <android.support.v7.widget.CardView
                         android:id="@+id/card_calories"
                         android:layout_width="match_parent"
-                        app:cardElevation="6dp"
                         app:contentPadding="10dp"
                         android:layout_height="match_parent"
                         app:cardBackgroundColor="@android:color/transparent"
@@ -198,7 +201,6 @@
                         android:id="@+id/card_miles"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:cardElevation="6dp"
                         app:contentPadding="10dp"
                         app:cardBackgroundColor="@android:color/transparent"
                         app:cardPreventCornerOverlap="true"
@@ -262,7 +264,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="6dp"
                         app:contentPadding="10dp"
 
                         app:cardPreventCornerOverlap="true"
@@ -314,5 +315,6 @@
             </LinearLayout>
         </RelativeLayout>
 
-
 </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>
