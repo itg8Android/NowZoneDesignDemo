@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -26,8 +27,7 @@ import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.steps.widget.ColorArcProgressBar;
 
 
-public class StepsActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener ,  AppBarLayout.OnOffsetChangedListener
-{
+public class StepsActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, AppBarLayout.OnOffsetChangedListener {
 
 
     private static final long ANIMATION_TIME = 500;
@@ -43,8 +43,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-    @BindView(R.id.frame_layout_steps)
-    FrameLayout frameLayoutSteps;
+
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
@@ -57,6 +56,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     CoordinatorLayout coordinator;
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
+    @BindView(R.id.collapsing)
+    CollapsingToolbarLayout collapsing;
     private String TAG = StepsActivity.class.getSimpleName();
     private Fragment fragment;
     private FragmentManager fm;
@@ -68,14 +69,16 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
             switch (item.getItemId()) {
-                case R.id.nav_weekly:
+                case R.id.nav_day:
+                    fragment = DayWeekFragment.newInstance("", "");
+                    setFragmnet();
+                    return true;
+                case R.id.nav_week:
+                    fragment = DayWeekFragment.newInstance("", "");
                     setFragmnet();
                     return true;
                 case R.id.nav_month:
-                    setFragmnet();
-
-                    return true;
-                case R.id.nav_year:
+                    fragment = HistoryMonthFragment.newInstance("", "");
                     setFragmnet();
                     return true;
             }
@@ -83,7 +86,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         }
 
     };
-
 
 
     @Override
@@ -114,11 +116,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     }
 
 
-
-
-
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -139,13 +136,11 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 //                imgGraph.setVisibility(View.VISIBLE);
                 progressSteps.setVisibility(View.GONE);
                 navigation.setVisibility(View.VISIBLE);
-                fragment = new HistoryMonthFragment();
+                fragment = new DayWeekFragment();
                 break;
-
         }
         setFragmnet();
     }
-
 
 
     private void setFragmnet() {
@@ -162,8 +157,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         progressSteps.setTextSize(30);
         progressSteps.setIsNeedUnit(true);
         progressSteps.setUnit("%");
-
-
     }
 
 
@@ -188,12 +181,12 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
 //        float alphaVal = verticalOffset /-552f;
-        float alphaVal = verticalOffset /-276f;
-        Log.d(TAG,"Offset : "+alphaVal+" vertical offset : "+ verticalOffset);
-        float newAlphaVal = 1-alphaVal;
+        float alphaVal = verticalOffset / -276f;
+        Log.d(TAG, "Offset : " + alphaVal + " vertical offset : " + verticalOffset);
+        float newAlphaVal = 1 - alphaVal;
 
-                progressSteps.setAlpha(newAlphaVal);
-                imgGraph.setAlpha(newAlphaVal);
+        progressSteps.setAlpha(newAlphaVal);
+        imgGraph.setAlpha(newAlphaVal);
 
     }
 

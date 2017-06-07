@@ -27,6 +27,7 @@
     <color name="colorOrange">#ed7a56</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+    <color name="transparent">#00000000</color>
 
 
     <!--<color name="color_endColor">#21103C</color>-->

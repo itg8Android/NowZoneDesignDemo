@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardUseCompatPadding="true"
     app:cardPreventCornerOverlap="true"
-    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@color/accent"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:font_value="2"
-            android:textColor="@color/divider"
+            android:textColor="@color/colorWhite"
             android:text="November"
             android:id="@+id/txt_month_name"
 
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:font_value="2"
-            android:textColor="@color/divider"
+            android:textColor="@color/colorWhite"
             android:id="@+id/txt_lbl_step"
             android:layout_toStartOf="@+id/txt_lbl_step_count"
             android:text="Steps"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:font_value="2"
-            android:textColor="@color/divider"
+            android:textColor="@color/colorWhite"
             android:id="@+id/txt_lbl_step_count"
             android:layout_alignParentEnd="true"
             android:paddingLeft="4dp"

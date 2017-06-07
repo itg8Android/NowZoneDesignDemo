@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:background="@drawable/wallpaper_3"
+    android:background="@drawable/bg_1"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -99,7 +99,6 @@
                     android:id="@+id/progressSteps"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     app:back_color="@android:color/darker_gray"
@@ -121,7 +120,6 @@
                     android:id="@+id/img_graph"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txt_day"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
@@ -163,7 +161,7 @@
         android:fitsSystemWindows="true"
         android:layout_gravity="bottom"
         android:background="@android:color/transparent"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_alignParentBottom="true"
         app:itemTextColor="@drawable/nav_item_color_state"
         app:itemIconTint="@drawable/nav_item_color_state"

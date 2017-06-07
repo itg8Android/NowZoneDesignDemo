@@ -96,6 +96,7 @@ public class HistoryMonthFragment extends Fragment implements RecyclerView.OnIte
                 .build();
 
         recyclerview.setHasFixedSize(true);
+        recyclerview.setNestedScrollingEnabled(false);
         recyclerview.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerview.addItemDecoration(divider);
 

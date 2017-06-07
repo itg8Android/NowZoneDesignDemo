@@ -5,9 +5,11 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -15,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,11 +33,32 @@ public class TodayStepsFragment extends Fragment {
 
 
     Unbinder unbinder;
-
-    @BindView(R.id.rl_releative)
-    RelativeLayout rlReleative;
+    @BindView(R.id.txt_calories)
+    CustomFontTextView txtCalories;
     @BindView(R.id.customProgressRectangle)
     ProgressBar customProgressRectangle;
+    @BindView(R.id.rl_releative)
+    RelativeLayout rlReleative;
+    @BindView(R.id.card_avg_calories)
+    CardView cardAvgCalories;
+    @BindView(R.id.ll_burn)
+    LinearLayout llBurn;
+    @BindView(R.id.txt_caloriesText)
+    CustomFontTextView txtCaloriesText;
+    @BindView(R.id.txt)
+    CustomFontTextView txt;
+    @BindView(R.id.ll_calories)
+    LinearLayout llCalories;
+    @BindView(R.id.card_calories)
+    CardView cardCalories;
+    @BindView(R.id.ll_main)
+    LinearLayout llMain;
+    @BindView(R.id.customFontTextView)
+    CustomFontTextView customFontTextView;
+    @BindView(R.id.card_miles)
+    CardView cardMiles;
+    @BindView(R.id.card_total_calories)
+    CardView cardTotalCalories;
 
 
     // TODO: Rename and change types of parameters
@@ -86,7 +110,6 @@ public class TodayStepsFragment extends Fragment {
         customProgressRectangle.setSecondaryProgress(50);
         customProgressRectangle.setMax(100);
         customProgressRectangle.setProgressDrawable(drawable);
-
     }
 
 

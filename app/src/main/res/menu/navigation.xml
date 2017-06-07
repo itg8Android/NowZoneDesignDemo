@@ -3,22 +3,22 @@
 
     <item
         android:enabled="true"
-        android:id="@+id/nav_weekly"
+        android:id="@+id/nav_day"
         android:icon="@drawable/ic_week"
-        android:title="Weekly" />
+        android:title="Day" />
+
+    <item
+        android:enabled="true"
+
+        android:id="@+id/nav_week"
+        android:icon="@drawable/ic_month"
+        android:title="Week" />
 
     <item
         android:enabled="true"
 
         android:id="@+id/nav_month"
-        android:icon="@drawable/ic_month"
-        android:title="Month" />
-
-    <item
-        android:enabled="true"
-
-        android:id="@+id/nav_year"
         android:icon="@drawable/ic_year"
-        android:title="Year" />
+        android:title="Month" />
 
 </menu>
