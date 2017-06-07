@@ -1,46 +1,47 @@
-package itg8.com.nowzonedesigndemo;
+package itg8.com.nowzonedesigndemo.home;
 
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.audio.AudioActivity;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
-import itg8.com.nowzonedesigndemo.common.FontType;
+import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenter;
+import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
+import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
+import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
+import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
+import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
 import itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView;
+import timber.log.Timber;
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,BreathView {
 
 
+    private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.rl_wave)
@@ -63,22 +64,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     TextView txtCalm;
     @BindView(R.id.txt_calm_value)
     TextView txtCalmValue;
-//    @BindView(R.id.txt_calm_time)
+    //    @BindView(R.id.txt_calm_time)
 //    TextView txtCalmTime;
-    @BindView(R.id.txt_focus)
-    TextView txtFocus;
     @BindView(R.id.txt_focus_value)
     TextView txtFocusValue;
-//    @BindView(R.id.txt_focus_time)
+    //    @BindView(R.id.txt_focus_time)
 //    TextView txtFocusTime;
-    @BindView(R.id.txt_stress)
-    TextView txtStress;
     @BindView(R.id.txt_stress_value)
     TextView txtStressValue;
-//    @BindView(R.id.txt_stress_time)
+    //    @BindView(R.id.txt_stress_time)
 //    TextView txtStressTime;
-    @BindView(R.id.main_FrameLayout)
-    FrameLayout mainFrameLayout;
     @BindView(R.id.rl_main_top)
     RelativeLayout rlMainTop;
     @BindView(R.id.img_breath)
@@ -119,6 +114,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     WaveLoadingView waveLoadingView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.breathview)
+    BreathwaveView breathview;
+    @BindView(R.id.txt_focus)
+    CustomFontTextView txtFocus;
+    @BindView(R.id.txt_stress)
+    TextView txtStress;
+    @BindView(R.id.main_FrameLayout)
+    FrameLayout mainFrameLayout;
+
+    BreathPresenter presenter;
 
 
     private ActionBarDrawerToggle toggle;
@@ -126,7 +131,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-      // getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -135,18 +140,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setContentView(R.layout.activity_home);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         ButterKnife.bind(this);
+        Timber.tag(TAG);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
-
+        presenter=new BreathPresenterImp(this);
+        presenter.passContext(this);
+        presenter.onCreate();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.setDrawerIndicatorEnabled(true);
-
 
 
         toggle.syncState();
@@ -161,12 +169,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         waveLoadingView.setBorderColor(Color.parseColor("#27BEFB"));
 
 
-        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
-        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
+//        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
+//        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
 
     }
 
 
+    @Override
+    protected void onDestroy() {
+        presenter.onDetach();
+        super.onDestroy();
+    }
 
     private void setType() {
         waveLoadingView.setShapeType(WaveLoadingView.ShapeType.SQUARE);
@@ -190,6 +203,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+    @Override
+    protected void onResume() {
+        if(breathview!=null)
+            breathview.reset();
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -264,4 +283,35 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
+    @Override
+    public void onPressureDataAvail(double pressure) {
+        breathview.addSample(SystemClock.elapsedRealtime(), pressure);
+    }
+
+    @Override
+    public void onDeviceConnected() {
+        Log.d(TAG,"Device connected");
+    }
+
+    @Override
+    public void onDeviceDisconnected() {
+        Log.d(TAG,"Device disconnected");
+    }
+
+    @Override
+    public void onBreathCountAvailable(int intExtra) {
+        Log.d(TAG,"Breath count: "+intExtra);
+        breathValue.setText(String.valueOf(intExtra));
+    }
+
+    @Override
+    public void onStepCountReceived(int intExtra) {
+        Log.d(TAG,"Step count: "+intExtra);
+    }
+
+    @Override
+    public void onStartDeviceScanActivity() {
+        Timber.i("Start device activity");
+        startActivity(new Intent(this, ScanDeviceActivity.class));
+    }
 }

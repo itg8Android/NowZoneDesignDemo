@@ -43,6 +43,9 @@
     <color name="color_sky">#00B0EC</color>
     <color name="color_skin">#D4A280</color>
     <color name="default_header_color">#445566</color>
+    <color name="text_color">#000000</color>
+    <color name="btn_stroke_red">#F5A671</color>
 
-
+    <color name="pressed_color">#4d90fe</color>
+    <color name="default_color">#ffffff</color>
 </resources>
