@@ -41,7 +41,17 @@
 
  </declare-styleable>
 
-
+    <declare-styleable name="SignalMeter">
+        <attr name="maxBars" format="integer" />
+        <attr name="bgColor" format="color" />
+        <attr name="bgColor1" format="color" />
+        <attr name="prColor" format="color" />
+        <attr name="prColor1" format="color" />
+        <attr name="barSpacing" format="dimension" />
+        <attr name="progressValue" format="integer" />
+        <attr name="barType" format="integer" />
+        <attr name="rotation" format="float" />
+    </declare-styleable>
 
     <declare-styleable name="CircleProgressView">
 
