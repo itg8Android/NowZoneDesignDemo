@@ -16,7 +16,7 @@
         android:layout_marginRight="@dimen/marginRightHomeImage">
 
         <ImageView
-            android:id="@+id/img_breatch"
+            android:id="@+id/img_breath"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_breath" />
@@ -26,9 +26,9 @@
             style="@style/home_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/img_breatch"
+            android:layout_alignBaseline="@+id/img_breath"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/img_breatch"
+            android:layout_toRightOf="@+id/img_breath"
             android:text="@string/breath_rate" />
 
         <TextView
@@ -51,9 +51,9 @@
             style="@style/home_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/img_breatch"
+            android:layout_below="@+id/img_breath"
             android:layout_marginTop="05dp"
-            android:layout_toEndOf="@+id/img_breatch"
+            android:layout_toEndOf="@+id/img_breath"
             android:text="@string/status" />
 
     </RelativeLayout>

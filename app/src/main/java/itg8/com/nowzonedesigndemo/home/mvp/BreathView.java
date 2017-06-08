@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.home.mvp;
 
 
+import itg8.com.nowzonedesigndemo.utility.BreathState;
 
 public interface BreathView {
     void onPressureDataAvail(double pressure);
@@ -14,4 +15,6 @@ public interface BreathView {
     void onStepCountReceived(int intExtra);
 
     void onStartDeviceScanActivity();
+
+    void onBreathingStateAvailable(BreathState state);
 }

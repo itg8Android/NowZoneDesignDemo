@@ -66,21 +66,22 @@
                         style="@style/home_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txt_breathValue"
+                        android:layout_below="@+id/txt_AvgBreathValue"
                         android:layout_centerInParent="true"
                         android:layout_marginTop="5dp"
                         android:text="@string/breath_value"
                         android:textSize="@dimen/txt_lbl_dash_bottom" />
 
                     <TextView
-                        android:id="@+id/txt_breathValue"
+                        android:id="@+id/txt_AvgBreathValue"
                         style="@style/home_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_centerInParent="true"
                         android:layout_marginTop="20dp"
-                        android:text="20"
+                        android:text=""
+                        android:visibility="invisible"
                         android:textSize="20sp" />
 
                 </RelativeLayout>

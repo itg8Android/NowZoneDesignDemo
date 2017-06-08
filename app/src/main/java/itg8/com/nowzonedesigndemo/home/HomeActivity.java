@@ -27,6 +27,8 @@ import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.audio.AudioActivity;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
+import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenter;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
@@ -34,6 +36,7 @@ import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
+import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
 import itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView;
 import timber.log.Timber;
@@ -41,12 +44,20 @@ import timber.log.Timber;
 public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,BreathView {
 
 
+    private static final String COLOR_NORMAL_M = "#24006bb7";
+    private static final String COLOR_NORMAL_S = "#27BEFB";
+    private static final String COLOR_CALM_M = "#240CB700";
+    private static final String COLOR_CALM_S = "#FF35FB27";
+    private static final String COLOR_STRESS_M = "#24B70F00";
+    private static final String COLOR_STRESS_S = "#FFF92E27";
+    private static final String COLOR_FOCUSED_M = "#240C00B7";
+    private static final String COLOR_FOCUSED_S = "#FF4027FB";
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.rl_wave)
     FrameLayout rlWave;
-    @BindView(R.id.img_breatch)
+    @BindView(R.id.img_breath)
     ImageView imgBreatch;
     @BindView(R.id.txt_breathRate)
     TextView txtBreathRate;
@@ -82,8 +93,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     TextView txtBreath;
     @BindView(R.id.txt_breathCount)
     TextView txtBreathCount;
-    @BindView(R.id.txt_breathValue)
-    TextView txtBreathValue;
+    @BindView(R.id.txt_AvgBreathValue)
+    TextView txtAvgBreathValue;
     @BindView(R.id.img_sleep)
     ImageView imgSleep;
     @BindView(R.id.txt_forth)
@@ -165,13 +176,25 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setType();
         setAnimator();
 
-        waveLoadingView.setWaveBgColor(Color.parseColor("#24006bb7"));
-        waveLoadingView.setBorderColor(Color.parseColor("#27BEFB"));
+        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_NORMAL_M));
+        waveLoadingView.setBorderColor(Color.parseColor(COLOR_NORMAL_S));
 
-
+        initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
 //        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
 
+    }
+
+    private void initOtherView() {
+        int mAvgCount=SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        if(mAvgCount>0) {
+            setAvgValue(mAvgCount);
+        }
+    }
+
+    private void setAvgValue(int mAvgCount) {
+        txtAvgBreathValue.setVisibility(View.VISIBLE);
+        txtAvgBreathValue.setText(String.valueOf(mAvgCount));
     }
 
 
@@ -313,5 +336,45 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onStartDeviceScanActivity() {
         Timber.i("Start device activity");
         startActivity(new Intent(this, ScanDeviceActivity.class));
+        finish();
+    }
+
+    @Override
+    public void onBreathingStateAvailable(BreathState state) {
+        initOtherView();
+        setStateRelatedDetails(state);
+    }
+
+    private void setStateRelatedDetails(BreathState state) {
+        switch (state)
+        {
+            case CALM:
+                reactCalmState();
+                break;
+            case FOCUSED:
+                reactFocusedState();
+                break;
+            case STRESS:
+                reactStressState();
+                break;
+        }
+    }
+
+    private void reactStressState() {
+        txtStatusValue.setText(BreathState.STRESS.name());
+        waveLoadingView.setWaveColor(Color.parseColor(COLOR_STRESS_M));
+        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_STRESS_S));
+    }
+
+    private void reactFocusedState() {
+        txtStatusValue.setText(BreathState.FOCUSED.name());
+        waveLoadingView.setWaveColor(Color.parseColor(COLOR_FOCUSED_M));
+        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_FOCUSED_S));
+    }
+
+    private void reactCalmState() {
+        txtStatusValue.setText(BreathState.CALM.name());
+        waveLoadingView.setWaveColor(Color.parseColor(COLOR_CALM_M));
+        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_CALM_S));
     }
 }

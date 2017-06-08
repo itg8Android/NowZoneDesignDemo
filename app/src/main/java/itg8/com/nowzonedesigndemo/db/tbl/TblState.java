@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import static itg8.com.nowzonedesigndemo.db.tbl.TblState.FIELD_STATE;
 
 /**
  * Created by itg_Android on 6/7/2017.
@@ -15,17 +14,18 @@ import static itg8.com.nowzonedesigndemo.db.tbl.TblState.FIELD_STATE;
 public class TblState implements Parcelable {
 
     public static final String TABLE_STATE = "TABLE_STATE";
-    private static final String FIELD_ID="id";
+    public static final String FIELD_ID="id";
     private static final String FIELD_STATE="state";
     private static final String FIELD_DATE="date";
     private static final String FIELD_COUNT="count";
-    private static final String FIELD_TIMESTAMP="timestamp";
+    private static final String FIELD_TIMESTAMP_START="timestamp_start";
+    private static final String FIELD_TIMESTAMP_END="timestamp_end";
 
     @DatabaseField(columnName = FIELD_ID, generatedId = true)
     private long id;
 
     @DatabaseField(columnName = FIELD_STATE)
-    private int state;
+    private String state;
 
     @DatabaseField(columnName = FIELD_DATE)
     private String date;
@@ -33,8 +33,12 @@ public class TblState implements Parcelable {
     @DatabaseField(columnName = FIELD_COUNT)
     private int count;
 
-    @DatabaseField(columnName = FIELD_TIMESTAMP)
-    private long timestamp;
+    @DatabaseField(columnName = FIELD_TIMESTAMP_START)
+    private long timestampStart;
+
+
+    @DatabaseField(columnName = FIELD_TIMESTAMP_END)
+    private long timestampEnd;
 
 
 
@@ -49,11 +53,11 @@ public class TblState implements Parcelable {
         this.id = id;
     }
 
-    public int getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(int state) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -73,14 +77,21 @@ public class TblState implements Parcelable {
         this.count = count;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public long getTimestampStart() {
+        return timestampStart;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestampStart(long timestampStart) {
+        this.timestampStart = timestampStart;
     }
 
+    public long getTimestampEnd() {
+        return timestampEnd;
+    }
+
+    public void setTimestampEnd(long timestampEnd) {
+        this.timestampEnd = timestampEnd;
+    }
 
     @Override
     public int describeContents() {
@@ -90,18 +101,20 @@ public class TblState implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
-        dest.writeInt(this.state);
+        dest.writeString(this.state);
         dest.writeString(this.date);
         dest.writeInt(this.count);
-        dest.writeLong(this.timestamp);
+        dest.writeLong(this.timestampStart);
+        dest.writeLong(this.timestampEnd);
     }
 
     protected TblState(Parcel in) {
         this.id = in.readLong();
-        this.state = in.readInt();
+        this.state = in.readString();
         this.date = in.readString();
         this.count = in.readInt();
-        this.timestamp = in.readLong();
+        this.timestampStart = in.readLong();
+        this.timestampEnd = in.readLong();
     }
 
     public static final Creator<TblState> CREATOR = new Creator<TblState>() {

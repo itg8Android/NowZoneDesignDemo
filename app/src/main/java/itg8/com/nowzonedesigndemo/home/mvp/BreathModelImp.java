@@ -7,8 +7,10 @@ import android.content.Intent;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
+import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.utility.DeviceState;
 
+import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STATE_ARRIVED;
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STEP_COUNT;
 
 /**
@@ -32,6 +34,8 @@ public class BreathModelImp implements BreathFragmentModel {
                     listener.onCountReceived(intent.getIntExtra(CommonMethod.BPM_COUNT,0));
                 }if(intent.hasExtra(ACTION_STEP_COUNT)){
                     listener.onStepReceived(intent.getIntExtra(ACTION_STEP_COUNT,0));
+                }if(intent.hasExtra(ACTION_STATE_ARRIVED)){
+                    listener.onStateReceived((BreathState) intent.getSerializableExtra(ACTION_STATE_ARRIVED));
                 }
             }
         }

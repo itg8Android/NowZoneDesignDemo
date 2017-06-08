@@ -48,4 +48,10 @@
 
     <color name="pressed_color">#4d90fe</color>
     <color name="default_color">#ffffff</color>
+
+    <color name="de_color">#24006bb7</color>
+    <color name="de_colsor">#240CB700</color>
+    <color name="desd_color">#27BEFB</color>
+
+
 </resources>

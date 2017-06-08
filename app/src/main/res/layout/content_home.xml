@@ -59,7 +59,7 @@
 
 
             <ImageView
-                android:id="@+id/img_breatch"
+                android:id="@+id/img_breath"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
@@ -76,7 +76,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="14dp"
                 android:visibility="gone"
-                android:layout_toEndOf="@+id/img_breatch" />
+                android:layout_toEndOf="@+id/img_breath" />
 
 
             <TextView
@@ -88,7 +88,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_centerVertical="true"
                 android:textAllCaps="false"
-                android:layout_toEndOf="@+id/img_breatch" />
+                android:layout_toEndOf="@+id/img_breath" />
             <TextView
                 android:id="@+id/txt_status"
                 style="@style/home_textView"
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/status"
                 android:visibility="gone"
-                android:layout_toEndOf="@+id/img_breatch"
+                android:layout_toEndOf="@+id/img_breath"
                 android:layout_marginLeft="5dp"
                 android:layout_below="@+id/txt_statusValue" />
 
@@ -261,7 +261,6 @@
     <include
         android:id="@+id/rl_main_bottom"
         layout="@layout/layout_home_bottom"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="79dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

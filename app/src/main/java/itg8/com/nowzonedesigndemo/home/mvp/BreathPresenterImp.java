@@ -5,6 +5,8 @@ import android.content.IntentFilter;
 import java.util.Random;
 
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
+import itg8.com.nowzonedesigndemo.utility.BreathState;
 
 
 public class BreathPresenterImp implements BreathPresenter, BreathPresenter.BreathFragmentModelListener {
@@ -28,6 +30,12 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
         if(view!=null){
             view.onStartDeviceScanActivity();
         }
+    }
+
+    @Override
+    public void onStateReceived(BreathState state) {
+        if(checkNotNull())
+            view.onBreathingStateAvailable(state);
     }
 
     @Override
@@ -57,6 +65,8 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
         model.checkBLEConnected(context);
     }
 
+
+
     @Override
     public void onAttach() {
       //  model.check
@@ -67,6 +77,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
         if(model.getReceiver()!=null && context!=null){
             context.unregisterReceiver(model.getReceiver());
         }
+        context=null;
         view=null;
     }
 
@@ -84,6 +95,8 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
         }
     }
 
+
+
     @Override
     public void onStepReceived(int intExtra) {
         if(intExtra>0 && checkNotNull())
@@ -91,7 +104,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     }
 
     private boolean checkNotNull() {
-        return view != null;
+        return view != null && context!=null;
     }
 
     private double mLastRandom = 2;

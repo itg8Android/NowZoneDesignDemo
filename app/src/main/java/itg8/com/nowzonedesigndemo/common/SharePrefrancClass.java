@@ -124,5 +124,18 @@ public class SharePrefrancClass {
     }
 
 
+    public void setIPreference(String key, int value) {
+        if(preference!=null) {
+            editor = preference.edit();
+            editor.putInt(key, value);
+            editor.apply();
+        }
+    }
 
+    public int getIPreference(String key){
+        if(preference!=null){
+            return preference.getInt(key,0);
+        }
+        return 0;
+    }
 }

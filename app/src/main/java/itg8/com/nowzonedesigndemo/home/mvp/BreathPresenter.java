@@ -2,6 +2,8 @@ package itg8.com.nowzonedesigndemo.home.mvp;
 
 import android.content.Context;
 
+import itg8.com.nowzonedesigndemo.utility.BreathState;
+
 /**
  * Created by itg_Android on 3/2/2017.
  */
@@ -23,5 +25,7 @@ public interface BreathPresenter {
         void onStepReceived(int intExtra);
 
         void startShowingDevicesList();
+
+        void onStateReceived(BreathState state);
     }
 }

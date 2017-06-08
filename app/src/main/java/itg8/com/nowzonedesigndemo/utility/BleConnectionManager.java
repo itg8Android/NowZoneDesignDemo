@@ -19,6 +19,7 @@ import java.util.UUID;
 import itg8.com.nowzonedesigndemo.connection.ConnectionStateListener;
 import itg8.com.nowzonedesigndemo.exception.StringEmptyException;
 import itg8.com.nowzonedesigndemo.tosort.ConnectionManager;
+import timber.log.Timber;
 
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.BYTE_ARRAY_ON;
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.CLIENT_CHARACTERISTIC_CONFIG;
@@ -85,17 +86,21 @@ public class BleConnectionManager implements ConnectionManager {
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            Timber.d("Characteristics written:%s",characteristic.getValue());
             super.onCharacteristicWrite(gatt, characteristic, status);
         }
 
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             Log.d(TAG, "DescriptorWrite Called");
+
             if (writeCharacteristics(TEMP_SERVICE_UUID, SENSOR_ON_OFF)) {
                 listener.currentState(DeviceState.WRITE);
             } else {
                 failWithReason(DeviceState.WRITE_FAIL, status);
             }
+            if(descriptorWriteQueue!=null && descriptorWriteQueue.size()>0)
+                descriptorWriteQueue.poll();
         }
 
         @Override
@@ -299,6 +304,7 @@ public class BleConnectionManager implements ConnectionManager {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
             if (descriptor != null) {
                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
                 //put the descriptor into the write queue
                 descriptorWriteQueue.add(descriptor);
                 //if there is only 1 item in the queue, then write it.  If more than 1, we handle asynchronously in the callback above

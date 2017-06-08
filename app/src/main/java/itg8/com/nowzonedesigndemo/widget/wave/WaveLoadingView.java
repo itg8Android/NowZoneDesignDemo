@@ -68,7 +68,7 @@ public class WaveLoadingView extends View {
     private static final float DEFAULT_TITLE_TOP_SIZE = 18.0f;
     private static final float DEFAULT_TITLE_CENTER_SIZE = 22.0f;
     private static final float DEFAULT_TITLE_BOTTOM_SIZE = 18.0f;
-
+    private Bitmap bitmap;
 
 
     public enum ShapeType {
@@ -324,7 +324,9 @@ public class WaveLoadingView extends View {
                 mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO;
                 float defaultWaveLength = width;
 
-                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                if(bitmap==null)
+                    bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8);
+
                 Canvas canvas = new Canvas(bitmap);
 
                 Paint wavePaint = new Paint();
