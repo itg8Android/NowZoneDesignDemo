@@ -36,7 +36,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     /**
      * this will check if packet receiving is completed.
      */
-    private static final int PACKET_READY_TO_IMP = 2100;
+    private static final int PACKET_READY_TO_IMP = 2000;
     private static final String REMINDER_JOB_TAG = RDataManagerImp.class.getCanonicalName();
     private static final int REMINDER_INTERVAL_SECONDS = 1000;
     private static final int SYNC_FLEXTIME_SECONDS = 3000;
