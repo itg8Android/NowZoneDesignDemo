@@ -78,7 +78,6 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
 
     public ScanDevicePresenter(ScanDeviceView view) {
         this.view = view;
-        Context context = (Context) view;
         model = new ScanDeviceModelImp();
         handler = new Handler();
     }

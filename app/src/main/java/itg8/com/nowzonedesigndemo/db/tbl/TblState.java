@@ -15,8 +15,8 @@ public class TblState implements Parcelable {
 
     public static final String TABLE_STATE = "TABLE_STATE";
     public static final String FIELD_ID="id";
-    private static final String FIELD_STATE="state";
-    private static final String FIELD_DATE="date";
+    public static final String FIELD_STATE="state";
+    public static final String FIELD_DATE="date";
     private static final String FIELD_COUNT="count";
     private static final String FIELD_TIMESTAMP_START="timestamp_start";
     private static final String FIELD_TIMESTAMP_END="timestamp_end";

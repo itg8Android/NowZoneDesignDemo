@@ -1,11 +1,15 @@
 package itg8.com.nowzonedesigndemo.utility;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     FirebaseJobDispatcher dispatcher;
     private Rolling rolling, rolling2;
     private Observable<String> observable;
+    private List<DataModel> dataStorageRaw=new ArrayList<>();
 
     public RDataManagerImp(RDataManagerListener listener) {
         this.listener = listener;
@@ -102,7 +107,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
              * Currently we are working on pressure
              */
        //     processForStepCounting(model);
-
+            dataStorageRaw.add(model);
             processModelData(model, context);
         } else {
             Log.d(RDataManagerImp.class.getSimpleName(), "data received: model is null");
@@ -133,16 +138,22 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     }
 
     List<DataModel> tempHolder=new ArrayList<>();
+    List<DataModel> tempHolderRaw=new ArrayList<>();
 
     private void implementStorageProcess(Context context, List<DataModel> dataStorage) {
         tempHolder.clear();
         tempHolder.addAll(dataStorage);
+
+        tempHolderRaw.clear();
+        tempHolder.addAll(dataStorageRaw);
+
         resetDataStorage(this.dataStorage);
+        resetDataStorage(this.dataStorageRaw);
+
         //We will do that after SAAS TODO SAAS
-//        passForFIleStorage(tempHolder, context);
+        passForFIleStorage(tempHolderRaw, context);
 
         passForCalculation(tempHolder);
-
     }
 
     private void passForFIleStorage(List<DataModel> dataStorage, Context context) {
@@ -150,9 +161,11 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
         /**
          * Currently we are haulting this TODO uncomment after complete implementaion of breath count
+         * v2: we are again starting it for storing data into local storage visible to user. After implementation of this data we will
+         * change STORAGE PATH ONLY
          */
-//        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH),context.getFilesDir().list());
-//        async.execute(dataStorage);
+        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH),context.getFilesDir().list());
+        async.execute(dataStorage);
 
 //        Bundle bundle=new Bundle();
 //        bundle.putString(CommonMethod.FINISHED_DATA, new Gson().toJson(dataStorage));
@@ -167,7 +180,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 //                .setExtras(bundle)
 //                .setReplaceCurrent(true)
 //                .build();
-
+//
 //        dispatcher.schedule(dataToFileJob);
     }
 

@@ -73,6 +73,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     };
     private BluetoothManager mBluetoothManager;
     private RDataManager dataManager;
+    private TblState tblState;
 
 
     public BleService() {
@@ -296,34 +297,39 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     }
 
     private void saveStateToDb(BreathState state, int count, long timestamp) {
-        QueryBuilder<TblState, Integer> builder = stateDao.queryBuilder().limit(1L).orderBy(TblState.FIELD_ID, false);
-        List<TblState> tblStates = null;
-        try {
-            tblStates = stateDao.query(builder.prepare());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        TblState tblState;
-        if (tblStates!=null && tblStates.size()>0) {
-            tblState = tblStates.get(0);
-            if(!state.name().equalsIgnoreCase(tblState.getState())){
-                tblState.setTimestampEnd(timestamp);
-                try {
-                    stateDao.update(tblState);
-                    tblState=new TblState();
-                    tblState.setTimestampStart(timestamp);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }else
-            {
-
-            }
-        }
-        else {
-            tblState=new TblState();
-            tblState.setTimestampStart(timestamp);
-        }
+        /**
+         * We will uncomment it when user needs data to be group as per state.
+         * TODO uncomment for grouping state from db
+         */
+//        QueryBuilder<TblState, Integer> builder = stateDao.queryBuilder().limit(1L).orderBy(TblState.FIELD_ID, false);
+//        List<TblState> tblStates = null;
+//        try {
+//            tblStates = stateDao.query(builder.prepare());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        TblState tblState;
+//        if (tblStates!=null && tblStates.size()>0) {
+//            tblState = tblStates.get(0);
+//            if(!state.name().equalsIgnoreCase(tblState.getState())){
+//                tblState.setTimestampEnd(timestamp);
+//                try {
+//                    stateDao.update(tblState);
+//                    tblState=new TblState();
+//                    tblState.setTimestampStart(timestamp);
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }else
+//            {
+//
+//            }
+//        }
+//        else {
+//            tblState=new TblState();
+//            tblState.setTimestampStart(timestamp);
+//        }
+        tblState=new TblState();
         String currentDate = Helper.getCurrentDate();
         tblState.setTimestampEnd(timestamp);
         tblState.setCount(count);
@@ -334,6 +340,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
     }
 
     @Override
@@ -348,8 +356,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private void sendCountBroadcast(int count, long timestamp) {
 //        intent=new Intent(ACTION_COUNT_RESULT);
 //        intent.putExtra(CommonMethod.BPM_COUNT,count);
-        sendBroadcast(CommonMethod.BPM_COUNT, count);
-        storeToDb(count, timestamp);
+
+//        if(count>) {
+            sendBroadcast(CommonMethod.BPM_COUNT, count);
+            storeToDb(count, timestamp);
+//        }
     }
 
     /**

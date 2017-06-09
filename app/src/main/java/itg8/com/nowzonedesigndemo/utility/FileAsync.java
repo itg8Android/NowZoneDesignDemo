@@ -25,8 +25,9 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
         this.fileList = fileList;
     }
 
+    @SafeVarargs
     @Override
-    protected Boolean doInBackground(List<DataModel>... lists) {
+    protected final Boolean doInBackground(List<DataModel>... lists) {
         List<DataModel> dataModels = lists[0];
         storeToFile(dataModels);
         return true;
@@ -39,7 +40,13 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
      * @param models
      */
     private void storeToFile(List<DataModel> models) {
-        String content = new Gson().toJson(models);
+        /**
+         * We are first storing json in file. But now we will create simple text file
+         * TODO uncomment after SAAS
+         */
+//        String content = new Gson().toJson(models);
+
+        String content = createDataStructureFromModel(models);
         String[] allFileListByDt = getFileList();
         if (allFileListByDt.length > 0) {
             Arrays.sort(allFileListByDt);
@@ -48,6 +55,15 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
             createFile(content, getIntFromTSMP(models.get(0).getTimestamp()) + ".txt", "0");
         }
 
+    }
+
+    private String createDataStructureFromModel(List<DataModel> models) {
+        String data="";
+        for (DataModel model :
+                models) {
+            data=data+model.getTimestamp()+" "+model.getPressure()+" "+model.getX()+" "+model.getY()+" "+model.getZ()+" "+model.getBattery()+" "+model.getTemprature()+"\n";
+        }
+        return data;
     }
 
     //Timestamp is in full format. we dont want that much big . so eliminate millisecond

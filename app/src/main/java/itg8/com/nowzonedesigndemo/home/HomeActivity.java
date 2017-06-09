@@ -1,9 +1,11 @@
 package itg8.com.nowzonedesigndemo.home;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
@@ -32,6 +37,7 @@ import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenter;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
+import itg8.com.nowzonedesigndemo.home.mvp.StateTimeModel;
 import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
@@ -39,9 +45,14 @@ import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
 import itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,BreathView {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, BreathView, EasyPermissions.PermissionCallbacks {
+
+
+    private static final int RC_STORAGE_PERM = 20;
 
 
     private static final String COLOR_NORMAL_M = "#24006bb7";
@@ -153,13 +164,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
+        checkDeviceConnection(rlWave);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
-        presenter=new BreathPresenterImp(this);
+        presenter = new BreathPresenterImp(this);
         presenter.passContext(this);
         presenter.onCreate();
+        checkStoragePermission();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -185,9 +200,35 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+    @AfterPermissionGranted(RC_STORAGE_PERM)
+    private void checkStoragePermission() {
+        if (EasyPermissions.hasPermissions(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            onPermissionGrantedForStorage();
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_storage), RC_STORAGE_PERM, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
+
+    private void onPermissionGrantedForStorage() {
+        File extStorageDir= Environment.getExternalStorageDirectory();
+        File newExternalStorageDir=new File(extStorageDir,getResources().getString(R.string.app_name));
+        if(!newExternalStorageDir.exists()){
+            boolean b= newExternalStorageDir.mkdir();
+            if(b)
+                SharePrefrancClass.getInstance(this).savePref(CommonMethod.STORAGE_PATH,newExternalStorageDir.getAbsolutePath());
+        }
+    }
+
+
     private void initOtherView() {
-        int mAvgCount=SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
-        if(mAvgCount>0) {
+        int mAvgCount = SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        if (mAvgCount > 0) {
             setAvgValue(mAvgCount);
         }
     }
@@ -228,7 +269,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void onResume() {
-        if(breathview!=null)
+        if (breathview != null)
             breathview.reset();
         super.onResume();
     }
@@ -313,23 +354,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onDeviceConnected() {
-        Log.d(TAG,"Device connected");
+        Log.d(TAG, "Device connected");
     }
 
     @Override
     public void onDeviceDisconnected() {
-        Log.d(TAG,"Device disconnected");
+        Log.d(TAG, "Device disconnected");
     }
 
     @Override
     public void onBreathCountAvailable(int intExtra) {
-        Log.d(TAG,"Breath count: "+intExtra);
+        Log.d(TAG, "Breath count: " + intExtra);
         breathValue.setText(String.valueOf(intExtra));
     }
 
     @Override
     public void onStepCountReceived(int intExtra) {
-        Log.d(TAG,"Step count: "+intExtra);
+        Log.d(TAG, "Step count: " + intExtra);
     }
 
     @Override
@@ -343,11 +384,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onBreathingStateAvailable(BreathState state) {
         initOtherView();
         setStateRelatedDetails(state);
+        presenter.onInitTimeHistory();
+    }
+
+    @Override
+    public void onStateTimeHistoryReceived(StateTimeModel stateTimeModel) {
+        if (stateTimeModel != null) {
+            txtCalmValue.setText(stateTimeModel.getCalm());
+            txtFocusValue.setText(stateTimeModel.getFocus());
+            txtStressValue.setText(stateTimeModel.getStress());
+        }
     }
 
     private void setStateRelatedDetails(BreathState state) {
-        switch (state)
-        {
+        switch (state) {
             case CALM:
                 reactCalmState();
                 break;
@@ -376,5 +426,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         txtStatusValue.setText(BreathState.CALM.name());
         waveLoadingView.setWaveColor(Color.parseColor(COLOR_CALM_M));
         waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_CALM_S));
+    }
+
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        onPermissionGrantedForStorage();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
     }
 }

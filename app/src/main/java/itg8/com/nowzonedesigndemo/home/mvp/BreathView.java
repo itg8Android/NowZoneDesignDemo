@@ -17,4 +17,7 @@ public interface BreathView {
     void onStartDeviceScanActivity();
 
     void onBreathingStateAvailable(BreathState state);
+
+
+    void onStateTimeHistoryReceived(StateTimeModel stateTimeModel);
 }

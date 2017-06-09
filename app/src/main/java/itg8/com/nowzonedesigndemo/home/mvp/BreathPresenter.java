@@ -14,6 +14,7 @@ public interface BreathPresenter {
     void passContext(Context context);
     void onAttach();
     void onDetach();
+    void onInitTimeHistory();
 
     void initGraphData();
 
@@ -27,5 +28,7 @@ public interface BreathPresenter {
         void startShowingDevicesList();
 
         void onStateReceived(BreathState state);
+
+        void onStateTimeReceived(StateTimeModel stateTimeModel);
     }
 }
