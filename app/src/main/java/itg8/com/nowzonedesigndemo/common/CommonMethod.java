@@ -19,6 +19,8 @@ import java.util.UUID;
 public class CommonMethod {
 
 
+    public static final String USER_CURRENT_AVG = "USER_CURRENT_AVG";
+    public static final String DATE_FORMAT = "dd-mm-yyyy";
     private static Typeface typeface;
     public static String FROMWEEk="from_week";
     public static final String SELECTED_DEVICE = "SELECTED_DEVICE";

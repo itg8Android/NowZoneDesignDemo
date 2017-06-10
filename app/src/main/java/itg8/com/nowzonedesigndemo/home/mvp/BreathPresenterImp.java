@@ -5,6 +5,8 @@ import android.content.IntentFilter;
 import java.util.Random;
 
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
+import itg8.com.nowzonedesigndemo.utility.BreathState;
 
 
 public class BreathPresenterImp implements BreathPresenter, BreathPresenter.BreathFragmentModelListener {
@@ -31,10 +33,23 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     }
 
     @Override
+    public void onStateReceived(BreathState state) {
+        if(checkNotNull())
+            view.onBreathingStateAvailable(state);
+    }
+
+    @Override
+    public void onStateTimeReceived(StateTimeModel stateTimeModel) {
+        if(checkNotNull())
+            view.onStateTimeHistoryReceived(stateTimeModel);
+    }
+
+    @Override
     public void onCreate() {
         if(model.getReceiver()!=null && context!=null){
             context.registerReceiver(model.getReceiver(),new IntentFilter(context.getResources().getString(R.string.action_data_avail)));
         }
+        model.onInitStateTime();
 //        mTimer2 = new Runnable() {
 //            @Override
 //            public void run() {
@@ -46,6 +61,8 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
 //        mHandler.postDelayed(mTimer2, 1000);
     }
 
+
+
     @Override
     public void onPause() {
 
@@ -54,8 +71,11 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     @Override
     public void passContext(Context context) {
         this.context=context;
+        model.initDB(context);
         model.checkBLEConnected(context);
     }
+
+
 
     @Override
     public void onAttach() {
@@ -67,7 +87,14 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
         if(model.getReceiver()!=null && context!=null){
             context.unregisterReceiver(model.getReceiver());
         }
+        model.onDestroy();
+        context=null;
         view=null;
+    }
+
+    @Override
+    public void onInitTimeHistory() {
+        model.onInitStateTime();
     }
 
     @Override
@@ -84,6 +111,8 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
         }
     }
 
+
+
     @Override
     public void onStepReceived(int intExtra) {
         if(intExtra>0 && checkNotNull())
@@ -91,7 +120,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     }
 
     private boolean checkNotNull() {
-        return view != null;
+        return view != null && context!=null;
     }
 
     private double mLastRandom = 2;

@@ -1,6 +1,5 @@
 package itg8.com.nowzonedesigndemo.connection;
 
-import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCallback;
@@ -13,9 +12,12 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.j256.ormlite.android.apptools.OrmLiteBaseService;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -26,26 +28,35 @@ import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.db.DbHelper;
+import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
+import itg8.com.nowzonedesigndemo.db.tbl.TblState;
 import itg8.com.nowzonedesigndemo.tosort.RDataManager;
 import itg8.com.nowzonedesigndemo.tosort.RDataManagerListener;
 import itg8.com.nowzonedesigndemo.utility.BleConnectionManager;
+import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.utility.DeviceState;
+import itg8.com.nowzonedesigndemo.utility.Helper;
+import itg8.com.nowzonedesigndemo.utility.OnStateAvailableListener;
 import itg8.com.nowzonedesigndemo.utility.RDataManagerImp;
+import itg8.com.nowzonedesigndemo.utility.StateCheckImp;
 
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.getArragedData;
 
 
-public class BleService extends Service implements ConnectionStateListener, RDataManagerListener {
+public class BleService extends OrmLiteBaseService<DbHelper> implements ConnectionStateListener, RDataManagerListener, OnStateAvailableListener {
     private static final String TAG = BleService.class.getSimpleName();
     private static final String TAGWithFull = BleService.class.getCanonicalName();
     public static final String ACTION_DEVICE_CONNECTED = TAGWithFull + ".ACTION_DEVICE_CONNECTED";
     public static final String ACTION_COUNT_RESULT = TAGWithFull + ".ACTION_COUNT_RESULT";
-    public static final String ACTION_STEP_COUNT = TAGWithFull +".ACTION_STEP_COUNT";
+    public static final String ACTION_STEP_COUNT = TAGWithFull + ".ACTION_STEP_COUNT";
+    public static final String ACTION_STATE_ARRIVED = TAGWithFull + ".ACTION_STATE_AVAIL";
     private final IBinder mBinder = new LocalBinder();
+    private final StateCheckImp stateManager;
     TblBreathCounter counter;
-    DbHelper helper = new DbHelper(this);
     Dao<TblBreathCounter, Integer> userDao = null;
+    private Dao<TblAverage, Integer> avgDao = null;
+    private Dao<TblState, Integer> stateDao = null;
     private BleConnectionManager manager;
 
 
@@ -62,27 +73,32 @@ public class BleService extends Service implements ConnectionStateListener, RDat
     };
     private BluetoothManager mBluetoothManager;
     private RDataManager dataManager;
+    private TblState tblState;
 
 
     public BleService() {
         manager = new BleConnectionManager(this);
         dataManager = new RDataManagerImp(this);
-        try {
-            userDao = helper.getUserDao();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        stateManager = new StateCheckImp(getBaseContext(), this);
+
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG,"BLE Service started");
+        Log.d(TAG, "BLE Service started");
         registerReceiver(receiver, new IntentFilter(getResources().getString(R.string.action_device_disconnect)));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        try {
+            userDao = getHelper().getCountDao();
+            avgDao = getHelper().getAvgDao();
+            stateDao = getHelper().getStateDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         String address = null, name = null;
         if (intent != null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
             address = intent.getStringExtra(CommonMethod.DEVICE_ADDRESS);
@@ -144,7 +160,7 @@ public class BleService extends Service implements ConnectionStateListener, RDat
         if (data instanceof DataModel)
             intent.putExtra(key, (DataModel) data);
         else if (data instanceof Integer) {
-                intent.putExtra(key, (int) data);
+            intent.putExtra(key, (int) data);
         }
         sendBroadcast(intent);
     }
@@ -206,6 +222,7 @@ public class BleService extends Service implements ConnectionStateListener, RDat
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+
         startService(new Intent(this, BleService.class));
         Log.d(TAG, "On destroy  called");
     }
@@ -228,35 +245,129 @@ public class BleService extends Service implements ConnectionStateListener, RDat
     }
 
     /**
-     * @param count
-     * @param timestamp
+     * @param count     breath count
+     * @param timestamp last timestamp from list
      */
     @Override
     public void onCountAvailable(int count, long timestamp) {
         sendCountBroadcast(count, timestamp);
+        stateManager.calculateNewBreathAvgForState(timestamp, userDao);
+        checkStateOfMind(count,timestamp);
+    }
+
+    private void checkStateOfMind(int count, long timestamp) {
+        int avgCount = SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        List<TblBreathCounter> breathCounters = null;
+        try {
+            QueryBuilder<TblBreathCounter, Integer> builder = userDao.queryBuilder().limit(2L).orderBy(TblBreathCounter.FIELD_NAME_ID, false);
+            breathCounters = userDao.query(builder.prepare());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        int mLastOneCount = 0;
+        int mSecondLastCount = 0;
+        if (breathCounters != null)
+            if (breathCounters.size() > 2) {
+                mLastOneCount = breathCounters.get(0).getCount();
+                mSecondLastCount = breathCounters.get(1).getCount();
+            }
+
+
+        if (mLastOneCount <= 0 && mSecondLastCount <= 0) {
+            return;
+        }
+        int newCalmCheck = avgCount - 2;
+        int newStressCheck = avgCount + 2;
+
+        if (mLastOneCount <= newCalmCheck && mSecondLastCount <= newCalmCheck && count <= newCalmCheck) {
+            sendBroadcastState(BreathState.CALM,count,timestamp);
+        } else if (mLastOneCount >= newStressCheck && mSecondLastCount >= newStressCheck && count >= newStressCheck) {
+            sendBroadcastState(BreathState.STRESS, count, timestamp);
+        } else {
+            sendBroadcastState(BreathState.FOCUSED, count, timestamp);
+        }
+    }
+
+    private void sendBroadcastState(BreathState state, int count, long timestamp) {
+        Intent intent = new Intent(getResources().getString(R.string.action_data_avail));
+        intent.putExtra(ACTION_STATE_ARRIVED, state);
+        sendBroadcast(intent);
+        saveStateToDb(state,count,timestamp);
+    }
+
+    private void saveStateToDb(BreathState state, int count, long timestamp) {
+        /**
+         * We will uncomment it when user needs data to be group as per state.
+         * TODO uncomment for grouping state from db
+         */
+//        QueryBuilder<TblState, Integer> builder = stateDao.queryBuilder().limit(1L).orderBy(TblState.FIELD_ID, false);
+//        List<TblState> tblStates = null;
+//        try {
+//            tblStates = stateDao.query(builder.prepare());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        TblState tblState;
+//        if (tblStates!=null && tblStates.size()>0) {
+//            tblState = tblStates.get(0);
+//            if(!state.name().equalsIgnoreCase(tblState.getState())){
+//                tblState.setTimestampEnd(timestamp);
+//                try {
+//                    stateDao.update(tblState);
+//                    tblState=new TblState();
+//                    tblState.setTimestampStart(timestamp);
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }else
+//            {
+//
+//            }
+//        }
+//        else {
+//            tblState=new TblState();
+//            tblState.setTimestampStart(timestamp);
+//        }
+        tblState=new TblState();
+        String currentDate = Helper.getCurrentDate();
+        tblState.setTimestampEnd(timestamp);
+        tblState.setCount(count);
+        tblState.setDate(currentDate);
+        tblState.setState(state.name());
+        try {
+            stateDao.create(tblState);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
     public void onStepCountReceived(int step) {
-        sendStepBroadcast(ACTION_STEP_COUNT,step);
+        sendStepBroadcast(ACTION_STEP_COUNT, step);
     }
 
     private void sendStepBroadcast(String action, int step) {
-        sendBroadcast(action,step);
+        sendBroadcast(action, step);
     }
 
     private void sendCountBroadcast(int count, long timestamp) {
 //        intent=new Intent(ACTION_COUNT_RESULT);
 //        intent.putExtra(CommonMethod.BPM_COUNT,count);
-        sendBroadcast(CommonMethod.BPM_COUNT, count);
-        storeToDb(count, timestamp);
+
+//        if(count>) {
+            sendBroadcast(CommonMethod.BPM_COUNT, count);
+            storeToDb(count, timestamp);
+//        }
     }
 
     /**
      * after getting count from <a href="onCountAvailable">onCountAvailable</a> and store to db
      *
-     * @param count
-     * @param timestamp
+     * @param count     breathccount to store in databse
+     * @param timestamp timestamp in long
      */
     private void storeToDb(int count, long timestamp) {
         // Retrieve the first source with data
@@ -293,6 +404,19 @@ public class BleService extends Service implements ConnectionStateListener, RDat
                     }
                 });
 
+    }
+
+
+    @Override
+    public void onStateAvailable(TblAverage model) {
+        if (avgDao != null && model != null)
+            try {
+                avgDao.create(model);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        //TODO Notification: create notification for average here
     }
 
     public class LocalBinder extends Binder {

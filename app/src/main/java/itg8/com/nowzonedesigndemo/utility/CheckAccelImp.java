@@ -90,21 +90,18 @@ class CheckAccelImp {
     }
 
     private Observable<Integer> checkMovement(DataModel model) {
-        return Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(@NonNull ObservableEmitter<Integer> e) throws Exception {
-                roll = Math.atan2(model.getY(), Math.sqrt((model.getX() * model.getX()) + (model.getZ() * model.getZ()))) * degconvert;
-                pitch = Math.atan2(-model.getX(), Math.sqrt((model.getY() * model.getY()) + (model.getZ() * model.getZ()))) * degconvert;
+        return Observable.create(e -> {
+            roll = Math.atan2(model.getY(), Math.sqrt((model.getX() * model.getX()) + (model.getZ() * model.getZ()))) * degconvert;
+            pitch = Math.atan2(-model.getX(), Math.sqrt((model.getY() * model.getY()) + (model.getZ() * model.getZ()))) * degconvert;
 
-              //  Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " roll " + roll + " pitch " + pitch);
+          //  Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " roll " + roll + " pitch " + pitch);
 //                double vector = calculateVector(model.getX(), model.getY(), model.getZ());
 //                Log.d(TAG, "vector: " + vector);
 
-                e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
+            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
 
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
-                lastStepVal = pedi_step_counter;
-            }
+            lastStepVal = pedi_step_counter;
         });
     }
 

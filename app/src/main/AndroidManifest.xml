@@ -9,16 +9,22 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
     <application
         android:name=".common.AppApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        tools:replace="android:icon"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
         <activity
             android:name=".home.HomeActivity"
             android:label="@string/app_name"
@@ -33,25 +39,29 @@
             android:name=".steps.StepsActivity"
             android:label="@string/title_activity_steps"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".common.BaseActivity" />
         <activity
             android:name=".sleep.SleepActivity"
             android:label="@string/title_activity_sleep"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".audio.AudioActivity"
             android:label="@string/title_activity_audio"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".sanning.ScanDeviceActivity"
             android:label="@string/title_activity_audio"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <service
             android:name=".connection.BleService"
             android:enabled="true"
             android:exported="true" />
 
+        <activity
+            android:name=".breath.BreathHistoryActivity"
+            android:label="@string/title_activity_breath_history"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -10,9 +10,11 @@ import android.view.View;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Trigger;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.connection.BleService;
+import itg8.com.nowzonedesigndemo.db.DbHelper;
 import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.utility.DeviceState;
 import itg8.com.nowzonedesigndemo.utility.ServiceOnCheck;
@@ -61,8 +63,9 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
     }
+
+
 
     @Override
     protected void onStop() {

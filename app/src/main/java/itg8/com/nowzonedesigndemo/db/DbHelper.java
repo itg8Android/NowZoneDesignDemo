@@ -57,7 +57,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
 
      /* User */
 
-    public Dao<TblBreathCounter, Integer> getUserDao() throws SQLException {
+    public Dao<TblBreathCounter, Integer> getCountDao() throws SQLException {
         if (breathDao == null) {
             breathDao = getDao(TblBreathCounter.class);
         }
