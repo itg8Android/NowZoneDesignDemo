@@ -11,6 +11,7 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private Rolling rolling, rolling2;
     private Observable<String> observable;
     private List<DataModel> dataStorageRaw=new ArrayList<>();
+    private DataModel modelTemp;
 
     public RDataManagerImp(RDataManagerListener listener) {
         this.listener = listener;
@@ -107,11 +109,23 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
              * Currently we are working on pressure
              */
        //     processForStepCounting(model);
-            dataStorageRaw.add(model);
+            dataStorageRaw.add(copy(model));
             processModelData(model, context);
         } else {
             Log.d(RDataManagerImp.class.getSimpleName(), "data received: model is null");
         }
+    }
+
+    private DataModel copy(DataModel model) {
+        modelTemp=new DataModel();
+        modelTemp.setTimestamp(model.getTimestamp());
+        modelTemp.setBattery(model.getBattery());
+        modelTemp.setPressure(model.getPressure());
+        modelTemp.setTemprature(model.getTemprature());
+        modelTemp.setX(model.getX());
+        modelTemp.setY(model.getY());
+        modelTemp.setZ(model.getZ());
+        return modelTemp;
     }
 
     private void processForStepCounting(DataModel model) {
@@ -145,7 +159,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         tempHolder.addAll(dataStorage);
 
         tempHolderRaw.clear();
-        tempHolder.addAll(dataStorageRaw);
+        tempHolderRaw.addAll(this.dataStorageRaw);
 
         resetDataStorage(this.dataStorage);
         resetDataStorage(this.dataStorageRaw);
@@ -164,8 +178,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
          * v2: we are again starting it for storing data into local storage visible to user. After implementation of this data we will
          * change STORAGE PATH ONLY
          */
-        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH),context.getFilesDir().list());
-        async.execute(dataStorage);
+        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH));
+        async.execute(this.tempHolderRaw);
 
 //        Bundle bundle=new Bundle();
 //        bundle.putString(CommonMethod.FINISHED_DATA, new Gson().toJson(dataStorage));
@@ -182,6 +196,10 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 //                .build();
 //
 //        dispatcher.schedule(dataToFileJob);
+    }
+
+    private String[] getListOfFile(String path) {
+        return new String[0];
     }
 
     private void passForCalculation(List<DataModel> dataStorage) {

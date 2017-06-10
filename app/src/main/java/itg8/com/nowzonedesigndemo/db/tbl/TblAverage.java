@@ -20,10 +20,10 @@ public class TblAverage implements Parcelable {
     @DatabaseField(columnName = FIELD_ID, generatedId = true)
     private long id;
 
-    @DatabaseField(columnName = FIELD_AVERAGE, generatedId = true)
+    @DatabaseField(columnName = FIELD_AVERAGE)
     private int average;
 
-    @DatabaseField(columnName = FIELD_TIMESTAMP, generatedId = true)
+    @DatabaseField(columnName = FIELD_TIMESTAMP)
     private long timeStamp;
 
     public TblAverage() {

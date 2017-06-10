@@ -7,9 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import itg8.com.nowzonedesigndemo.R;
+import java.util.List;
 
-public class BreathHistoryActivity extends AppCompatActivity {
+import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.breath.mvp.BreathHistoryMVP;
+import itg8.com.nowzonedesigndemo.db.tbl.TblState;
+import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
+
+public class BreathHistoryActivity extends AppCompatActivity implements BreathHistoryMVP.BreathHistoryView {
+
+
+    BreathHistoryMVP.BreathHistoryPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +34,23 @@ public class BreathHistoryActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
+
     }
 
+    @Override
+    public void onListAvailable(List<TblState> list) {
+
+    }
+
+    @Override
+    public void onErrorLoading(String error) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(String issue) {
+
+    }
 }

@@ -174,6 +174,7 @@ public class BreathModelImp implements BreathFragmentModel {
 
     private void calmWhereCondition(Where<TblState, Integer> where,BreathState state) throws SQLException{
         where.eq(TblState.FIELD_DATE, Helper.getCurrentDate());
+        where.and();
         where.eq(TblState.FIELD_STATE,state.CALM.name());
     }
 
