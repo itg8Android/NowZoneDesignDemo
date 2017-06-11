@@ -68,8 +68,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     Toolbar toolbar;
     @BindView(R.id.rl_wave)
     FrameLayout rlWave;
-    @BindView(R.id.img_breath)
-    ImageView imgBreatch;
     @BindView(R.id.txt_breathRate)
     TextView txtBreathRate;
     @BindView(R.id.txt_statusValue)
@@ -220,9 +218,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         File newExternalStorageDir=new File(extStorageDir,getResources().getString(R.string.app_name));
         if(!newExternalStorageDir.exists()){
             boolean b= newExternalStorageDir.mkdir();
-            if(b)
-                SharePrefrancClass.getInstance(this).savePref(CommonMethod.STORAGE_PATH,newExternalStorageDir.getAbsolutePath());
+
         }
+
+        SharePrefrancClass.getInstance(this).savePref(CommonMethod.STORAGE_PATH,newExternalStorageDir.getAbsolutePath());
+
     }
 
 

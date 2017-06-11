@@ -304,7 +304,7 @@ public class BleConnectionManager implements ConnectionManager {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
             if (descriptor != null) {
                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+//                descriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
                 //put the descriptor into the write queue
                 descriptorWriteQueue.add(descriptor);
                 //if there is only 1 item in the queue, then write it.  If more than 1, we handle asynchronously in the callback above
