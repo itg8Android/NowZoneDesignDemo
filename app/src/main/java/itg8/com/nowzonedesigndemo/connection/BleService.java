@@ -12,6 +12,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.j256.ormlite.android.apptools.OrmLiteBaseService;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -79,7 +80,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public BleService() {
         manager = new BleConnectionManager(this);
         dataManager = new RDataManagerImp(this);
-        stateManager = new StateCheckImp(getBaseContext(), this);
+        stateManager = new StateCheckImp(this, this);
 
     }
 
@@ -261,6 +262,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         try {
             QueryBuilder<TblBreathCounter, Integer> builder = userDao.queryBuilder().limit(2L).orderBy(TblBreathCounter.FIELD_NAME_ID, false);
             breathCounters = userDao.query(builder.prepare());
+            Log.d(TAG,"breathcounters table data:"+new Gson().toJson(breathCounters));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -268,7 +270,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         int mLastOneCount = 0;
         int mSecondLastCount = 0;
         if (breathCounters != null)
-            if (breathCounters.size() > 2) {
+            if (breathCounters.size() >= 2) {
                 mLastOneCount = breathCounters.get(0).getCount();
                 mSecondLastCount = breathCounters.get(1).getCount();
             }
@@ -409,12 +411,16 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void onStateAvailable(TblAverage model) {
-        if (avgDao != null && model != null)
+        if (avgDao != null && model != null) {
+            Log.d(TAG,"AvgDao in save");
+            SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.USER_CURRENT_AVG, model.getAverage());
             try {
-                avgDao.create(model);
+                int c=avgDao.create(model);
+                Log.d(TAG,"AvgDao saved: "+c);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
 
         //TODO Notification: create notification for average here
     }
