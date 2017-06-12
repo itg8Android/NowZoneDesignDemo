@@ -35,7 +35,7 @@ public class StateCheckImp  {
     private static final String AVG_12_HR_CALCULATED = "Avg12hr";
     private static final String AVG_24_HR_CALCULATED = "Avg24hr";
 
-    private static final int AVG_30_MIN=3;
+    private static final int AVG_30_MIN=30;
     private static final int AVG_1_HR=AVG_30_MIN*2;
     private static final int AVG_3_HR=AVG_1_HR*3;
     private static final int AVG_6_HR=AVG_3_HR*2;

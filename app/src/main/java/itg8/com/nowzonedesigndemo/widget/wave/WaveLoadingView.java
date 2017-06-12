@@ -324,7 +324,12 @@ public class WaveLoadingView extends View {
                 mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO;
                 float defaultWaveLength = width;
 
-                if(bitmap==null)
+
+                if (bitmap != null) {
+                    bitmap.recycle();
+                    bitmap = null;
+                }
+
                     bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8);
 
                 Canvas canvas = new Canvas(bitmap);

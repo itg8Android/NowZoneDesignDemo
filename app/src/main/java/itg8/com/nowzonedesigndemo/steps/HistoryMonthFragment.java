@@ -106,10 +106,10 @@ public class HistoryMonthFragment extends Fragment implements RecyclerView.OnIte
     private void setAdapterAndDecor() {
         final MonthHistoryListAdapter adapter = new MonthHistoryListAdapter(this.getActivity());
         decor = new StickyHeaderDecoration(adapter);
+        recyclerview.addItemDecoration(decor, 1);
 //        setHasOptionsMenu(true);
 
         recyclerview.setAdapter(adapter);
-        recyclerview.addItemDecoration(decor, 1);
         recyclerview.addOnItemTouchListener(this);
     }
 

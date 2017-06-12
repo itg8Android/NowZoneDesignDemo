@@ -258,6 +258,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     private void checkStateOfMind(int count, long timestamp) {
         int avgCount = SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        if(avgCount<=0)
+            return;
         List<TblBreathCounter> breathCounters = null;
         try {
             QueryBuilder<TblBreathCounter, Integer> builder = userDao.queryBuilder().limit(2L).orderBy(TblBreathCounter.FIELD_NAME_ID, false);
