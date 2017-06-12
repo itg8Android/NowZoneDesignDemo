@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.utility;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -81,8 +82,9 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
         String content = createDataStructureFromModel(models);
         String[] allFileListByDt = getFileList();
         if (allFileListByDt.length > 0) {
-            Arrays.sort(allFileListByDt);
-            writeContentToFile(content, allFileListByDt[allFileListByDt.length - 1]);
+//            Arrays.sort(allFileListByDt);
+//            writeContentToFile(content, allFileListByDt[allFileListByDt.length - 1]);
+            writeInFile(content, allFileListByDt[allFileListByDt.length - 1]);
         } else {
             createFile(content, getIntFromTSMP(models.get(0).getTimestamp()) + ".txt", "0");
         }
@@ -133,7 +135,9 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
     }
 
     private void writeInFile(String content, String newFileName) {
-        File completeFileStructure = new File(newFileName);
+//        File completeFileStructure = new File(newFileName);
+        Log.d(TAG,"FileName:"+newFileName);
+        File completeFileStructure = new File(COMPLETE_FILE_PATH,newFileName);
         try {
         FileWriter fWriter = new FileWriter(completeFileStructure, true);
         fWriter.append(content).append("\n");
@@ -191,6 +195,8 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
                 newFile = new File(COMPLETE_FILE_PATH, String.valueOf(count) + "_" + getCountAndData[1]);
                 boolean b = oldFile.renameTo(newFile);
                 if (b)
+                    return newFile;
+                else
                     return oldFile;
             } else {
                 count = 0;

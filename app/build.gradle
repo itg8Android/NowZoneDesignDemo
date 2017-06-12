@@ -42,11 +42,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-
-
-
-
     compile 'com.android.support:percent:25.3.0'
     compile 'me.alexrs:wave-drawable:1.0.0'
     compile 'com.android.support:percent:25.3.0'

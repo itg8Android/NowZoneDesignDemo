@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.utility;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 
@@ -20,9 +21,6 @@ import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
 
-/**
- * Created by itg_Android on 6/8/2017.
- */
 
 public class StateCheckImp  {
 
@@ -37,12 +35,13 @@ public class StateCheckImp  {
     private static final String AVG_12_HR_CALCULATED = "Avg12hr";
     private static final String AVG_24_HR_CALCULATED = "Avg24hr";
 
-    private static final int AVG_30_MIN=30;
+    private static final int AVG_30_MIN=3;
     private static final int AVG_1_HR=AVG_30_MIN*2;
     private static final int AVG_3_HR=AVG_1_HR*3;
     private static final int AVG_6_HR=AVG_3_HR*2;
     private static final int AVG_12_HR=AVG_6_HR*2;
-    private static final int AVG_24_HR=AVG_12_HR*3;
+    private static final int AVG_24_HR=AVG_12_HR*2;
+    private static final String TAG = StateCheckImp.class.getSimpleName();
 
     private final Context context;
     private final Observer<TblAverage> observer;
@@ -62,8 +61,7 @@ public class StateCheckImp  {
 //                    listener.onMotionStarts();
 //                else
 //                    listener.onMotionEnds();
-                if(context!=null && listener!=null) {
-                    SharePrefrancClass.getInstance(context).setIPreference(CommonMethod.USER_CURRENT_AVG, model.getAverage());
+                if(listener!=null) {
                     listener.onStateAvailable(model);
                 }
             }
@@ -89,10 +87,12 @@ public class StateCheckImp  {
             int sizeOfBreathCount=0;
             try {
                 sizeOfBreathCount = userDao.queryForAll().size();
+                Log.d(StateCheckImp.class.getSimpleName(),"count size:"+sizeOfBreathCount);
                 checkMovement(sizeOfBreathCount,userDao,timestamp).subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(observer);
             } catch (SQLException e) {
+                Log.d(TAG,e.getMessage());
                 e.printStackTrace();
             }
 
@@ -101,50 +101,53 @@ public class StateCheckImp  {
     }
 
     private Observable<TblAverage> checkMovement(int sizeOfBreathCount, final Dao<TblBreathCounter, Integer> userDao, long timestamp) {
-        return Observable.create(new ObservableOnSubscribe<TblAverage>() {
-            @Override
-            public void subscribe(@NonNull ObservableEmitter<TblAverage> e) throws Exception {
-                if (sizeOfBreathCount > 0){
-                    boolean shouldCalculateAvg=false;
-                    if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_30_MIN_CALCULATED)){
-                        if(sizeOfBreathCount>AVG_30_MIN) {
-                            shouldCalculateAvg=true;
-                            SharePrefrancClass.getInstance(context).setPrefrance(AVG_30_MIN_CALCULATED, true);
-                        }
-                    }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_1_HR_CALCULATED)){
-                        if(sizeOfBreathCount>AVG_1_HR) {
-                            shouldCalculateAvg=true;
-                            SharePrefrancClass.getInstance(context).setPrefrance(AVG_1_HR_CALCULATED, true);
-                        }
-                    }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_3_HR_CALCULATED)){
-                        if(sizeOfBreathCount>AVG_3_HR) {
-                            shouldCalculateAvg=true;
-                            SharePrefrancClass.getInstance(context).setPrefrance(AVG_3_HR_CALCULATED, true);
-                        }
-                    }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_6_HR_CALCULATED)){
-                        if(sizeOfBreathCount>AVG_6_HR) {
-                            shouldCalculateAvg=true;
-                            SharePrefrancClass.getInstance(context).setPrefrance(AVG_6_HR_CALCULATED, true);
-                        }
-                    }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_12_HR_CALCULATED)){
-                        if(sizeOfBreathCount>AVG_12_HR) {
-                            shouldCalculateAvg=true;
-                            SharePrefrancClass.getInstance(context).setPrefrance(AVG_12_HR_CALCULATED, true);
-                        }
-                    }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_24_HR_CALCULATED)){
-                        if(sizeOfBreathCount>AVG_24_HR) {
-                            shouldCalculateAvg=true;
-                            SharePrefrancClass.getInstance(context).setPrefrance(AVG_24_HR_CALCULATED, true);
-                        }
+        return Observable.create(e -> {
+            if (sizeOfBreathCount > 0){
+                boolean shouldCalculateAvg=false;
+                if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_30_MIN_CALCULATED)){
+                    if(sizeOfBreathCount>AVG_30_MIN) {
+                        Log.d(TAG,"Size AVG_30_MIN");
+                        shouldCalculateAvg=true;
+                        SharePrefrancClass.getInstance(context).setPrefrance(AVG_30_MIN_CALCULATED, true);
                     }
+                }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_1_HR_CALCULATED)){
+                    if(sizeOfBreathCount>AVG_1_HR) {
+                        Log.d(TAG,"Size AVG_1_HR");
+                        shouldCalculateAvg=true;
+                        SharePrefrancClass.getInstance(context).setPrefrance(AVG_1_HR_CALCULATED, true);
+                    }
+                }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_3_HR_CALCULATED)){
+                    if(sizeOfBreathCount>AVG_3_HR) {
+                        Log.d(TAG,"Size AVG_3_HR");
+                        shouldCalculateAvg=true;
+                        SharePrefrancClass.getInstance(context).setPrefrance(AVG_3_HR_CALCULATED, true);
+                    }
+                }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_6_HR_CALCULATED)){
+                    if(sizeOfBreathCount>AVG_6_HR) {
+                        Log.d(TAG,"Size AVG_6_HR");
+                        shouldCalculateAvg=true;
+                        SharePrefrancClass.getInstance(context).setPrefrance(AVG_6_HR_CALCULATED, true);
+                    }
+                }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_12_HR_CALCULATED)){
+                    if(sizeOfBreathCount>AVG_12_HR) {
+                        Log.d(TAG,"Size AVG_12_HR");
+                        shouldCalculateAvg=true;
+                        SharePrefrancClass.getInstance(context).setPrefrance(AVG_12_HR_CALCULATED, true);
+                    }
+                }else if(!SharePrefrancClass.getInstance(context).hasBPreference(AVG_24_HR_CALCULATED)){
+                    if(sizeOfBreathCount>AVG_24_HR) {
+                        Log.d(TAG,"Size AVG_24_HR");
+                        shouldCalculateAvg=true;
+                        SharePrefrancClass.getInstance(context).setPrefrance(AVG_24_HR_CALCULATED, true);
+                    }
+                }
 
-                    if(shouldCalculateAvg)
-                    {
-                        tblAverage=new TblAverage();
-                        tblAverage.setAverage((int)calculateAverage(userDao.queryForAll()));
-                        tblAverage.setTimeStamp(timestamp);
-                        e.onNext(tblAverage);
-                    }
+                if(shouldCalculateAvg)
+                {
+                    tblAverage=new TblAverage();
+                    tblAverage.setAverage((int)calculateAverage(userDao.queryForAll()));
+                    tblAverage.setTimeStamp(timestamp);
+                    e.onNext(tblAverage);
                 }
             }
         });
@@ -157,6 +160,7 @@ public class StateCheckImp  {
         for(TblBreathCounter counter:tblBreathCounters)
             avg+=counter.getCount();
 
+        Log.d(TAG,"Average:"+avg);
         return avg/tblBreathCounters.size();
     }
 

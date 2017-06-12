@@ -35,7 +35,11 @@ class AlgoAsync extends AsyncTask<List<DataModel>,Void,Integer> {
                 long timeTaken = listModel.get(listModel.size() - 1).getTimestamp() - listModel.get(0).getTimestamp();
                 if (timeTaken > 1000) {
                     bpmInMinute = (int) ((ONE_MINUTE * count) / timeTaken);
-                    callback.onCountResultAvailable(bpmInMinute, listModel.get(listModel.size() - 1).getTimestamp());
+//                    callback.onCountResultAvailable(bpmInMinute, listModel.get(listModel.size() - 1).getTimestamp());
+                    /**
+                     * as we cakculated that a count in one minute is 2000. so we will directly send count
+                     */
+                    callback.onCountResultAvailable(count, listModel.get(listModel.size() - 1).getTimestamp());
 //                    callback.onCountResultAvailable(count, listModel.get(listModel.size() - 1).getTimestamp());
                 }
             }
