@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.home;
 
 import android.Manifest;
+import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -31,6 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.audio.AudioActivity;
+import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
@@ -49,7 +51,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, BreathView, EasyPermissions.PermissionCallbacks {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, BreathView, EasyPermissions.PermissionCallbacks, ComponentCallbacks2 {
 
 
     private static final int RC_STORAGE_PERM = 20;
@@ -86,16 +88,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     TextView txtCalmValue;
     //    @BindView(R.id.txt_calm_time)
 //    TextView txtCalmTime;
-    @BindView(R.id.txt_focus_value)
-    TextView txtFocusValue;
+
     //    @BindView(R.id.txt_focus_time)
 //    TextView txtFocusTime;
-    @BindView(R.id.txt_stress_value)
-    TextView txtStressValue;
+
     //    @BindView(R.id.txt_stress_time)
 //    TextView txtStressTime;
-    @BindView(R.id.rl_main_top)
-    RelativeLayout rlMainTop;
+
     @BindView(R.id.img_breath)
     ImageView imgBreath;
     @BindView(R.id.txt_breath)
@@ -144,6 +143,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     FrameLayout mainFrameLayout;
 
     BreathPresenter presenter;
+    @BindView(R.id.txt_focus_value)
+    CustomFontTextView txtFocusValue;
+    @BindView(R.id.txt_stress_value)
+    TextView txtStressValue;
+    @BindView(R.id.rl_main_top)
+    RelativeLayout rlMainTop;
+    @BindView(R.id.ll_breath_avg)
+    LinearLayout llBreathAvg;
 
 
     private ActionBarDrawerToggle toggle;
@@ -170,14 +177,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setSupportActionBar(toolbar);
 
         presenter = new BreathPresenterImp(this);
-        presenter.passContext(this);
+        presenter.passContext(HomeActivity.this);
         presenter.onCreate();
         checkStoragePermission();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.setDrawerIndicatorEnabled(true);
 
 
@@ -185,6 +192,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         drawer.addDrawerListener(toggle);
         rlSteps.setOnClickListener(this);
         llSleepMain.setOnClickListener(this);
+        llBreathAvg.setOnClickListener(this);
 
         setType();
         setAnimator();
@@ -210,24 +218,25 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     private void onPermissionGrantedForStorage() {
-        File extStorageDir= Environment.getExternalStorageDirectory();
-        File newExternalStorageDir=new File(extStorageDir,getResources().getString(R.string.app_name));
-        if(!newExternalStorageDir.exists()){
-            boolean b= newExternalStorageDir.mkdir();
+        File extStorageDir = Environment.getExternalStorageDirectory();
+        File newExternalStorageDir = new File(extStorageDir, getResources().getString(R.string.app_name));
+        if (!newExternalStorageDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            newExternalStorageDir.mkdir();
 
         }
 
-        SharePrefrancClass.getInstance(this).savePref(CommonMethod.STORAGE_PATH,newExternalStorageDir.getAbsolutePath());
+        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STORAGE_PATH, newExternalStorageDir.getAbsolutePath());
 
     }
 
 
     private void initOtherView() {
-        int mAvgCount = SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        int mAvgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
         if (mAvgCount > 0) {
             setAvgValue(mAvgCount);
         }
@@ -241,13 +250,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void onDestroy() {
+        waveLoadingView.cancelAnimation();
         presenter.onDetach();
         super.onDestroy();
     }
 
     private void setType() {
         waveLoadingView.setShapeType(WaveLoadingView.ShapeType.SQUARE);
-        waveLoadingView.setAmplitudeRatio(50);
+        waveLoadingView.setAmplitudeRatio(20);
         waveLoadingView.setProgressValue(50);
     }
 
@@ -258,7 +268,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         //mWaveLoadingView = (WaveLoadingView) findViewById(R.id.waveLoadingView);
         // Sets the length of the animation, default is 1000.
-        waveLoadingView.setAnimDuration(1000);
+        waveLoadingView.setAnimDuration(3000);
         waveLoadingView.startAnimation();
         //  waveLoadingView.cancelAnimation();
         // waveLoadingView.resumeAnimation();
@@ -304,6 +314,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.ll_sleep_main:
                 startActivity(new Intent(this, SleepActivity.class));
+                break;
+            case R.id.ll_breath_avg:
+                startActivity(new Intent(this, BreathHistoryActivity.class));
+                break;
         }
     }
 

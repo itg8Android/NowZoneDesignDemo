@@ -29,7 +29,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(BaseActivity.this));
+        //dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(BaseActivity.this));
 //        initDispatcher();
         startService(new Intent(this, BleService.class));
     }
@@ -48,7 +48,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
 //            deviceDisconnected=true;
 //            checkDeviceDisconnected(v);
 //        }
-        String state = SharePrefrancClass.getInstance(this).getPref(CommonMethod.STATE);
+        String state = SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.STATE);
         if (state == null || state.equalsIgnoreCase(DeviceState.DISCONNECTED.name())) {
             deviceDisconnected = true;
             checkDeviceDisconnected(v);
@@ -79,8 +79,8 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
             snackbar.setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SharePrefrancClass.getInstance(getBaseContext()).clearPref(CommonMethod.CONNECTED);
-                    SharePrefrancClass.getInstance(getBaseContext()).clearPref(CommonMethod.DEVICE_ADDRESS);
+                    SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.CONNECTED);
+                    SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.DEVICE_ADDRESS);
                     startActivity(new Intent(getBaseContext(), ScanDeviceActivity.class));
                     finish();
                 }
@@ -89,7 +89,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
         }
     }
 
-    public String getClassName(Class<T> tClass){
-        return tClass.getSimpleName();
-    }
+//    public String getClassName(){
+//        return T.getSimpleName();
+//    }
 }

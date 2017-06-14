@@ -10,27 +10,32 @@ import android.graphics.Paint.Style;
 import android.os.SystemClock;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BreathwaveView extends View {
-//    private static final int BREATHVIEW_CROP = 200;
+    //    private static final int BREATHVIEW_CROP = 200;
     private static final int BREATHVIEW_DURATION = 10000;
 //    private static final int BREATHVIEW_MAX_INTERVAL = 200;
 //    private static final double BREATHVIEW_MINMAX_MARGIN = 0.02d;
 
     private static final float BREATHVIEW_SHADOW_SHIFT = 1.5f;
     private static final float BREATHVIEW_STROKE_WIDTH = 2.75f;
-//    private static final String TAG = BreathwaveView.class.getSimpleName();
+    private static final String TAG = BreathwaveView.class.getSimpleName();
+//    private static final int MAX_SIZE = 1300*2+64;
+    private static final int MAX_SIZE = 1;
+    //    private static final String TAG = BreathwaveView.class.getSimpleName();
     private float mDensity;
     private List<BreathSample> mSamples;
     private float[] mVert;
+    //    private ArrayList<Float> mVert;
     private Paint mWavePaint;
     private List<BreathSample> mWaveSamples;
     private Paint mWaveShadowPaint;
-    private BreathSample breathSample32;
 
     public BreathwaveView(Context context) {
         super(context);
@@ -47,7 +52,8 @@ public class BreathwaveView extends View {
         this.mDensity = getResources().getDisplayMetrics().density;
         this.mSamples = new ArrayList();
         this.mWaveSamples = new ArrayList();
-        this.mVert = new float[1];
+//        this.mVert = new ArrayList<>();
+        this.mVert = new float[MAX_SIZE];
         this.mWavePaint = new Paint();
         this.mWavePaint.setAntiAlias(true);
         this.mWavePaint.setStyle(Style.STROKE);
@@ -100,11 +106,11 @@ public class BreathwaveView extends View {
         }
 
         if (this.mWaveSamples.size() >= 2) {
-            breathSample32 = (BreathSample) this.mWaveSamples.get(0);
+            BreathSample breathSample32 = this.mWaveSamples.get(0);
             if (breathSample != null && breathSample.getTimestamp() + 200 >= breathSample32.getTimestamp()) {
                 this.mWaveSamples.add(0, breathSample.interpolate(breathSample32, j3));
             }
-            breathSample32 = (BreathSample) this.mWaveSamples.get(this.mWaveSamples.size() - 1);
+            breathSample32 = this.mWaveSamples.get(this.mWaveSamples.size() - 1);
             if (breathSample2 != null && breathSample32.getTimestamp() + 200 >= breathSample2.getTimestamp()) {
                 this.mWaveSamples.add(this.mWaveSamples.size(), breathSample32.interpolate(breathSample2, j2));
             }
@@ -116,9 +122,14 @@ public class BreathwaveView extends View {
         findWaveSamples(elapsedRealtime);
         if (this.mWaveSamples.size() >= 2) {
             int size = (this.mWaveSamples.size() - 1) * 4;
+         //   Log.d(TAG, "Size of mWaveSamples:" + size);
             if (this.mVert.length < size * 2) {
                 this.mVert = new float[((size * 2) + 64)];
+//                Arrays.fill(mVert, 0);
             }
+//            if (this.mVert.size()< size * 2) {
+//                this.mVert.clear();
+//            }
             long j = 0;
             int i = 0;
             int i2 = size;
@@ -128,12 +139,16 @@ public class BreathwaveView extends View {
                 float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
                 float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
                 int i5 = i + 1;
+//                this.mVert.add(i,x);
                 this.mVert[i] = x;
                 int i6 = i5 + 1;
+//                this.mVert.add(i5,y);
                 this.mVert[i5] = y;
                 int i7 = i3 + 1;
+//                this.mVert.add(i3,x);
                 this.mVert[i3] = x;
                 i3 = i7 + 1;
+//                this.mVert.add(i7,(BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y);
                 this.mVert[i7] = (BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y;
                 if (j == 0 || 200 + j >= breathSample.getTimestamp()) {
                     i5 = i3;
@@ -147,10 +162,13 @@ public class BreathwaveView extends View {
                 long timestamp = breathSample.getTimestamp();
                 if (!(i4 == 2 || i4 == i7)) {
                     int i8 = i4 + 1;
+//                    this.mVert.add(i4,x);
                     this.mVert[i4] = x;
                     i4 = i8 + 1;
+//                    this.mVert.add(i8,y);
                     this.mVert[i8] = y;
                     i8 = i5 + 1;
+//                    this.mVert.add(i5,x);
                     this.mVert[i5] = x;
                     i5 = i8 + 1;
                     this.mVert[i8] = y + (BREATHVIEW_SHADOW_SHIFT * this.mDensity);
@@ -164,6 +182,7 @@ public class BreathwaveView extends View {
             canvas.drawLines(this.mVert, 0, i2, this.mWavePaint);
         }
         invalidate();
+
     }
 
     public void reset() {
