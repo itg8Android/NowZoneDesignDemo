@@ -43,8 +43,8 @@ public class BreathModelImp implements BreathFragmentModel {
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 if(intent.hasExtra(CommonMethod.ACTION_DATA_AVAILABLE)){
-                    DataModel model = intent.getParcelableExtra(CommonMethod.ACTION_DATA_AVAILABLE);
-                    listener.onPressureReceived(model.getPressure());
+                    double model = intent.getDoubleExtra(CommonMethod.ACTION_DATA_AVAILABLE,0);
+                    listener.onPressureReceived(model);
                 }
                 if(intent.hasExtra(CommonMethod.BPM_COUNT)){
                     listener.onCountReceived(intent.getIntExtra(CommonMethod.BPM_COUNT,0));
@@ -147,8 +147,6 @@ public class BreathModelImp implements BreathFragmentModel {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-
         }
 
         return model;

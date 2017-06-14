@@ -126,8 +126,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     }
 
     private void checkAvailableDeviceToConnect() {
-        if (SharePrefrancClass.getInstance(this).hasSPreference(CommonMethod.DEVICE_ADDRESS)) {
-            sendToConnect(SharePrefrancClass.getInstance(this).getPref(CommonMethod.DEVICE_ADDRESS), "name");
+        if (SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.DEVICE_ADDRESS)) {
+            sendToConnect(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS), "name");
         }
     }
 
@@ -139,8 +139,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void onDeviceConnected(String address) {
-        SharePrefrancClass.getInstance(this).savePref(CommonMethod.DEVICE_ADDRESS, address);
-        SharePrefrancClass.getInstance(this).setPrefrance(CommonMethod.CONNECTED, true);
+        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.DEVICE_ADDRESS, address);
+        SharePrefrancClass.getInstance(getApplicationContext()).setPrefrance(CommonMethod.CONNECTED, true);
         sendBroadcast(ACTION_DEVICE_CONNECTED);
     }
 
@@ -159,7 +159,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private void sendBroadcast(String key, Object data) {
         Intent intent = new Intent(getResources().getString(R.string.action_data_avail));
         if (data instanceof DataModel)
-            intent.putExtra(key, (DataModel) data);
+            intent.putExtra(key, ((DataModel) data).getPressure());
         else if (data instanceof Integer) {
             intent.putExtra(key, (int) data);
         }
@@ -190,7 +190,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void currentState(DeviceState state) {
         Log.d(TAG, "state is: " + state.name());
-        SharePrefrancClass.getInstance(this).savePref(CommonMethod.STATE, state.name());
+        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STATE, state.name());
     }
 
     @Override
@@ -257,7 +257,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     }
 
     private void checkStateOfMind(int count, long timestamp) {
-        int avgCount = SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        int avgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
         if(avgCount<=0)
             return;
         List<TblBreathCounter> breathCounters = null;
@@ -415,7 +415,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onStateAvailable(TblAverage model) {
         if (avgDao != null && model != null) {
             Log.d(TAG,"AvgDao in save");
-            SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.USER_CURRENT_AVG, model.getAverage());
+            SharePrefrancClass.getInstance(getApplicationContext()).setIPreference(CommonMethod.USER_CURRENT_AVG, model.getAverage());
             try {
                 int c=avgDao.create(model);
                 Log.d(TAG,"AvgDao saved: "+c);

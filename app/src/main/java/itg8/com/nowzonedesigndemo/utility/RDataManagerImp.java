@@ -48,7 +48,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private static final String TAG = RDataManagerImp.class.getSimpleName();
     private final RDataManagerListener listener;
     private final Observer<DataModel> observer;
-    List<DataModel> dataStorage = new ArrayList<>();
+    private List<DataModel> dataStorage;
     Job dataToFileJob;
     CheckAccelImp accelImp;
     /**
@@ -57,14 +57,15 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     FirebaseJobDispatcher dispatcher;
     private Rolling rolling, rolling2;
     private Observable<String> observable;
-    private List<DataModel> dataStorageRaw=new ArrayList<>();
+    private List<DataModel> dataStorageRaw;
     private DataModel modelTemp;
 
     public RDataManagerImp(RDataManagerListener listener) {
         this.listener = listener;
         rolling = new Rolling(ROLLING_AVG_SIZE);
         rolling2 = new Rolling(ROLLING_AVG_SIZE);
-
+        dataStorage = new ArrayList<>(PACKET_READY_TO_IMP+4);
+        dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
         accelImp=new CheckAccelImp(this);
         observer= new Observer<DataModel>() {
             @Override
@@ -98,7 +99,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     @Override
     public void onRawDataModel(DataModel model, Context context) {
         if (model != null) {
-            Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
+          //  Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
             observable=Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
@@ -136,7 +137,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private void processModelData(DataModel model, Context context) {
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
-        listener.onDataProcessed(copy(model));
+        listener.onDataProcessed(model);
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
         checkIfDataGatheringCompleted(model, context);

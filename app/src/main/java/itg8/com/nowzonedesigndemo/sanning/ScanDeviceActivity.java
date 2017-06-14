@@ -80,7 +80,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         ButterKnife.bind(this);
         //Initialise ScanDevicePresenter
         presenter = new ScanDevicePresenter(this);
-        presenter.checkAlreadyConnectedOnce(this);
+        presenter.checkAlreadyConnectedOnce(getApplicationContext());
         presenter.onResume();
 
         initAnimation();

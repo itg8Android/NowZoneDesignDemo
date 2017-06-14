@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.home;
 
 import android.Manifest;
+import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -50,7 +51,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, BreathView, EasyPermissions.PermissionCallbacks {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, BreathView, EasyPermissions.PermissionCallbacks, ComponentCallbacks2 {
 
 
     private static final int RC_STORAGE_PERM = 20;
@@ -176,14 +177,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setSupportActionBar(toolbar);
 
         presenter = new BreathPresenterImp(this);
-        presenter.passContext(this);
+        presenter.passContext(HomeActivity.this);
         presenter.onCreate();
         checkStoragePermission();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.setDrawerIndicatorEnabled(true);
 
 
@@ -224,17 +225,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         File extStorageDir = Environment.getExternalStorageDirectory();
         File newExternalStorageDir = new File(extStorageDir, getResources().getString(R.string.app_name));
         if (!newExternalStorageDir.exists()) {
-            boolean b = newExternalStorageDir.mkdir();
+            //noinspection ResultOfMethodCallIgnored
+            newExternalStorageDir.mkdir();
 
         }
 
-        SharePrefrancClass.getInstance(this).savePref(CommonMethod.STORAGE_PATH, newExternalStorageDir.getAbsolutePath());
+        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STORAGE_PATH, newExternalStorageDir.getAbsolutePath());
 
     }
 
 
     private void initOtherView() {
-        int mAvgCount = SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        int mAvgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
         if (mAvgCount > 0) {
             setAvgValue(mAvgCount);
         }
@@ -266,7 +268,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         //mWaveLoadingView = (WaveLoadingView) findViewById(R.id.waveLoadingView);
         // Sets the length of the animation, default is 1000.
-        waveLoadingView.setAnimDuration(1000);
+        waveLoadingView.setAnimDuration(3000);
         waveLoadingView.startAnimation();
         //  waveLoadingView.cancelAnimation();
         // waveLoadingView.resumeAnimation();
