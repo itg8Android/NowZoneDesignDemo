@@ -152,8 +152,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         }
     }
 
-    List<DataModel> tempHolder=new ArrayList<>();
-    List<DataModel> tempHolderRaw=new ArrayList<>();
+    private List<DataModel> tempHolder=new ArrayList<>();
+    private List<DataModel> tempHolderRaw=new ArrayList<>();
 
     private void implementStorageProcess(Context context, List<DataModel> dataStorage) {
         tempHolder.clear();

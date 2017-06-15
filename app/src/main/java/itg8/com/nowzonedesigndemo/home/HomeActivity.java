@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -129,8 +130,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     FloatingActionButton fab;
     @BindView(R.id.nav_view)
     NavigationView navView;
-    @BindView(R.id.waveLoadingView)
-    WaveLoadingView waveLoadingView;
+//    @BindView(R.id.waveLoadingView)
+//    WaveLoadingView waveLoadingView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.breathview)
@@ -154,6 +155,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
 
     private ActionBarDrawerToggle toggle;
+    private double lastMax=0;
+    private int count=1;
+    private double lastMin=1;
 
 
     @Override
@@ -197,8 +201,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setType();
         setAnimator();
 
-        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_NORMAL_M));
-        waveLoadingView.setBorderColor(Color.parseColor(COLOR_NORMAL_S));
+//        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_NORMAL_M));
+//        waveLoadingView.setBorderColor(Color.parseColor(COLOR_NORMAL_S));
 
         initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
@@ -250,15 +254,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void onDestroy() {
-        waveLoadingView.cancelAnimation();
+//        waveLoadingView.cancelAnimation();
         presenter.onDetach();
         super.onDestroy();
     }
 
     private void setType() {
-        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.SQUARE);
-        waveLoadingView.setAmplitudeRatio(20);
-        waveLoadingView.setProgressValue(50);
+//        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.SQUARE);
+//        waveLoadingView.setAmplitudeRatio(20);
+//        waveLoadingView.setProgressValue(50);
     }
 
     /**
@@ -268,8 +272,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         //mWaveLoadingView = (WaveLoadingView) findViewById(R.id.waveLoadingView);
         // Sets the length of the animation, default is 1000.
-        waveLoadingView.setAnimDuration(3000);
-        waveLoadingView.startAnimation();
+
+
+//        waveLoadingView.setAnimDuration(3000);
+//        waveLoadingView.startAnimation();
+
+
         //  waveLoadingView.cancelAnimation();
         // waveLoadingView.resumeAnimation();
         //                    waveLoadingView.pauseAnimation();
@@ -363,7 +371,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onPressureDataAvail(double pressure) {
-        breathview.addSample(SystemClock.elapsedRealtime(), pressure);
+        if(lastMax<pressure)
+            lastMax=pressure;
+        if(count>30) {
+            if (lastMin > pressure || lastMin == 0)
+                lastMin = pressure;
+        }else {
+            count++;
+        }
+        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
+    }
+
+    private double calculateProportion(double pressure) {
+        return (1+(2000*((pressure-(lastMin))/(lastMax-lastMin))));
     }
 
     @Override
@@ -379,7 +399,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onBreathCountAvailable(int intExtra) {
         Log.d(TAG, "Breath count: " + intExtra);
-        breathValue.setText(String.valueOf(intExtra));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                breathValue.setText(String.valueOf(intExtra));
+            }
+        },30);
     }
 
     @Override
@@ -413,33 +438,49 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void setStateRelatedDetails(BreathState state) {
         switch (state) {
             case CALM:
-                reactCalmState();
+                        reactCalmState();
                 break;
             case FOCUSED:
-                reactFocusedState();
+                        reactFocusedState();
                 break;
             case STRESS:
-                reactStressState();
+                        reactStressState();
                 break;
         }
     }
 
     private void reactStressState() {
-        txtStatusValue.setText(BreathState.STRESS.name());
-        waveLoadingView.setWaveColor(Color.parseColor(COLOR_STRESS_M));
-        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_STRESS_S));
+      setState(BreathState.STRESS.name(),Color.parseColor(COLOR_STRESS_M),Color.parseColor(COLOR_STRESS_S));
+    }
+
+    private void setState(String name, int m, int s) {
+        txtStatusValue.postDelayed(new Runnable() {
+            @Override
+            public void run()
+            {
+                txtStatusValue.setText(name);
+            }
+        },60);
+//        waveLoadingView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                waveLoadingView.setWaveColor(m);
+//            }
+//        },30);
+//        waveLoadingView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                waveLoadingView.setWaveBgColor(s);
+//            }
+//        },90);
     }
 
     private void reactFocusedState() {
-        txtStatusValue.setText(BreathState.FOCUSED.name());
-        waveLoadingView.setWaveColor(Color.parseColor(COLOR_FOCUSED_M));
-        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_FOCUSED_S));
+               setState(BreathState.FOCUSED.name(),Color.parseColor(COLOR_FOCUSED_M),Color.parseColor(COLOR_FOCUSED_S));
     }
 
     private void reactCalmState() {
-        txtStatusValue.setText(BreathState.CALM.name());
-        waveLoadingView.setWaveColor(Color.parseColor(COLOR_CALM_M));
-        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_CALM_S));
+        setState(BreathState.CALM.name(),Color.parseColor(COLOR_CALM_M),Color.parseColor(COLOR_CALM_S));
     }
 
 

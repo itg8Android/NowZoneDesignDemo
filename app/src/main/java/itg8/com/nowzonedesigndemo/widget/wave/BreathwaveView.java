@@ -36,6 +36,8 @@ public class BreathwaveView extends View {
     private Paint mWavePaint;
     private List<BreathSample> mWaveSamples;
     private Paint mWaveShadowPaint;
+    private double lastMax=0;
+    private double lastMin=0;
 
     public BreathwaveView(Context context) {
         super(context);
@@ -75,7 +77,10 @@ public class BreathwaveView extends View {
     }
 
     private float getY(BreathSample breathSample, int height, double dConst1, double dConst2) {
+                          //                                                    i                   d                       d2
         return (float) (((double) height) - (((breathSample.getValue() - dConst1) * ((double) height)) / (dConst2 - dConst1)));
+  //      return (float) (((double) i) - (((breathSample.getValue() - d) * ((double) i)) / (d2 - d)));
+
 //        return (float) (((double) height) * (((breathSample.getValue() - dConst1)) / (dConst2 - dConst1)));
     }
 
@@ -137,7 +142,9 @@ public class BreathwaveView extends View {
             for (BreathSample breathSample : this.mWaveSamples) {
                 int i4;
                 float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
-                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
+//                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
+                float y = getY(breathSample, canvas.getHeight(), 1, 2000);
+                Log.d(TAG,"Y:"+y);
                 int i5 = i + 1;
 //                this.mVert.add(i,x);
                 this.mVert[i] = x;
@@ -188,10 +195,19 @@ public class BreathwaveView extends View {
     public void reset() {
         this.mSamples.clear();
     }
-
+    int count=0;
     public void addSample(long timeStamp, double value) {
 //        Log.d(TAG,"value : "+value+" , "+" timestamp: "+ CommonMethod.getTimeFromTMP(timeStamp));
         this.mSamples.add(new BreathSample(timeStamp, value));
+        Log.d(TAG,"sample:"+value);
+//        if(lastMax<value)
+//            lastMax=value;
+//        if(count>30) {
+//            if (lastMin > value || lastMin == 0)
+//                lastMin = value;
+//        }else {
+//            count++;
+//        }
 //        invalidate();
     }
 }
