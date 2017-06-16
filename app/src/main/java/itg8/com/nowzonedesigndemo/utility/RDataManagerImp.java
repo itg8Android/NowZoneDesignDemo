@@ -137,9 +137,9 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private void processModelData(DataModel model, Context context) {
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
-        listener.onDataProcessed(model);
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
+        listener.onDataProcessed(model);
         checkIfDataGatheringCompleted(model, context);
     }
 

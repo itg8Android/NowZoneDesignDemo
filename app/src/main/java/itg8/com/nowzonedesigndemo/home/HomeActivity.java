@@ -66,6 +66,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final String COLOR_STRESS_S = "#FFF92E27";
     private static final String COLOR_FOCUSED_M = "#240C00B7";
     private static final String COLOR_FOCUSED_S = "#FF4027FB";
+    private static final int LAST_333 = 333;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -150,14 +151,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     TextView txtStressValue;
     @BindView(R.id.rl_main_top)
     RelativeLayout rlMainTop;
-    @BindView(R.id.ll_breath_avg)
-    LinearLayout llBreathAvg;
+//    @BindView(R.id.ll_breath_avg)
+//    LinearLayout llBreathAvg;
 
 
     private ActionBarDrawerToggle toggle;
     private double lastMax=0;
     private int count=1;
     private double lastMin=1;
+    private int lastCount=1;
 
 
     @Override
@@ -196,7 +198,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         drawer.addDrawerListener(toggle);
         rlSteps.setOnClickListener(this);
         llSleepMain.setOnClickListener(this);
-        llBreathAvg.setOnClickListener(this);
+       // llBreathAvg.setOnClickListener(this);
 
         setType();
         setAnimator();
@@ -323,9 +325,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.ll_sleep_main:
                 startActivity(new Intent(this, SleepActivity.class));
                 break;
-            case R.id.ll_breath_avg:
-                startActivity(new Intent(this, BreathHistoryActivity.class));
-                break;
+//            case R.id.ll_breath_avg:
+//                startActivity(new Intent(this, BreathHistoryActivity.class));
+//                break;
         }
     }
 
@@ -371,19 +373,47 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onPressureDataAvail(double pressure) {
-        if(lastMax<pressure)
-            lastMax=pressure;
-        if(count>30) {
-            if (lastMin > pressure || lastMin == 0)
-                lastMin = pressure;
-        }else {
-            count++;
+        if(lastMax<pressure) {
+            lastMax = pressure;
         }
+        if(count>30) {
+            if(lastMin == 0)
+                lastMin=pressure;
+
+
+//            if(lastMin-pressure>lastMax-1000)
+//                lastMin=lastMax-1000;
+//            if(lastMin)
+//            if(count%LAST_333==0)
+//                lastMin=lastMax-500;
+//            else
+
+//
+//                if(lastMin>lastMax-1000)
+//                    lastMax=lastMin+1000;
+
+                if(lastMax-2000>lastMin)
+                    lastMin=lastMax-2000;
+                else
+                    lastMax=lastMin+2000;
+
+            if(lastMin>pressure)
+                lastMin=pressure;
+//
+////            if (lastMin > pressure || lastMin == 0){
+////                lastMin = pressure;
+////        }
+        }
+
+            count++;
+
+
         breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
     }
 
     private double calculateProportion(double pressure) {
-        return (1+(2000*((pressure-(lastMin))/(lastMax-lastMin))));
+//        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
+        return (-0.02+(1.02*((pressure-(lastMin))/(lastMax-lastMin))));
     }
 
     @Override

@@ -143,7 +143,7 @@ public class BreathwaveView extends View {
                 int i4;
                 float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
 //                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
-                float y = getY(breathSample, canvas.getHeight(), 1, 2000);
+                float y = getY(breathSample, canvas.getHeight(), -0.02d, 1.02d);
                 Log.d(TAG,"Y:"+y);
                 int i5 = i + 1;
 //                this.mVert.add(i,x);
