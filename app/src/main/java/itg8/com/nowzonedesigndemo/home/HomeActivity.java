@@ -27,6 +27,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -151,15 +153,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     TextView txtStressValue;
     @BindView(R.id.rl_main_top)
     RelativeLayout rlMainTop;
-//    @BindView(R.id.ll_breath_avg)
-//    LinearLayout llBreathAvg;
+    @BindView(R.id.ll_breath_avg)
+    LinearLayout llBreathAvg;
 
 
     private ActionBarDrawerToggle toggle;
-    private double lastMax=0;
+    private double lastMax=10;
     private int count=1;
-    private double lastMin=1;
+    private double lastMin=-10;
     private int lastCount=1;
+    private long lastUpdate=0;
+    private double smoothed=0;
+    private static final double smoothing=10;
 
 
     @Override
@@ -198,7 +203,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         drawer.addDrawerListener(toggle);
         rlSteps.setOnClickListener(this);
         llSleepMain.setOnClickListener(this);
-       // llBreathAvg.setOnClickListener(this);
+        llBreathAvg.setOnClickListener(this);
 
         setType();
         setAnimator();
@@ -325,9 +330,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.ll_sleep_main:
                 startActivity(new Intent(this, SleepActivity.class));
                 break;
-//            case R.id.ll_breath_avg:
-//                startActivity(new Intent(this, BreathHistoryActivity.class));
-//                break;
+            case R.id.ll_breath_avg:
+                startActivity(new Intent(this, BreathHistoryActivity.class));
+                break;
         }
     }
 
@@ -373,7 +378,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onPressureDataAvail(double pressure) {
-        if(lastMax<pressure) {
+//            firstPreference(pressure);
+        //Second Preference
+        if(count>30) {
+            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
+          return;
+        }
+        count++;
+//        breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
+//        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
+    }
+
+    double smoothedValue( double pressure ){
+//        long now = Calendar.getInstance().getTimeInMillis();
+//        long elapsedTime = now - lastUpdate;
+        smoothed += 33 * (( pressure - smoothed ) / smoothing);
+//        lastUpdate = now;
+        return smoothed;
+    }
+
+    private void firstPreference(double pressure) {
+        if(lastMax<pressure || lastMax-1000>pressure) {
             lastMax = pressure;
         }
         if(count>30) {
@@ -392,23 +417,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                if(lastMin>lastMax-1000)
 //                    lastMax=lastMin+1000;
 
-                if(lastMax-2000>lastMin)
-                    lastMin=lastMax-2000;
-                else
-                    lastMax=lastMin+2000;
-
+            if(lastMax-1000>lastMin) {
+                lastMin = lastMax - 1000;
+            }
+//            else
+//                lastMax=lastMin+2000;
             if(lastMin>pressure)
                 lastMin=pressure;
+
 //
 ////            if (lastMin > pressure || lastMin == 0){
 ////                lastMin = pressure;
 ////        }
         }
 
-            count++;
+        count++;
 
-
-        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
     }
 
     private double calculateProportion(double pressure) {

@@ -135,11 +135,11 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     }
 
     private void processModelData(DataModel model, Context context) {
+        listener.onDataProcessed(model);
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
-        listener.onDataProcessed(model);
         checkIfDataGatheringCompleted(model, context);
     }
 
