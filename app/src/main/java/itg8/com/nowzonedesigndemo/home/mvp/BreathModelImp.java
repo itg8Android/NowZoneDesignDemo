@@ -85,9 +85,12 @@ public class BreathModelImp implements BreathFragmentModel {
     @Override
     public void checkBLEConnected(Context context) {
         if(context!=null){
-            String state =SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE);
-            if(state==null || state.equalsIgnoreCase(DeviceState.DISCONNECTED.name()))
-            {
+//            String state =SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE);
+//            if(state==null || state.equalsIgnoreCase(DeviceState.DISCONNECTED.name()))
+//            {
+//                listener.startShowingDevicesList();
+//            }
+            if(!SharePrefrancClass.getInstance(context).hasSPreference(CommonMethod.DEVICE_ADDRESS)){
                 listener.startShowingDevicesList();
             }
         }

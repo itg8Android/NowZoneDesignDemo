@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 
 
 public class DbHelper extends OrmLiteSqliteOpenHelper {
@@ -23,6 +24,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
     private Dao<TblBreathCounter,Integer> breathDao=null;
     private Dao<TblState,Integer> stateDao=null;
     private Dao<TblAverage,Integer> avgDao=null;
+    private Dao<TblStepCount,Integer> stepDao=null;
 
 
 
@@ -37,6 +39,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, TblBreathCounter.class);
             TableUtils.createTable(connectionSource, TblState.class);
             TableUtils.createTable(connectionSource, TblAverage.class);
+            TableUtils.createTable(connectionSource, TblStepCount.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -49,6 +52,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, TblBreathCounter.class, true);
             TableUtils.dropTable(connectionSource, TblState.class, true);
             TableUtils.dropTable(connectionSource, TblAverage.class, true);
+            TableUtils.dropTable(connectionSource, TblStepCount.class, true);
             onCreate(db, connectionSource);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -79,11 +83,19 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
         return avgDao;
     }
 
+    public Dao<TblStepCount, Integer> getStepDao() throws SQLException{
+        if(stepDao == null)
+            stepDao=getDao(TblStepCount.class);
+
+        return stepDao;
+    }
+
     @Override
     public void close() {
         breathDao = null;
         stateDao = null;
         avgDao = null;
+        stepDao = null;
         super.close();
     }
 }
