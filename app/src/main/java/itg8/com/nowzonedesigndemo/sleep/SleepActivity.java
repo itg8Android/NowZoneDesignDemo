@@ -135,6 +135,7 @@ public class SleepActivity extends BaseSleepClass implements OnChartValueSelecte
     @Override
     public void onChartReadyToFillData() {
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+
 //        for (int i = 0; i < mSeekBarX.getProgress() + 1; i++) {
 //            float mult = (mSeekBarY.getProgress() + 1);
 //            float val1 = (float) (Math.random() * mult) + mult / 3;
@@ -146,6 +147,7 @@ public class SleepActivity extends BaseSleepClass implements OnChartValueSelecte
 //                    new float[]{val1, val2, val3},
 //                    getResources().getDrawable(R.drawable.star)));
 //        }
+
         yVals1.add(new BarEntry(1,new float[]{1f,2f,3f}));
         yVals1.add(new BarEntry(2,new float[]{1f,3f,2f}));
         yVals1.add(new BarEntry(3,new float[]{2f,1f,3f}));

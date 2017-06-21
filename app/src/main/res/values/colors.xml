@@ -40,6 +40,7 @@
     <color name="color_startColorBack">#BB000000</color>
     <color name="color_endColorblock2">#341c60</color>
     <color name="color_green">#00CBAC</color>
+    <color name="color_green_dark">#81c784</color>
     <color name="color_sky">#00B0EC</color>
     <color name="color_skin">#D4A280</color>
     <color name="default_header_color">#445566</color>
