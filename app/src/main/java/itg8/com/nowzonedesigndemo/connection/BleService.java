@@ -25,6 +25,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
@@ -95,6 +96,9 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+//        profileModel=((AppApplication)getApplication()).getProfileModel();
+
         try {
             userDao = getHelper().getCountDao();
             avgDao = getHelper().getAvgDao();
@@ -369,7 +373,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
             count.setDate(Helper.getCurrentDate());
             count.setSteps(step);
-            count.setCalBurn(Helper.calculateCalBurnByStepCount(step));
+//            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,));
         });
     }
 

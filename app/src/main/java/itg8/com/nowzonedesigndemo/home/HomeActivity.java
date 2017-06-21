@@ -165,7 +165,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private int lastCount=1;
     private long lastUpdate=0;
     private double smoothed=0;
-    private static final double smoothing=200;
+    private static final double smoothing=50;
     Rolling rolling;
 
     @Override
@@ -181,8 +181,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-        rolling=new Rolling(8);
-      //  checkDeviceConnection(rlWave);
+        rolling=new Rolling(50);
+        checkDeviceConnection(rlWave);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -387,6 +387,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            firstPreference(smoothedValue(pressure));
             secondPref(pressure);
             breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
+//            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(pressure));
             return;
         }
         count++;
@@ -403,8 +404,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void secondPref(double pressure){
         rolling.add(pressure);
-        lastMax=rolling.getaverage()+500;
-        lastMin=rolling.getaverage()-500;
+        lastMax=rolling.getaverage()+250;
+        lastMin=rolling.getaverage()-250;
     }
 
     private void firstPreference(double pressure) {
