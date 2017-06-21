@@ -49,7 +49,7 @@ public class CustomFontTextView extends TextView {
 
     }
 
-    private void setFont(Context context) {
+    public void setFont(Context context) {
 
         Typeface customFont = null;
         switch (fontType)

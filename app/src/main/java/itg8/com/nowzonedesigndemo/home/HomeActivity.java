@@ -185,6 +185,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
       //  checkDeviceConnection(rlWave);
 
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);

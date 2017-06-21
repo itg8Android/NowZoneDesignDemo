@@ -1,39 +1,55 @@
 package itg8.com.nowzonedesigndemo.steps;
 
 
-import android.animation.PropertyValuesHolder;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.icu.util.ValueIterator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.db.chart.listener.OnEntryClickListener;
-import com.db.chart.model.LineSet;
-import com.db.chart.tooltip.Tooltip;
-import com.db.chart.util.Tools;
-import com.db.chart.view.LineChartView;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.highlight.IHighlighter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.Utils;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
+import itg8.com.nowzonedesigndemo.steps.widget.CustomMarkerView;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link WeekFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WeekFragment extends Fragment {
+public class WeekFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -53,12 +69,18 @@ public class WeekFragment extends Fragment {
     @BindView(R.id.ll_calories)
     LinearLayout llCalories;
     @BindView(R.id.chart)
-    LineChartView chart;
+    LineChart chart;
     Unbinder unbinder;
 
     private final String[] mLabels = {"Mon", "Thu", "Wed", "Thus", "Fri", "Sat", "Sun"};
+    private final float[] entryValues = {2000f, 1800f, 2300f, 7000f, 1200f, 1010f, 2305f};
+ //   final String[] quarters = new String[] { "Mon", "Tue", "Wed", "Thus","Fri","Sat","Sun" };
 
-    private final float[] mValues = {2000f, 1800f, 2300f, 7000f, 1200f, 1010f, 2305f};
+
+
+    private final List<Entry> mValues =
+            new ArrayList<>();
+
     @BindView(R.id.txt_cal)
     CustomFontTextView txtCal;
 
@@ -66,7 +88,7 @@ public class WeekFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Tooltip mTip;
+   // public Tooltip mTip;
 
 
     public WeekFragment() {
@@ -99,69 +121,133 @@ public class WeekFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_week, container, false);
         unbinder = ButterKnife.bind(this, view);
-        LineSet dataset = new LineSet(mLabels, mValues);
-//        for(int i=0; i<mLabels.length || i<mValues.length; i++){
-//            dataset.addPoint(mLabels[i],mValues[i]);
-//        }
-        dataset.setSmooth(true);
-        dataset.setColor(Color.WHITE);
-        dataset.setDotsColor(Color.BLUE);
 
 
-        Paint thresPaint = new Paint();
-        thresPaint.setColor(Color.parseColor("#00ADFA"));
-        thresPaint.setStyle(Paint.Style.STROKE);
-        thresPaint.setAntiAlias(true);
-        thresPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
-        thresPaint.setPathEffect(new DashPathEffect(new float[]{10, 10}, 0));
 
-        chart.setValueThreshold(5000f, 5000f, thresPaint);
+        chart.getDescription().setEnabled(false);
+        chart.setTouchEnabled(true);
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setDrawGridBackground(false);
+        chart.setHighlightPerDragEnabled(false);
+        chart.setHighlightPerTapEnabled(true);
 
-        chart.setAxisBorderValues(200f, 7000f, 2000);
-        // Tooltip
-        mTip = new Tooltip(getActivity(), R.layout.linechart_three_tooltip, R.id.value);
+        LimitLine ll1 = new LimitLine(6000f, " ");
+        ll1.setLineWidth(1f);
+        ll1.enableDashedLine(10f, 10f, 0f);
+        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        ll1.setLineColor(getResources().getColor(R.color.color_green_dark));
 
-        mTip.setVerticalAlignment(Tooltip.Alignment.BOTTOM_TOP);
-        mTip.setDimensions((int) Tools.fromDpToPx(58), (int) Tools.fromDpToPx(25));
-        mTip.setEnterAnimation(PropertyValuesHolder.ofFloat(View.ALPHA, 1),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, 1f)).setDuration(200);
+        ll1.setTextSize(10f);
+        Legend l = chart.getLegend();
+        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+        l.setTextSize(12f);
+        l.setXEntrySpace(5f);
+        l.setYEntrySpace(5f);
+        l.setTextColor(Color.WHITE);
+        LegendEntry entry = new LegendEntry ("Threshold", Legend.LegendForm.LINE,10f,3f,new DashPathEffect(new float[]{10f, 5f},0f),getResources().getColor(R.color.color_green_dark));
+        List<LegendEntry> entries = new ArrayList<>();
+        entries.add(entry);
+        l.setCustom(entries);
 
-        mTip.setExitAnimation(PropertyValuesHolder.ofFloat(View.ALPHA, 0),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, 0f)).setDuration(200);
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(false);
+        xAxis.setEnabled(true);
+        xAxis.setAxisLineWidth(1f);
+        xAxis.setAxisLineColor(Color.WHITE);
 
 
-        mTip.setPivotX(Tools.fromDpToPx(65) / 2);
-        mTip.setPivotY(Tools.fromDpToPx(25));
 
-        chart.addData(dataset);
-        chart.setTooltips(mTip);
-        chart.show();
+        YAxis yAxisL = chart.getAxisLeft();
+        YAxis yAxisR = chart.getAxisRight();
+        yAxisL.setAxisLineColor(Color.WHITE);
+        yAxisL.setTextColor(Color.WHITE);
+        yAxisR.setEnabled(false);
+        yAxisL.setDrawAxisLine(true);
+        yAxisL.setDrawGridLines(false);
+        yAxisL.setXOffset(20f);
+        yAxisL.addLimitLine(ll1);
+        yAxisL.setEnabled(true);
+        yAxisL.setAxisLineWidth(1f);
+        yAxisL.setAxisLineColor(Color.WHITE);
 
-        chart.setOnEntryClickListener(new OnEntryClickListener() {
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+
             @Override
-            public void onClick(int setIndex, int entryIndex, Rect rect) {
-                chart.dismissAllTooltips();
-                mTip.prepare(rect, mValues[entryIndex]);
-                chart.showTooltip(mTip, true);
-                showDetail(entryIndex);
+            public String getFormattedValue(float value, AxisBase axis) {
+                return mLabels[(int) value-1];
             }
-        });
+
+            // we don't draw numbers, so no decimal digits needed
+
+            public int getDecimalDigits() {  return 0; }
+        };
+
+
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(formatter);
+        setData();
+
         return view;
     }
 
-    private void showDetail(int setIndex) {
-        DecimalFormat formatter = new DecimalFormat("#,###");
-        txtStepsValue.setText(String.valueOf(formatter.format(mValues[setIndex])));
-    }
+
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+    private void setData() {
+
+        ArrayList<Entry> values = new ArrayList<Entry>();
+        int i = 1;
+        for (Float val : entryValues) {
+            values.add(new Entry(i,val));
+                i++;
+            }
+        LineDataSet set1;
+
+        if (chart.getData() != null &&
+                chart.getData().getDataSetCount() > 0) {
+            set1 = (LineDataSet) chart.getData().getDataSetByIndex(0);
+            set1.setValues(values);
+            chart.getData().notifyDataChanged();
+            chart.notifyDataSetChanged();
+
+        }
+            else
+            {
+                set1 = new LineDataSet(values, " ");
+                set1.setLineWidth(3f);
+                set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
+
+                set1.setCircleRadius(5f);
+                set1.setCircleHoleRadius(4f);
+                set1.setCircleColorHole(Color.TRANSPARENT);
+                set1.setValueTextColor(Color.TRANSPARENT);
+                set1.setHighLightColor(getActivity().getResources().getColor(android.R.color.transparent));
+                ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+                dataSets.add(set1); // add the datasets
+                LineData data = new LineData(dataSets);
+                CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.linechart_three_tooltip);
+                mv.setChartView(chart);
+                mv.setPadding(0,10,0,0);
+                chart.setMarkerView(mv);
+                chart.setData(data);
+
+            }
+    }
+
+
 }
