@@ -51,4 +51,8 @@ public class Helper {
         }
         return date;
     }
+
+    public static double calculateCalBurnByStepCount(int step) {
+        return 0;
+    }
 }

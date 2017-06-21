@@ -48,6 +48,7 @@ import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
+import itg8.com.nowzonedesigndemo.utility.Rolling;
 import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
 import itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -164,8 +165,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private int lastCount=1;
     private long lastUpdate=0;
     private double smoothed=0;
-    private static final double smoothing=10;
-
+    private static final double smoothing=200;
+    Rolling rolling;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +181,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-//        checkDeviceConnection(rlWave);
+        rolling=new Rolling(8);
+      //  checkDeviceConnection(rlWave);
+
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -382,10 +385,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         //Second Preference
         if(count>30) {
             Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
-          return;
+//            firstPreference(smoothedValue(pressure));
+            secondPref(pressure);
+            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
+            return;
         }
         count++;
-//        breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
 //        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
     }
 
@@ -395,6 +400,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         smoothed += 33 * (( pressure - smoothed ) / smoothing);
 //        lastUpdate = now;
         return smoothed;
+    }
+
+    private void secondPref(double pressure){
+        rolling.add(pressure);
+        lastMax=rolling.getaverage()+500;
+        lastMin=rolling.getaverage()-500;
     }
 
     private void firstPreference(double pressure) {

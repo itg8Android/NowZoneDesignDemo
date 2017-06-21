@@ -34,7 +34,7 @@ public class DeviceListAdapter extends BaseAdapter {
                 list) {
             if (m.getAddress().equals(model.getAddress())) {
 //                contains=true;
-                list.remove(m);
+                return;
             }
         }
 
@@ -73,5 +73,9 @@ public class DeviceListAdapter extends BaseAdapter {
         deviceAddress.setText(list.get(position).getAddress());
         signalMeter.setValue(list.get(position).getRssi());
         return view;
+    }
+
+    public DeviceModel getSelectedDevice(int i) {
+        return list.get(i);
     }
 }

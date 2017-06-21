@@ -197,6 +197,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
             intent.putExtra(CommonMethod.DEVICE_ADDRESS,mSelectedDevice.getAddress());
             intent.putExtra(CommonMethod.DEVICE_NAME,mSelectedDevice.getName());
             view.getContext().startService(intent);
+            handler.removeCallbacks(r);
         } else {
             Log.d(TAG, "Something is wrong:");
         }

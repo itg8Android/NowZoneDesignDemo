@@ -144,7 +144,7 @@ public class BreathwaveView extends View {
                 float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
 //                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
                 float y = getY(breathSample, canvas.getHeight(), -0.02d, 1.02d);
-                Log.d(TAG,"Y:"+y);
+              //  Log.d(TAG,"Y:"+y);
                 int i5 = i + 1;
 //                this.mVert.add(i,x);
                 this.mVert[i] = x;
@@ -199,7 +199,7 @@ public class BreathwaveView extends View {
     public void addSample(long timeStamp, double value) {
 //        Log.d(TAG,"value : "+value+" , "+" timestamp: "+ CommonMethod.getTimeFromTMP(timeStamp));
         this.mSamples.add(new BreathSample(timeStamp, value));
-        Log.d(TAG,"sample:"+value);
+//        Log.d(TAG,"sample:"+value);
 //        if(lastMax<value)
 //            lastMax=value;
 //        if(count>30) {

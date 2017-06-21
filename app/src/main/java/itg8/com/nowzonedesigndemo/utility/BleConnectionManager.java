@@ -228,7 +228,7 @@ public class BleConnectionManager implements ConnectionManager {
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         Log.d(TAG, "Trying to create a new connection.");
-        mBluetoothDeviceAddress = address;
+//        mBluetoothDeviceAddress = address;
         listener.connectGatt(device, callback);
 
         return true;

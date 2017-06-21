@@ -32,6 +32,7 @@ import itg8.com.nowzonedesigndemo.db.DbHelper;
 import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.tosort.RDataManager;
 import itg8.com.nowzonedesigndemo.tosort.RDataManagerListener;
 import itg8.com.nowzonedesigndemo.utility.BleConnectionManager;
@@ -58,6 +59,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     Dao<TblBreathCounter, Integer> userDao = null;
     private Dao<TblAverage, Integer> avgDao = null;
     private Dao<TblState, Integer> stateDao = null;
+    private Dao<TblStepCount, Integer> stepDao = null;
     private BleConnectionManager manager;
 
 
@@ -97,6 +99,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             userDao = getHelper().getCountDao();
             avgDao = getHelper().getAvgDao();
             stateDao = getHelper().getStateDao();
+            stepDao = getHelper().getStepDao();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -126,7 +129,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     }
 
     private void checkAvailableDeviceToConnect() {
-        if (SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.DEVICE_ADDRESS)) {
+        if (SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.DEVICE_ADDRESS) &&
+                SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS)!=null) {
             sendToConnect(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS), "name");
         }
     }
@@ -350,7 +354,23 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void onStepCountReceived(int step) {
+        storeStepToDb(step);
         sendStepBroadcast(ACTION_STEP_COUNT, step);
+    }
+
+    private void storeStepToDb(int step) {
+        Observable.create((ObservableOnSubscribe<Long>) e->{
+            List<TblStepCount> countList=stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE,Helper.getCurrentDate()).query();
+            TblStepCount count;
+            if(countList.size()>0)
+                count =countList.get(countList.size()-1);
+            else
+                count=new TblStepCount();
+
+            count.setDate(Helper.getCurrentDate());
+            count.setSteps(step);
+            count.setCalBurn(Helper.calculateCalBurnByStepCount(step));
+        });
     }
 
     private void sendStepBroadcast(String action, int step) {
