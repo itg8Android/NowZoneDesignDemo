@@ -8,8 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/txt_week"
@@ -141,19 +140,22 @@
     </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_chart_step"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="400dp"
             android:layout_below="@+id/ll_calories">
-            <com.db.chart.view.LineChartView
+            <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                williamchart:chart_axis="true"
-                williamchart:chart_axisBorderSpacing="15dp"
-                williamchart:chart_labelColor="#ffffff" />
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                />
+
+
         </RelativeLayout>
 
 </RelativeLayout>
