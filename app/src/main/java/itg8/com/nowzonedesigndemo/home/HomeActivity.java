@@ -162,7 +162,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-        checkDeviceConnection(rlWave);
+//        checkDeviceConnection(rlWave);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
