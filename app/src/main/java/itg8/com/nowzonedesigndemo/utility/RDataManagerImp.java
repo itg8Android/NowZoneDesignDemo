@@ -135,9 +135,9 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     }
 
     private void processModelData(DataModel model, Context context) {
+        listener.onDataProcessed(model);
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
-        listener.onDataProcessed(model);
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
         checkIfDataGatheringCompleted(model, context);
@@ -152,8 +152,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         }
     }
 
-    List<DataModel> tempHolder=new ArrayList<>();
-    List<DataModel> tempHolderRaw=new ArrayList<>();
+    private List<DataModel> tempHolder=new ArrayList<>();
+    private List<DataModel> tempHolderRaw=new ArrayList<>();
 
     private void implementStorageProcess(Context context, List<DataModel> dataStorage) {
         tempHolder.clear();

@@ -438,7 +438,7 @@ public class WaveLoadingView extends View {
         // Need to recreate shader when color changed ?
 //        mWaveShader = null;
         updateWaveShader();
-        invalidate();
+        postInvalidate();
     }
 
     public int getWaveColor() {
