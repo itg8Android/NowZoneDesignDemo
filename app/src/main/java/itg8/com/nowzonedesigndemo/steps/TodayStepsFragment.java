@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 
 /**
@@ -59,6 +60,8 @@ public class TodayStepsFragment extends Fragment {
     CardView cardMiles;
     @BindView(R.id.card_total_calories)
     CardView cardTotalCalories;
+    @BindView(R.id.rl_step_value)
+    RelativeLayout rlStepValue;
 
 
     // TODO: Rename and change types of parameters
@@ -96,10 +99,10 @@ public class TodayStepsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_today_steps, container, false);
-
         unbinder = ButterKnife.bind(this, view);
-        setProgressbar();
-        customProgressRectangle.setProgress(50);
+            setProgressbar();
+            customProgressRectangle.setProgress(60);
+            rlStepValue.setVisibility(View.VISIBLE);
         return view;
     }
 

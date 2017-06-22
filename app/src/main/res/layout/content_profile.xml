@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="itg8.com.nowzonedesigndemo.profile.ProfileActivity"
+    tools:showIn="@layout/activity_profile">
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/image" />
+<android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/image"
+    android:id="@+id/input_name"
+    android:layout_margin="@dimen/marginAlarm"
+    android:layout_marginTop="20dp">
+
+    <EditText
+        android:id="@+id/edt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:lines="1"
+        android:hint="Name" />
+
+</android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_name"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_height"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/marginAlarm"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/edt_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:lines="1"
+            android:hint="Height" />
+
+    </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/marginAlarm"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/edt_height_cm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:lines="1"
+            android:hint="height[cm]" />
+
+    </android.support.design.widget.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/rbg_main_height"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rgb_height_cm"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/rbtn_selector_steps_left"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="Cm"
+                android:padding="10dp"
+                android:textColor="@drawable/rbtn_text_color_steps" />
+
+            <RadioButton
+                android:id="@+id/rgb_height_feet"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/rbtn_selector_steps_left"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="feet"
+                android:textColor="@drawable/rbtn_text_color_steps" />
+        </RadioGroup>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_height"
+        android:weightSum="3"
+        android:layout_margin="@dimen/marginAlarm"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_weight"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/marginAlarm"
+            android:layout_marginTop="20dp">
+
+            <EditText
+                android:id="@+id/edt_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:lines="1"
+                android:hint="Weight" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/rbg_main_weight"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rgb_steps_today"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/rbtn_selector_steps_left"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="   kg  "
+                android:padding="10dp"
+
+                android:textColor="@drawable/rbtn_text_color_steps" />
+
+            <RadioButton
+                android:id="@+id/rgb_step_history"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/rbtn_selector_steps_left"
+                android:button="@null"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="pounds"
+                android:textColor="@drawable/rbtn_text_color_steps" />
+        </RadioGroup>
+    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorWhite"
+        android:text="Save"
+        android:background="@color/colorPrimary"/>
+
+</RelativeLayout>

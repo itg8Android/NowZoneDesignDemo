@@ -25,12 +25,13 @@
     <dimen name="txt_home">12sp</dimen>
     <dimen name="txt_lbl_dash_bottom">12sp</dimen>
     <dimen name="txt_hr">12sp</dimen>
-
-
-
-
-
     <dimen name="txt_active_value">35sp</dimen>
+
+    <!---  Form Alarm Setting Page
+  -->
+    <dimen name="marginAlarm">5sp</dimen>
+    <dimen name="paddingAlarm">5sp</dimen>
+
 
 
 </resources>

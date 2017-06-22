@@ -375,9 +375,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onStartDeviceScanActivity() {
-        Timber.i("Start device activity");
-        startActivity(new Intent(this, ScanDeviceActivity.class));
-        finish();
+//        Timber.i("Start device activity");
+//        startActivity(new Intent(this, ScanDeviceActivity.class));
+//        finish();
     }
 
     @Override

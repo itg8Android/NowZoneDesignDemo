@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/marginAlarm"
+        android:gravity="center"
+        android:id="@+id/ll_days">
+
+        <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MON"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/homeText"
+            app:font_value="1" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/img_dots"
+            android:src="@drawable/dots"/>
+
+        <!--<include layout="@layout/alarm_days"></include>-->
+    </LinearLayout>
+
+
+
+
+    <ImageView
+        android:layout_below="@+id/ll_days"
+        android:id="@+id/img_vibrations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/marginAlarm"
+        android:src="@drawable/ic_vibration_black_24dp"/>
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/switch_vibration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/img_vibrations"
+        android:layout_below="@+id/ll_days"
+        android:layout_margin="@dimen/marginAlarm"
+        style="@style/MySwitchStyle"
+        android:checked="true"/>
+
+    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/marginAlarm"
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:text="Alarm type"
+        app:font_value="1"
+        android:padding="@dimen/paddingAlarm"
+        android:layout_below="@+id/switch_vibration"/>
+
+    <ImageView
+        android:layout_toEndOf="@+id/switch_vibration"
+        android:id="@+id/img_speaker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_days"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_speakers"/>
+
+    <SeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/img_speaker"
+        android:layout_marginTop="10dp"
+        android:layout_margin="@dimen/marginAlarm"
+        android:layout_below="@+id/ll_days"
+        android:layout_centerHorizontal="true"
+       android:max="100"
+        android:progress="0"
+         />
+
+    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+        android:visibility="visible"
+        android:layout_below="@+id/seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:font_value="2"
+        android:text="8:00 AM"
+        android:textSize="@dimen/txt_breath_value"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorBlack"
+        android:layout_marginBottom="@dimen/marginTime"
+        android:layout_margin="@dimen/marginAlarm" />
+
+
+
+
+
+</RelativeLayout>

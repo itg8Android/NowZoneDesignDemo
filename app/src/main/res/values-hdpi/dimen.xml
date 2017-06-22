@@ -31,6 +31,10 @@
 
     <dimen name="txt_active_value">35sp</dimen>
 
+    <!---  Form Alarm Setting Page
+  -->
+    <dimen name="marginAlarm">5sp</dimen>
+
 
 
 </resources>

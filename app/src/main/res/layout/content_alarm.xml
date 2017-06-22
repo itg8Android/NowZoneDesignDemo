@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="itg8.com.nowzonedesigndemo.alarm.AlarmActivity"
+    android:background="@drawable/bg_1"
+    android:alpha="0.7"
+    tools:showIn="@layout/activity_alarm">
+
+    <RelativeLayout
+        android:id="@+id/rl_alarm_smart_main"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cardView">
+
+            <FrameLayout
+                android:id="@+id/frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:visibility="gone"
+                    android:id="@+id/rl_alarm_smart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/img_alarm"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/marginAlarm"
+                        android:src="@drawable/ic_access_alarms_black_24dp"/>
+
+                    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                        android:id="@+id/txt_alarm_smart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        app:font_value="3"
+                        android:layout_toEndOf="@+id/img_alarm"
+                        android:textSize="@dimen/txt_value_sleep"
+                        android:layout_margin="@dimen/marginAlarm"
+                        android:text="Smart Alarm"
+                        android:textStyle="normal"
+                        android:textAllCaps="true" />
+
+                    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                        android:id="@+id/txt_alarm_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8:00 PM"
+                        app:font_value="2"
+                        android:layout_toEndOf="@+id/img_alarm"
+                        android:layout_margin="@dimen/marginAlarm"
+                        android:layout_below="@+id/txt_alarm_smart"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/txt_breath_value"/>
+                    <android.support.v7.widget.SwitchCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/img_alarm"
+                        android:layout_below="@+id/txt_alarm_smart"
+                        android:layout_margin="@dimen/marginAlarm"
+                        style="@style/MySwitchStyle"
+                        android:checked="true"/>
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/rl_include_alarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <include layout="@layout/layout_alarm_set"></include>
+                </RelativeLayout>
+            </FrameLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_alarm_meditation_main"
+        android:layout_marginTop="20dp"
+
+        android:layout_below="@+id/rl_alarm_smart_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cardView_medition">
+
+            <FrameLayout
+                android:id="@+id/frame_layout_maidition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:visibility="gone"
+                    android:id="@+id/rl_alarm_meditation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/img_alarms"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/marginAlarm"
+                        android:src="@drawable/ic_access_alarms_black_24dp"/>
+
+                    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                        android:id="@+id/txt_alarm_medition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        app:font_value="3"
+                        android:layout_toEndOf="@+id/img_alarms"
+                        android:textSize="@dimen/txt_value_sleep"
+                        android:layout_margin="@dimen/marginAlarm"
+                        android:text="Smart Alarm"
+                        android:textStyle="normal"
+                        android:textAllCaps="true" />
+
+                    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                        android:id="@+id/txt_alarm_times"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8:00 PM"
+                        app:font_value="2"
+                        android:layout_toEndOf="@+id/img_alarms"
+                        android:layout_margin="@dimen/marginAlarm"
+                        android:layout_below="@+id/txt_alarm_medition"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/txt_breath_value"/>
+                    <android.support.v7.widget.SwitchCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/img_alarms"
+                        android:layout_below="@+id/txt_alarm_medition"
+                        android:layout_margin="@dimen/marginAlarm"
+                        style="@style/MySwitchStyle"
+                        android:checked="true"/>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/rl_include_alarms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <include layout="@layout/layout_alarm_set"></include>
+                </RelativeLayout>
+            </FrameLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+
+</RelativeLayout>
