@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="itg8.com.nowzonedesigndemo.alarm.AlarmActivity">
 
     <android.support.design.widget.AppBarLayout

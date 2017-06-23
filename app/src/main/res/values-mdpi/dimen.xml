@@ -32,6 +32,15 @@
   -->
     <dimen name="marginAlarm">10sp</dimen>
     <dimen name="paddingAlarm">5sp</dimen>
+    <dimen name="margin_alarm_left">15sp</dimen>
+    <dimen name="margin_alarm_Right">15sp</dimen>
+    <dimen name="margin_alarm_top">10sp</dimen>
+    <dimen name="margin_alarm_bottom">10sp</dimen>
+    <dimen name="lbl_alarm_time">14sp</dimen>
+    <dimen name="lbl_time_front">16sp</dimen>
+
+
+
 
 
 
