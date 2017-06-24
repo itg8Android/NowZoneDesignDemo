@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -30,12 +31,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import itg8.com.nowzonedesigndemo.common.CommonMethod;
-import itg8.com.nowzonedesigndemo.connection.BleService;
-import itg8.com.nowzonedesigndemo.home.HomeActivity;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
+import itg8.com.nowzonedesigndemo.connection.BleService;
 import itg8.com.nowzonedesigndemo.connection.DeviceModel;
+import itg8.com.nowzonedesigndemo.home.HomeActivity;
 import itg8.com.nowzonedesigndemo.sanning.mvp.ScanDeviceModelListener;
 import itg8.com.nowzonedesigndemo.sanning.mvp.ScanDevicePresenter;
 import itg8.com.nowzonedesigndemo.sanning.mvp.ScanDeviceView;
@@ -70,6 +71,10 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     LinearLayout linearLayout;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.txtScanningForDevice)
+    TextView txtScanningForDevice;
+    @BindView(R.id.btn_retry)
+    Button btnRetry;
     private WaveDrawable waveDrawable;
     private BluetoothAdapter bluetoothAdapter;
     private DeviceListAdapter deviceListAdapter;
@@ -88,6 +93,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         initAnimation();
         initBluetoothAdapter();
         btnConnectWithBt.setOnClickListener(this);
+        btnRetry.setOnClickListener(this);
         listOfBluetoothDevices.setOnItemClickListener(this);
 
     }
@@ -102,8 +108,8 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 DeviceModel mSelectedDevice = deviceListAdapter.getSelectedDevice(i);
                 Intent intent = new Intent(view.getContext(), BleService.class);
-                intent.putExtra(CommonMethod.DEVICE_ADDRESS,mSelectedDevice.getAddress());
-                intent.putExtra(CommonMethod.DEVICE_NAME,mSelectedDevice.getName());
+                intent.putExtra(CommonMethod.DEVICE_ADDRESS, mSelectedDevice.getAddress());
+                intent.putExtra(CommonMethod.DEVICE_NAME, mSelectedDevice.getName());
                 view.getContext().startService(intent);
             }
         });
@@ -169,6 +175,14 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BT) {
+            checkBleAdapter();
+        }
+    }
+
     private void checkForLocationOnOff() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -187,7 +201,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -290,6 +304,8 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     public void onClick(View view) {
         if (view.getId() == R.id.btn_connect_with_bt) {
             presenter.refreshBtnClicked(view);
+        }else if(view.getId() == R.id.btn_retry){
+            startBleScan();
         }
     }
 
@@ -307,5 +323,33 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         finish();
     }
 
+    @Override
+    public void onScanningStarted(CharSequence text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                txtScanningForDevice.setText(text);
+            }
+        });
+    }
 
+    @Override
+    public void onShowScanning() {
+        txtScanningForDevice.setVisibility(View.VISIBLE);
+        btnConnectWithBt.setVisibility(View.GONE);
+        btnRetry.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onShowButton() {
+        if (deviceListAdapter.getCount() > 0) {
+            txtScanningForDevice.setVisibility(View.GONE);
+            btnConnectWithBt.setVisibility(View.VISIBLE);
+            btnRetry.setVisibility(View.GONE);
+        } else {
+            txtScanningForDevice.setVisibility(View.GONE);
+            btnConnectWithBt.setVisibility(View.GONE);
+            btnRetry.setVisibility(View.VISIBLE);
+        }
+    }
 }

@@ -405,8 +405,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void secondPref(double pressure){
         rolling.add(pressure);
-        lastMax=rolling.getaverage()+250;
-        lastMin=rolling.getaverage()-250;
+        lastMax=rolling.getaverage()+500;
+        lastMin=rolling.getaverage()-500;
     }
 
     private void firstPreference(double pressure) {
@@ -460,21 +460,26 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onDeviceDisconnected() {
         Log.d(TAG, "Device disconnected");
+        Intent intent = new Intent("ACTION_NW_DEVICE_DISCONNECT");
+        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT,true);
+        sendBroadcast(intent);
     }
 
     @Override
     public void onBreathCountAvailable(int intExtra) {
         Log.d(TAG, "Breath count: " + intExtra);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                breathValue.setText(String.valueOf(intExtra));
-            }
-        },30);
+        new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)),30);
     }
 
     @Override
     public void onStepCountReceived(int intExtra) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                txtStepCountValue.setText(String.valueOf(intExtra));
+
+            }
+        });
         Log.d(TAG, "Step count: " + intExtra);
     }
 

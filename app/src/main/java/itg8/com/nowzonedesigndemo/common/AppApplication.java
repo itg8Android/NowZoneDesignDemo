@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import timber.log.BuildConfig;
 import timber.log.Timber;
@@ -15,7 +16,7 @@ import static timber.log.Timber.DebugTree;
 
 public class AppApplication extends Application {
 
-//    private final String PROFILE_MODEL = getPackageName().concat("PROFILE_MODEL");
+    private static final String PROFILE_MODEL = "PROFILE_MODEL";
     private ProfileModel profileModel;
 
     @Override
@@ -29,11 +30,16 @@ public class AppApplication extends Application {
     }
 
     public ProfileModel getProfileModel() {
-//        if(profileModel==null){
-//            profileModel=new Gson().toJson(SharePrefrancClass.getInstance(this).getPref(PROFILE_MODEL);
-//        }
-//        return profileModel;
-        return null;
+        String mProfileModel=SharePrefrancClass.getInstance(this).getPref(PROFILE_MODEL);
+        if(profileModel==null && mProfileModel!=null){
+            profileModel=new Gson().fromJson(mProfileModel,new TypeToken<ProfileModel>(){}.getType());
+        }
+        return profileModel;
+    }
+
+    public void setProfileModel(ProfileModel model){
+        if(model!=null)
+            SharePrefrancClass.getInstance(this).savePref(PROFILE_MODEL,new Gson().toJson(model));
     }
 
     /** A tree which logs important information for crash reporting. */
