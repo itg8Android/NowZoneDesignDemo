@@ -29,9 +29,6 @@ import timber.log.Timber;
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STATE_ARRIVED;
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STEP_COUNT;
 
-/**
- * Created by itg_Android on 3/2/2017.
- */
 
 public class BreathModelImp implements BreathFragmentModel {
 
@@ -46,8 +43,8 @@ public class BreathModelImp implements BreathFragmentModel {
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 if(intent.hasExtra(CommonMethod.ACTION_DATA_AVAILABLE)){
-                    DataModel model = intent.getParcelableExtra(CommonMethod.ACTION_DATA_AVAILABLE);
-                    listener.onPressureReceived(model.getPressure());
+                    double model = intent.getDoubleExtra(CommonMethod.ACTION_DATA_AVAILABLE,0);
+                    listener.onPressureReceived(model);
                 }
                 if(intent.hasExtra(CommonMethod.BPM_COUNT)){
                     listener.onCountReceived(intent.getIntExtra(CommonMethod.BPM_COUNT,0));
@@ -88,9 +85,12 @@ public class BreathModelImp implements BreathFragmentModel {
     @Override
     public void checkBLEConnected(Context context) {
         if(context!=null){
-            String state =SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE);
-            if(state==null || state.equalsIgnoreCase(DeviceState.DISCONNECTED.name()))
-            {
+//            String state =SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE);
+//            if(state==null || state.equalsIgnoreCase(DeviceState.DISCONNECTED.name()))
+//            {
+//                listener.startShowingDevicesList();
+//            }
+            if(!SharePrefrancClass.getInstance(context).hasSPreference(CommonMethod.DEVICE_ADDRESS)){
                 listener.startShowingDevicesList();
             }
         }
@@ -145,13 +145,11 @@ public class BreathModelImp implements BreathFragmentModel {
                 calmWhereCondition(where,BreathState.STRESS);
                 stateList=stateDao.query(queryBuilder.prepare());
                 if(stateList!=null && stateList.size()>0){
-                    model.setFocus(checkMinutesOfHrFromSize(stateList.size()));
+                    model.setStress(checkMinutesOfHrFromSize(stateList.size()));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-
         }
 
         return model;
@@ -164,7 +162,7 @@ public class BreathModelImp implements BreathFragmentModel {
         minute = (int)size%60;
 
         if(hours>0)
-            hrMinute=String.valueOf(hours)+" Hr";
+            hrMinute=String.valueOf(hours)+" Hr ";
 
         if(minute>0)
             hrMinute=hrMinute+String.valueOf(minute)+" Min";
@@ -175,7 +173,7 @@ public class BreathModelImp implements BreathFragmentModel {
     private void calmWhereCondition(Where<TblState, Integer> where,BreathState state) throws SQLException{
         where.eq(TblState.FIELD_DATE, Helper.getCurrentDate());
         where.and();
-        where.eq(TblState.FIELD_STATE,state.CALM.name());
+        where.eq(TblState.FIELD_STATE,state.name());
     }
 
 

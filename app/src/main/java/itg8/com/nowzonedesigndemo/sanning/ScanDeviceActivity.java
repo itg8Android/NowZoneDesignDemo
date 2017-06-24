@@ -30,6 +30,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
+import itg8.com.nowzonedesigndemo.connection.BleService;
 import itg8.com.nowzonedesigndemo.home.HomeActivity;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
@@ -80,7 +82,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         ButterKnife.bind(this);
         //Initialise ScanDevicePresenter
         presenter = new ScanDevicePresenter(this);
-        presenter.checkAlreadyConnectedOnce(this);
+        presenter.checkAlreadyConnectedOnce(getApplicationContext());
         presenter.onResume();
 
         initAnimation();
@@ -95,6 +97,16 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
 //        bluetoothAdapter = manager.getAdapter();
         deviceListAdapter = new DeviceListAdapter(this);
         listOfBluetoothDevices.setAdapter(deviceListAdapter);
+        listOfBluetoothDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DeviceModel mSelectedDevice = deviceListAdapter.getSelectedDevice(i);
+                Intent intent = new Intent(view.getContext(), BleService.class);
+                intent.putExtra(CommonMethod.DEVICE_ADDRESS,mSelectedDevice.getAddress());
+                intent.putExtra(CommonMethod.DEVICE_NAME,mSelectedDevice.getName());
+                view.getContext().startService(intent);
+            }
+        });
     }
 
     private void initAnimation() {

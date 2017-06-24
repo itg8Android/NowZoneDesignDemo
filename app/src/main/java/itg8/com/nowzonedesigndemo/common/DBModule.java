@@ -56,4 +56,8 @@ public abstract class DBModule{
 
     public abstract void initStateDao();
     public abstract void initStateDao(boolean b, String issue);
+
+    public Dao<TblState, Integer> getStateDao() {
+        return stateDao;
+    }
 }

@@ -13,6 +13,7 @@ import itg8.com.nowzonedesigndemo.common.CommonMethod;
 public class Helper {
 
     public static SimpleDateFormat dateFormat=new SimpleDateFormat(CommonMethod.DATE_FORMAT, Locale.getDefault());
+    public static SimpleDateFormat dateFormatWithTime=new SimpleDateFormat(CommonMethod.DATE_FORMAT_WITH_TIME, Locale.getDefault());
 
     public static boolean checkBLE(Context context) {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
@@ -37,5 +38,21 @@ public class Helper {
             e.printStackTrace();
         }
         return newDate;
+    }
+
+    public static String getDateTimeFromMillies(long timestampEnd) {
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(timestampEnd);
+        String date= "";
+        try {
+            date = dateFormatWithTime.format(calendar.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static double calculateCalBurnByStepCount(int step) {
+        return 0;
     }
 }

@@ -32,6 +32,7 @@ import itg8.com.nowzonedesigndemo.db.DbHelper;
 import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.tosort.RDataManager;
 import itg8.com.nowzonedesigndemo.tosort.RDataManagerListener;
 import itg8.com.nowzonedesigndemo.utility.BleConnectionManager;
@@ -58,6 +59,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     Dao<TblBreathCounter, Integer> userDao = null;
     private Dao<TblAverage, Integer> avgDao = null;
     private Dao<TblState, Integer> stateDao = null;
+    private Dao<TblStepCount, Integer> stepDao = null;
     private BleConnectionManager manager;
 
 
@@ -97,6 +99,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             userDao = getHelper().getCountDao();
             avgDao = getHelper().getAvgDao();
             stateDao = getHelper().getStateDao();
+            stepDao = getHelper().getStepDao();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -126,8 +129,9 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     }
 
     private void checkAvailableDeviceToConnect() {
-        if (SharePrefrancClass.getInstance(this).hasSPreference(CommonMethod.DEVICE_ADDRESS)) {
-            sendToConnect(SharePrefrancClass.getInstance(this).getPref(CommonMethod.DEVICE_ADDRESS), "name");
+        if (SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.DEVICE_ADDRESS) &&
+                SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS)!=null) {
+            sendToConnect(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS), "name");
         }
     }
 
@@ -139,8 +143,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void onDeviceConnected(String address) {
-        SharePrefrancClass.getInstance(this).savePref(CommonMethod.DEVICE_ADDRESS, address);
-        SharePrefrancClass.getInstance(this).setPrefrance(CommonMethod.CONNECTED, true);
+        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.DEVICE_ADDRESS, address);
+        SharePrefrancClass.getInstance(getApplicationContext()).setPrefrance(CommonMethod.CONNECTED, true);
         sendBroadcast(ACTION_DEVICE_CONNECTED);
     }
 
@@ -159,7 +163,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private void sendBroadcast(String key, Object data) {
         Intent intent = new Intent(getResources().getString(R.string.action_data_avail));
         if (data instanceof DataModel)
-            intent.putExtra(key, (DataModel) data);
+            intent.putExtra(key, ((DataModel) data).getPressure());
         else if (data instanceof Integer) {
             intent.putExtra(key, (int) data);
         }
@@ -190,7 +194,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void currentState(DeviceState state) {
         Log.d(TAG, "state is: " + state.name());
-        SharePrefrancClass.getInstance(this).savePref(CommonMethod.STATE, state.name());
+        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STATE, state.name());
     }
 
     @Override
@@ -257,7 +261,9 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     }
 
     private void checkStateOfMind(int count, long timestamp) {
-        int avgCount = SharePrefrancClass.getInstance(this).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        int avgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        if(avgCount<=0)
+            return;
         List<TblBreathCounter> breathCounters = null;
         try {
             QueryBuilder<TblBreathCounter, Integer> builder = userDao.queryBuilder().limit(2L).orderBy(TblBreathCounter.FIELD_NAME_ID, false);
@@ -348,7 +354,23 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void onStepCountReceived(int step) {
+        storeStepToDb(step);
         sendStepBroadcast(ACTION_STEP_COUNT, step);
+    }
+
+    private void storeStepToDb(int step) {
+        Observable.create((ObservableOnSubscribe<Long>) e->{
+            List<TblStepCount> countList=stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE,Helper.getCurrentDate()).query();
+            TblStepCount count;
+            if(countList.size()>0)
+                count =countList.get(countList.size()-1);
+            else
+                count=new TblStepCount();
+
+            count.setDate(Helper.getCurrentDate());
+            count.setSteps(step);
+            count.setCalBurn(Helper.calculateCalBurnByStepCount(step));
+        });
     }
 
     private void sendStepBroadcast(String action, int step) {
@@ -413,7 +435,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onStateAvailable(TblAverage model) {
         if (avgDao != null && model != null) {
             Log.d(TAG,"AvgDao in save");
-            SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.USER_CURRENT_AVG, model.getAverage());
+            SharePrefrancClass.getInstance(getApplicationContext()).setIPreference(CommonMethod.USER_CURRENT_AVG, model.getAverage());
             try {
                 int c=avgDao.create(model);
                 Log.d(TAG,"AvgDao saved: "+c);

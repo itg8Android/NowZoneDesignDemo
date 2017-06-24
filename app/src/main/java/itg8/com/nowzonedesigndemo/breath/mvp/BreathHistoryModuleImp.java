@@ -3,7 +3,10 @@ package itg8.com.nowzonedesigndemo.breath.mvp;
 import android.content.Context;
 import android.util.Log;
 
+import com.j256.ormlite.stmt.QueryBuilder;
+
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -37,8 +40,16 @@ public class BreathHistoryModuleImp extends DBModule implements BreathHistoryMVP
     }
 
     private List<TblState> listAllDataFrom() {
-
-        return null;
+        if(stateDaoInit) {
+            try {
+                QueryBuilder<TblState,Integer> queryBuilder=getStateDao().queryBuilder();
+                queryBuilder.orderBy(TblState.FIELD_ID,false);
+                return getStateDao().query(queryBuilder.prepare());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return new ArrayList<>();
     }
 
     @Override

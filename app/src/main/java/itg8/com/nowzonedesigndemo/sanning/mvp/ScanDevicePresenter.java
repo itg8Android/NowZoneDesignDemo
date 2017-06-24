@@ -105,7 +105,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
     public void startLEScan(Context context, BluetoothAdapter bluetoothAdapter) {
         if (stopped) {
             stopped = false;
-            handler.postDelayed(r, 25000);
+            handler.postDelayed(r, 5000);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 scanner = bluetoothAdapter.getBluetoothLeScanner();
                 Log.d(TAG, "Scan Started on 23");
@@ -197,6 +197,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
             intent.putExtra(CommonMethod.DEVICE_ADDRESS,mSelectedDevice.getAddress());
             intent.putExtra(CommonMethod.DEVICE_NAME,mSelectedDevice.getName());
             view.getContext().startService(intent);
+            handler.removeCallbacks(r);
         } else {
             Log.d(TAG, "Something is wrong:");
         }

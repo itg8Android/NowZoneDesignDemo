@@ -68,7 +68,6 @@ public class WaveLoadingView extends View {
     private static final float DEFAULT_TITLE_TOP_SIZE = 18.0f;
     private static final float DEFAULT_TITLE_CENTER_SIZE = 22.0f;
     private static final float DEFAULT_TITLE_BOTTOM_SIZE = 18.0f;
-    private Bitmap bitmap;
 
 
     public enum ShapeType {
@@ -324,8 +323,13 @@ public class WaveLoadingView extends View {
                 mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO;
                 float defaultWaveLength = width;
 
-                if(bitmap==null)
-                    bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8);
+
+//                if (bitmap != null) {
+//                    bitmap.recycle();
+//                    bitmap = null;
+//                }
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8);
+
 
                 Canvas canvas = new Canvas(bitmap);
 
@@ -434,7 +438,7 @@ public class WaveLoadingView extends View {
         // Need to recreate shader when color changed ?
 //        mWaveShader = null;
         updateWaveShader();
-        invalidate();
+        postInvalidate();
     }
 
     public int getWaveColor() {

@@ -139,8 +139,14 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
         Log.d(TAG,"FileName:"+newFileName);
         File completeFileStructure = new File(COMPLETE_FILE_PATH,newFileName);
         try {
-        FileWriter fWriter = new FileWriter(completeFileStructure, true);
-        fWriter.append(content).append("\n");
+            FileWriter fWriter;
+            if(completeFileStructure.exists()) {
+                 fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.append(content).append("\n");
+            }else {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.write(content);
+            }
         fWriter.flush();
         fWriter.close();
                 } catch (IOException e) {
