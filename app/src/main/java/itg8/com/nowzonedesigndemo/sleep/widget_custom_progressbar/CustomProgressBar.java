@@ -1,5 +1,7 @@
 package itg8.com.nowzonedesigndemo.sleep.widget_custom_progressbar;
 
+import android.graphics.Color;
+import android.graphics.RectF;
 import android.widget.SeekBar;
 
 /**
@@ -66,10 +68,13 @@ public class CustomProgressBar extends SeekBar {
                         && progressItemRight != progressBarWidth) {
                     progressItemRight = progressBarWidth;
                 }
-                Rect progressRect = new Rect();
-                progressRect.set(lastProgressX, thumboffset / 2,
+                RectF progressRect = new RectF();
+                progressRect.set(lastProgressX+20, thumboffset / 2,
                         progressItemRight, progressBarHeight - thumboffset / 2);
-                canvas.drawRect(progressRect, progressPaint);
+                canvas.drawRoundRect(progressRect, 50,50,progressPaint);
+//                Paint paintText = new Paint();
+//                paintText.setColor(Color.WHITE);
+//                canvas.drawText("% values",progressRect.width()/2,progressRect.height()/2,paintText);
                 lastProgressX = progressItemRight;
             }
             super.onDraw(canvas);
