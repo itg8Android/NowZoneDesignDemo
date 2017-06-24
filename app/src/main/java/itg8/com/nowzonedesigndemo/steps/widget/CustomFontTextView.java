@@ -78,5 +78,4 @@ public class CustomFontTextView extends TextView {
 
 
 
-
 }

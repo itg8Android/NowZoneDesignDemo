@@ -20,8 +20,14 @@ public class CommonMethod {
 
 
     public static final String USER_CURRENT_AVG = "USER_CURRENT_AVG";
+
+    public static final String DATE_FORMAT = "dd-mm-yyyy";
+    public static final String SAVEDAYS = "SAVEDAYS";
+
+
     public static final String DATE_FORMAT = "dd-MM-yyyy";
     public static final String DATE_FORMAT_WITH_TIME = "hh:mm a";
+
     private static Typeface typeface;
     public static String FROMWEEk="from_week";
     public static final String SELECTED_DEVICE = "SELECTED_DEVICE";

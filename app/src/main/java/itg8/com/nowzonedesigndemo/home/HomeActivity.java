@@ -34,6 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.alarm.AlarmActivity;
 import itg8.com.nowzonedesigndemo.audio.AudioActivity;
 import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
@@ -43,6 +44,7 @@ import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenter;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
 import itg8.com.nowzonedesigndemo.home.mvp.StateTimeModel;
+import itg8.com.nowzonedesigndemo.profile.ProfileActivity;
 import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
@@ -315,10 +317,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, AudioActivity.class));
+            // startActivity(new Intent(this, AudioActivity.class));
+            startActivity(new Intent(this, AlarmActivity.class));
             return true;
         }
 
+            if(id == R.id.action_profile)
+            {
+                startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+
+
+            }
         return super.onOptionsItemSelected(item);
     }
 
@@ -479,9 +489,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onStartDeviceScanActivity() {
-        Timber.i("Start device activity");
-        startActivity(new Intent(this, ScanDeviceActivity.class));
-        finish();
+//        Timber.i("Start device activity");
+//        startActivity(new Intent(this, ScanDeviceActivity.class));
+//        finish();
     }
 
     @Override

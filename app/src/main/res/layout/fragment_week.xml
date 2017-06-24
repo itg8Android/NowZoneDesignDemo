@@ -10,6 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rl_step_top">
+
+
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/txt_week"
         android:layout_width="wrap_content"
@@ -138,12 +144,14 @@
             app:font_value="3" />
 
     </LinearLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_chart_step"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_below="@+id/ll_calories">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/rl_step_top">
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
@@ -152,10 +160,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:clipChildren="false"
-                android:clipToPadding="false"
-                />
-
-
+                android:clipToPadding="false" />
         </RelativeLayout>
 
 </RelativeLayout>

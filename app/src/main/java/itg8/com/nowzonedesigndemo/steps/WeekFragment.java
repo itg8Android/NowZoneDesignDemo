@@ -3,20 +3,21 @@ package itg8.com.nowzonedesigndemo.steps;
 
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.icu.util.ValueIterator;
 import android.os.Bundle;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.LimitLine;
@@ -26,14 +27,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.highlight.IHighlighter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.Utils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +44,12 @@ import itg8.com.nowzonedesigndemo.steps.widget.CustomMarkerView;
  * Use the {@link WeekFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WeekFragment extends Fragment  {
+public class WeekFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = WeekFragment.class.getSimpleName();
     @BindView(R.id.txt_week)
     CustomFontTextView txtWeek;
     @BindView(R.id.img_graph)
@@ -73,9 +69,7 @@ public class WeekFragment extends Fragment  {
     Unbinder unbinder;
 
     private final String[] mLabels = {"Mon", "Thu", "Wed", "Thus", "Fri", "Sat", "Sun"};
-    private final float[] entryValues = {2000f, 1800f, 2300f, 7000f, 1200f, 1010f, 2305f};
- //   final String[] quarters = new String[] { "Mon", "Tue", "Wed", "Thus","Fri","Sat","Sun" };
-
+    private final float[] entryValues = {2000f, 1800f, 4500f, 7000f, 1200f, 1010f, 2305f};
 
 
     private final List<Entry> mValues =
@@ -83,12 +77,16 @@ public class WeekFragment extends Fragment  {
 
     @BindView(R.id.txt_cal)
     CustomFontTextView txtCal;
+    @BindView(R.id.rl_chart_step)
+    RelativeLayout rlChartStep;
+    @BindView(R.id.rl_step_top)
+    RelativeLayout rlStepTop;
 
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-   // public Tooltip mTip;
+    // public Tooltip mTip;
 
 
     public WeekFragment() {
@@ -124,8 +122,12 @@ public class WeekFragment extends Fragment  {
         final View view = inflater.inflate(R.layout.fragment_week, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        getScreenSize();
 
 
+/**
+ *  chart Touch Event and Zoom Enabling features
+ */
         chart.getDescription().setEnabled(false);
         chart.setTouchEnabled(true);
         chart.setDragEnabled(false);
@@ -134,36 +136,71 @@ public class WeekFragment extends Fragment  {
         chart.setHighlightPerDragEnabled(false);
         chart.setHighlightPerTapEnabled(true);
 
+        /**
+         *  This is used for Threshold . LimitLine used for  Drawa line .
+         */
+
         LimitLine ll1 = new LimitLine(6000f, " ");
         ll1.setLineWidth(1f);
         ll1.enableDashedLine(10f, 10f, 0f);
         ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
         ll1.setLineColor(getResources().getColor(R.color.color_green_dark));
-
         ll1.setTextSize(10f);
+
+        /**
+         * Legend is used for  described values below of graph. Here Threshold values is described.
+         */
+
         Legend l = chart.getLegend();
         l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
         l.setTextSize(12f);
         l.setXEntrySpace(5f);
         l.setYEntrySpace(5f);
         l.setTextColor(Color.WHITE);
-        LegendEntry entry = new LegendEntry ("Threshold", Legend.LegendForm.LINE,10f,3f,new DashPathEffect(new float[]{10f, 5f},0f),getResources().getColor(R.color.color_green_dark));
+        LegendEntry entry = new LegendEntry("Threshold", Legend.LegendForm.LINE, 10f, 3f, new DashPathEffect(new float[]{10f, 5f}, 0f), getResources().getColor(R.color.color_green_dark));
         List<LegendEntry> entries = new ArrayList<>();
         entries.add(entry);
         l.setCustom(entries);
 
 
+        /**
+         *  this is used for drawa XAxis line ,
+         *  set there properties.
+         *  IAxisValueFormatter used for put values  on XAxis.
+         *  like "Mon","Tue" ....etc
+         *
+         */
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextSize(10f);
+        xAxis.setTextSize(12f);
         xAxis.setTextColor(Color.WHITE);
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
         xAxis.setEnabled(true);
         xAxis.setAxisLineWidth(1f);
         xAxis.setAxisLineColor(Color.WHITE);
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return mLabels[(int) value - 1];
+            }
+
+            // we don't draw numbers, so no decimal digits needed
+
+            public int getDecimalDigits() {
+                return 0;
+            }
+        };
 
 
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(formatter);
+        /**
+         * this is used for drawa line on YAxis..
+         * and set there properties
+         *  the
+         */
 
         YAxis yAxisL = chart.getAxisLeft();
         YAxis yAxisR = chart.getAxisRight();
@@ -178,27 +215,27 @@ public class WeekFragment extends Fragment  {
         yAxisL.setAxisLineWidth(1f);
         yAxisL.setAxisLineColor(Color.WHITE);
 
-        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return mLabels[(int) value-1];
-            }
-
-            // we don't draw numbers, so no decimal digits needed
-
-            public int getDecimalDigits() {  return 0; }
-        };
-
-
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(formatter);
         setData();
-
         return view;
     }
 
-
+    /**
+     * Get Screen Size and set Layout according to Layout.
+     */
+    private void getScreenSize() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+        float density = getResources().getDisplayMetrics().density;
+        float dpHeight = outMetrics.heightPixels / density;
+        float dpWidth = outMetrics.widthPixels / density;
+        Log.d(TAG, "dpHeight:" + dpHeight);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlChartStep.getLayoutParams();
+        params.height = (int) dpHeight;
+        Log.d(TAG, "params.height:" + params.height);
+        //Log.d(TAG, " param.height:" + param.height);
+        rlChartStep.setLayoutParams(params);
+    }
 
 
     @Override
@@ -207,14 +244,19 @@ public class WeekFragment extends Fragment  {
         unbinder.unbind();
     }
 
+    /**
+     * this Method is used for set Actual graph data .
+     * MarkerView is use as Tooltip ..
+     */
+
     private void setData() {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
         int i = 1;
         for (Float val : entryValues) {
-            values.add(new Entry(i,val));
-                i++;
-            }
+            values.add(new Entry(i, val));
+            i++;
+        }
         LineDataSet set1;
 
         if (chart.getData() != null &&
@@ -224,29 +266,29 @@ public class WeekFragment extends Fragment  {
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
 
+        } else {
+            set1 = new LineDataSet(values, " ");
+            set1.setLineWidth(3f);
+            set1.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+            set1.setCircleRadius(5f);
+            set1.setCircleHoleRadius(4f);
+            set1.setValueTextSize(12f);
+            set1.setCircleColorHole(Color.TRANSPARENT);
+            set1.setValueTextColor(Color.TRANSPARENT);
+            set1.setDrawFilled(true);
+            set1.setFillDrawable(getResources().getDrawable(R.drawable.gradinet_light_blue));
+            // set1.setFillColor(getResources().getColor(R.color.blue_transparent));
+            set1.setHighLightColor(getActivity().getResources().getColor(android.R.color.transparent));
+            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+            dataSets.add(set1); // add the datasets
+            LineData data = new LineData(dataSets);
+            CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.linechart_three_tooltip);
+            mv.setChartView(chart);
+            mv.setPadding(0, 10, 0, 0);
+            chart.setMarkerView(mv);
+            chart.setData(data);
+
         }
-            else
-            {
-                set1 = new LineDataSet(values, " ");
-                set1.setLineWidth(3f);
-                set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-
-
-                set1.setCircleRadius(5f);
-                set1.setCircleHoleRadius(4f);
-                set1.setCircleColorHole(Color.TRANSPARENT);
-                set1.setValueTextColor(Color.TRANSPARENT);
-                set1.setHighLightColor(getActivity().getResources().getColor(android.R.color.transparent));
-                ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-                dataSets.add(set1); // add the datasets
-                LineData data = new LineData(dataSets);
-                CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.linechart_three_tooltip);
-                mv.setChartView(chart);
-                mv.setPadding(0,10,0,0);
-                chart.setMarkerView(mv);
-                chart.setData(data);
-
-            }
     }
 
 

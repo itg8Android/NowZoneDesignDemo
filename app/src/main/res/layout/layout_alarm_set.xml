@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:clipToPadding="false"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    android:id="@+id/cardView"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_days"
+        android:visibility="visible">
+
+    <LinearLayout
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/marginAlarm"
+        android:gravity="center"
+        android:id="@+id/ll_days">
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/gridView"
+            android:gravity="center"
+            android:horizontalSpacing="5sp"
+            android:verticalSpacing="5dp"
+            android:numColumns="7"></GridView>
+
+    </LinearLayout>
+
+
+
+
+    <ImageView
+        android:layout_below="@+id/ll_days"
+        android:id="@+id/img_vibrations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/margin_alarm_top"
+        android:layout_marginBottom="@dimen/margin_alarm_bottom"
+        android:layout_marginStart="@dimen/margin_alarm_left"
+        android:src="@drawable/ic_vibration_black_24dp"/>
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/switch_vibration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/img_vibrations"
+        android:layout_below="@+id/ll_days"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/margin_alarm_top"
+        android:layout_marginBottom="@dimen/margin_alarm_bottom"
+        android:layout_marginStart="@dimen/marginAlarm"
+        style="@style/MySwitchStyle"
+        android:checked="true"/>
+
+
+
+    <ImageView
+        android:layout_toEndOf="@+id/switch_vibration"
+        android:id="@+id/img_speaker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_days"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/margin_alarm_top"
+        android:layout_marginBottom="@dimen/margin_alarm_bottom"
+        android:layout_marginStart="@dimen/margin_alarm_left"
+        android:src="@drawable/ic_speakers"/>
+
+    <SeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/img_speaker"
+        android:layout_below="@+id/ll_days"
+        android:layout_marginTop="@dimen/margin_alarm_top"
+        android:layout_marginBottom="@dimen/margin_alarm_bottom"
+        android:layout_marginStart="@dimen/marginAlarm"
+        android:layout_marginEnd="@dimen/margin_alarm_left"
+        android:layout_centerInParent="true"
+
+        android:layout_centerHorizontal="true"
+       android:max="100"
+        android:progress="0" />
+
+    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+        android:visibility="visible"
+        android:layout_below="@+id/seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:font_value="2"
+        android:text="8:00 AM"
+        android:id="@+id/lbl_alarmTime"
+        android:layout_alignBaseline="@+id/lbl_alarmType"
+        android:textSize="@dimen/lbl_alarm_time"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="@dimen/margin_alarm_top"
+        android:layout_marginBottom="@dimen/margin_alarm_bottom"/>
+
+    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:text="Alarm type"
+        app:font_value="1"
+        android:layout_marginTop="@dimen/margin_alarm_top"
+        android:layout_marginBottom="@dimen/margin_alarm_bottom"
+        android:layout_marginStart="@dimen/margin_alarm_left"
+        android:padding="@dimen/paddingAlarm"
+        android:id="@+id/lbl_alarmType"
+        android:layout_below="@+id/switch_vibration"/>
+    </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
