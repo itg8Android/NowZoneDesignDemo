@@ -72,6 +72,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final String COLOR_FOCUSED_M = "#240C00B7";
     private static final String COLOR_FOCUSED_S = "#FF4027FB";
     private static final int LAST_333 = 333;
+    public static final double CONST_1 = -200d;
+    public static final double CONST_2 = 200d;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -183,7 +185,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-        rolling=new Rolling(50);
+        rolling=new Rolling(33);
         checkDeviceConnection(rlWave);
 
 
@@ -394,11 +396,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            firstPreference(pressure);
         //Second Preference
         if(count>30) {
-            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
-//            firstPreference(smoothedValue(pressure));
+//            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
+//            firstPreference(pressure);
             secondPref(pressure);
-            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
-//            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(pressure));
+//            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
+            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(pressure));
             return;
         }
         count++;
@@ -415,13 +417,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void secondPref(double pressure){
         rolling.add(pressure);
-        lastMax=rolling.getaverage()+500;
-        lastMin=rolling.getaverage()-500;
+        lastMax=((int)rolling.getaverage()+1000)+1;
+        lastMin=(int)rolling.getaverage()-1000;
     }
 
     private void firstPreference(double pressure) {
         if(lastMax<pressure || lastMax-1000>pressure) {
-            lastMax = pressure;
+            lastMax = pressure+500;
         }
         if(count>30) {
             if(lastMin == 0)
@@ -439,13 +441,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                if(lastMin>lastMax-1000)
 //                    lastMax=lastMin+1000;
 
-            if(lastMax-1000>lastMin) {
+            if(lastMax-lastMin>1000) {
                 lastMin = lastMax - 1000;
             }
 //            else
 //                lastMax=lastMin+2000;
             if(lastMin>pressure)
-                lastMin=pressure;
+                lastMin=pressure-500;
 
 //
 ////            if (lastMin > pressure || lastMin == 0){
@@ -459,7 +461,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private double calculateProportion(double pressure) {
 //        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
-        return (-0.02+(1.02*((pressure-(lastMin))/(lastMax-lastMin))));
+//        double d=(double) Math.round((CONST_1+(CONST_2*((pressure-(lastMin))/(lastMax-lastMin)))) * 1000000000000000000d) / 1000000000000000000d;
+        double d=((-100.02d)+((100.02d)*((pressure-(lastMin))/(lastMax-lastMin))));
+        Log.d(TAG,"d:"+pressure);
+        return d;
     }
 
     @Override

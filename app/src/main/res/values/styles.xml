@@ -68,8 +68,8 @@
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">@color/colorPrimary</item>
     </style>
-    
-    <style name="App_EditTextStyle"  parent="@android:style/Widget.EditText">
+
+    <style name="App_EditTextStyle" parent="@android:style/Widget.EditText">
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">@dimen/txt_edit_text_size</item>
 

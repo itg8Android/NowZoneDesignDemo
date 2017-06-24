@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -45,7 +46,7 @@ import me.alexrs.wavedrawable.WaveDrawable;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, EasyPermissions.PermissionCallbacks, View.OnClickListener, AdapterView.OnItemClickListener {
+public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, EasyPermissions.PermissionCallbacks, View.OnClickListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final int RC_ACCESS_COURSE_LOCATION = 101;
     private static final int REQUEST_ENABLE_BT = 201;
@@ -75,6 +76,8 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     TextView txtScanningForDevice;
     @BindView(R.id.btn_retry)
     Button btnRetry;
+    @BindView(R.id.swipeToRefresh)
+    SwipeRefreshLayout swipeToRefresh;
     private WaveDrawable waveDrawable;
     private BluetoothAdapter bluetoothAdapter;
     private DeviceListAdapter deviceListAdapter;
@@ -95,6 +98,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         btnConnectWithBt.setOnClickListener(this);
         btnRetry.setOnClickListener(this);
         listOfBluetoothDevices.setOnItemClickListener(this);
+        swipeToRefresh.setOnRefreshListener(this);
 
     }
 
@@ -304,7 +308,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     public void onClick(View view) {
         if (view.getId() == R.id.btn_connect_with_bt) {
             presenter.refreshBtnClicked(view);
-        }else if(view.getId() == R.id.btn_retry){
+        } else if (view.getId() == R.id.btn_retry) {
             startBleScan();
         }
     }
@@ -351,5 +355,11 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
             btnConnectWithBt.setVisibility(View.GONE);
             btnRetry.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        startBleScan();
+        swipeToRefresh.setRefreshing(false);
     }
 }
