@@ -19,7 +19,7 @@
             android:layout_height="30dp"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/ic_left_arrow" />
+            app:srcCompat="@drawable/ic_left_arrow" />
 
         <TextView
             android:id="@+id/txt_day"
@@ -28,6 +28,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="10dp"
             android:text="Yesterday"
+            android:textStyle="bold"
             android:textAllCaps="true"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_value" />

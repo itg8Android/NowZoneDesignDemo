@@ -14,15 +14,15 @@
     <dimen name="text_sleep_normal">13sp</dimen>
 
 
-    <dimen name="txt_value">10sp</dimen>
+    <dimen name="txt_value">12sp</dimen>
     <dimen name="txt_lbl_dash_top">14sp</dimen>
-    <dimen name="txt_value_time">8sp</dimen>
+    <dimen name="txt_value_time">11sp</dimen>
     <dimen name="txt_value_time_steps">13sp</dimen>
 
-    <dimen name="txt_value_sleep">10sp</dimen>
+    <dimen name="txt_value_sleep">14sp</dimen>
 
 
-    <dimen name="txt_hr">10sp</dimen>
+    <dimen name="txt_hr">12sp</dimen>
     <dimen name="txt_lbl_dash_bottom">10sp</dimen>
 
 
