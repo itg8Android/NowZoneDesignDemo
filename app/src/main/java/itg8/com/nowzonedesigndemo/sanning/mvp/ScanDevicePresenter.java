@@ -24,12 +24,15 @@ import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.connection.BleService;
 import itg8.com.nowzonedesigndemo.connection.DeviceModel;
+import itg8.com.nowzonedesigndemo.utility.BreathState;
+import itg8.com.nowzonedesigndemo.utility.DeviceState;
 import me.alexrs.wavedrawable.WaveDrawable;
 
 
 public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAdapter.LeScanCallback {
 
     private static final String TAG = ScanDevicePresenter.class.getSimpleName();
+    public static final long SCAN_TIME = 5000;
     private ScanDeviceView view;
     private BluetoothLeScanner scanner;
     private DeviceModel mSelectedDevice;
@@ -105,12 +108,12 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
     public void startLEScan(Context context, BluetoothAdapter bluetoothAdapter) {
         if (stopped) {
             stopped = false;
-            handler.postDelayed(r, 5000);
+            handler.postDelayed(r, SCAN_TIME);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                scanner = bluetoothAdapter.getBluetoothLeScanner();
+                if(scanner==null)
+                    scanner = bluetoothAdapter.getBluetoothLeScanner();
                 Log.d(TAG, "Scan Started on 23");
                 model.onLeScanCall(scanner, this);
-
             } else {
                 //noinspection deprecation
                // bluetoothAdapter.startLeScan(this);
@@ -217,11 +220,31 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
 
     @Override
     public void checkAlreadyConnectedOnce(Context context) {
-        if(SharePrefrancClass.getInstance(context).hasSPreference(CommonMethod.DEVICE_ADDRESS)){
+        if(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE)!=null &&
+                !SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE).equalsIgnoreCase(DeviceState.DISCONNECTED.name())){
             Intent intent = new Intent(context, BleService.class);
             context.startService(intent);
             if(view!=null)
                 view.startHomeActivity();
         }
+    }
+
+    @Override
+    public void setLoadingText(CharSequence text) {
+        if(view!=null) {
+            view.onScanningStarted(text);
+        }
+    }
+
+    @Override
+    public void showButton() {
+        if(view!=null)
+            view.onShowButton();
+    }
+
+    @Override
+    public void showLoading() {
+            if(view!=null)
+                view.onShowScanning();
     }
 }

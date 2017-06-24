@@ -28,8 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/linearLayout"
-            android:layout_centerInParent="true"
-            >
+            android:layout_centerInParent="true">
 
             <FrameLayout
                 android:id="@+id/frame_inside"
@@ -48,17 +47,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>
+
             <FrameLayout
                 android:id="@+id/frame_listview"
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_height="match_parent"
-                >
+                android:visibility="gone">
+
                 <ListView
                     android:id="@+id/listOfBluetoothDevices"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content" />
             </FrameLayout>
         </FrameLayout>
 
@@ -78,14 +77,36 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/btn_connect_with_bt"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/btn_stroke_red"
-                android:text="Connect with Device"
-                android:textColor="@android:color/white" />
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btn_connect_with_bt"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/btn_stroke_red"
+                    android:text="Connect with Device"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/txtScanningForDevice"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+
+                <Button
+                    android:id="@+id/btn_retry"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/btn_stroke_red"
+                    android:text="Retry"
+                    android:textColor="@android:color/white" />
+
+            </FrameLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -99,9 +120,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </RelativeLayout>
+        android:layout_height="match_parent"></RelativeLayout>
 
 
 </FrameLayout>

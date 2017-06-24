@@ -167,7 +167,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private int lastCount=1;
     private long lastUpdate=0;
     private double smoothed=0;
-    private static final double smoothing=200;
+    private static final double smoothing=50;
     Rolling rolling;
 
     @Override
@@ -183,8 +183,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-        rolling=new Rolling(8);
-      //  checkDeviceConnection(rlWave);
+        rolling=new Rolling(50);
+        checkDeviceConnection(rlWave);
 
 
 
@@ -398,6 +398,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            firstPreference(smoothedValue(pressure));
             secondPref(pressure);
             breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
+//            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(pressure));
             return;
         }
         count++;
@@ -469,21 +470,26 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onDeviceDisconnected() {
         Log.d(TAG, "Device disconnected");
+        Intent intent = new Intent("ACTION_NW_DEVICE_DISCONNECT");
+        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT,true);
+        sendBroadcast(intent);
     }
 
     @Override
     public void onBreathCountAvailable(int intExtra) {
         Log.d(TAG, "Breath count: " + intExtra);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                breathValue.setText(String.valueOf(intExtra));
-            }
-        },30);
+        new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)),30);
     }
 
     @Override
     public void onStepCountReceived(int intExtra) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                txtStepCountValue.setText(String.valueOf(intExtra));
+
+            }
+        });
         Log.d(TAG, "Step count: " + intExtra);
     }
 

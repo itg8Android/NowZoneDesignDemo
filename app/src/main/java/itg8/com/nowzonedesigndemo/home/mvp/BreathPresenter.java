@@ -30,5 +30,7 @@ public interface BreathPresenter {
         void onStateReceived(BreathState state);
 
         void onStateTimeReceived(StateTimeModel stateTimeModel);
+
+        void onDeviceNotConnectedInTime();
     }
 }

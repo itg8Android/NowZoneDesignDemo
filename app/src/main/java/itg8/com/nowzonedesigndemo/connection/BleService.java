@@ -25,8 +25,10 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
+import itg8.com.nowzonedesigndemo.common.ProfileModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.db.DbHelper;
 import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
@@ -53,6 +55,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public static final String ACTION_COUNT_RESULT = TAGWithFull + ".ACTION_COUNT_RESULT";
     public static final String ACTION_STEP_COUNT = TAGWithFull + ".ACTION_STEP_COUNT";
     public static final String ACTION_STATE_ARRIVED = TAGWithFull + ".ACTION_STATE_AVAIL";
+    public static final String ACTION_DEVICE = TAGWithFull + ".ACTION_DEVICE";
     private final IBinder mBinder = new LocalBinder();
     private final StateCheckImp stateManager;
     TblBreathCounter counter;
@@ -70,6 +73,10 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             if (action.equals(getResources().getString(R.string.action_device_disconnect))) {
                 if (manager != null) {
                     manager.disconnect();
+                    SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
+                    Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
+                    i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
+                    sendBroadcast(i);
                 }
             }
         }
@@ -77,11 +84,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private BluetoothManager mBluetoothManager;
     private RDataManager dataManager;
     private TblState tblState;
+    private ProfileModel profileModel;
 
 
     public BleService() {
         manager = new BleConnectionManager(this);
-        dataManager = new RDataManagerImp(this);
         stateManager = new StateCheckImp(this, this);
 
     }
@@ -90,11 +97,21 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "BLE Service started");
+        dataManager = new RDataManagerImp(this,getApplicationContext());
         registerReceiver(receiver, new IntentFilter(getResources().getString(R.string.action_device_disconnect)));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        profileModel=((AppApplication)getApplication()).getProfileModel();
+        if(intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
+            if(manager!=null){
+                manager.disconnect();
+
+                return START_STICKY;
+            }
+        }
         try {
             userDao = getHelper().getCountDao();
             avgDao = getHelper().getAvgDao();
@@ -104,7 +121,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             e.printStackTrace();
         }
         String address = null, name = null;
-        if (intent != null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
+        if (intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
             address = intent.getStringExtra(CommonMethod.DEVICE_ADDRESS);
             name = intent.getStringExtra(CommonMethod.DEVICE_NAME);
         }
@@ -227,14 +244,15 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
-
+        manager.disconnect();
         startService(new Intent(this, BleService.class));
         Log.d(TAG, "On destroy  called");
     }
 
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
-        manager.setBluetoothGatt(device.connectGatt(this, true, callback));
+        manager.disconnect();
+        manager.setBluetoothGatt(device.connectGatt(this, false, callback));
 
     }
 
@@ -369,7 +387,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
             count.setDate(Helper.getCurrentDate());
             count.setSteps(step);
-            count.setCalBurn(Helper.calculateCalBurnByStepCount(step));
+//            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,));
         });
     }
 

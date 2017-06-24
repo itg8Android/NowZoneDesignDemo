@@ -60,13 +60,13 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private List<DataModel> dataStorageRaw;
     private DataModel modelTemp;
 
-    public RDataManagerImp(RDataManagerListener listener) {
+    public RDataManagerImp(RDataManagerListener listener,Context mContext) {
         this.listener = listener;
         rolling = new Rolling(ROLLING_AVG_SIZE);
         rolling2 = new Rolling(ROLLING_AVG_SIZE);
         dataStorage = new ArrayList<>(PACKET_READY_TO_IMP+4);
         dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
-        accelImp=new CheckAccelImp(this);
+        accelImp=new CheckAccelImp(this,SharePrefrancClass.getInstance(mContext).getIPreference(CommonMethod.STEP_COUNT));
         observer= new Observer<DataModel>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -109,7 +109,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
             /**
              * Currently we are working on pressure
              */
-       //     processForStepCounting(model);
+            processForStepCounting(model);
             dataStorageRaw.add(copy(model));
             processModelData(model, context);
         } else {
