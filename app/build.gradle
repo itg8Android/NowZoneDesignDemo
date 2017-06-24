@@ -14,7 +14,7 @@ android {
             enabled true
             additionalParameters('jack.incremental': 'true')
         }
-        vectorDrawables{
+        vectorDrawables {
             useSupportLibrary true
         }
     }

@@ -32,7 +32,7 @@ import me.alexrs.wavedrawable.WaveDrawable;
 public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAdapter.LeScanCallback {
 
     private static final String TAG = ScanDevicePresenter.class.getSimpleName();
-    public static final long SCAN_TIME = 5000;
+    public static final long SCAN_TIME = 10000;
     private ScanDeviceView view;
     private BluetoothLeScanner scanner;
     private DeviceModel mSelectedDevice;

@@ -380,7 +380,7 @@ class CheckAccelImp {
             nZ[i] = (float)(objectArray[i].getZ()+32768)/65535.f;
             //Logs.d("#"+nZ[i]);
             n3D[i] = (float) Math.sqrt(nX[i]*nX[i]+nY[i]*nY[i]+nZ[i]*nZ[i]);
-            Log.d("###","#"+n3D[i]);
+//            Log.d("###","#"+n3D[i]);
         }
 
         //PeakDetector peakDetect = new PeakDetector(nY);
