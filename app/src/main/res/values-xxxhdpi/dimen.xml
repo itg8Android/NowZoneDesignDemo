@@ -44,6 +44,7 @@
     <dimen name="marginLeftProfile">10sp</dimen>
     <dimen name="marginRightProfile">10sp</dimen>
 
+    <dimen name="txt_edit_text_size">14sp</dimen>
 
 
 

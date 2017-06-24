@@ -42,6 +42,7 @@
     <dimen name="lbl_time_front">15sp</dimen>
 
     <dimen name="margin_alarm_bottom">10sp</dimen>
+    <dimen name="txt_edit_text_size">12sp</dimen>
 
 
 

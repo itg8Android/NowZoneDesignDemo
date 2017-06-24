@@ -8,21 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
 
-public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener{
+public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.image)
-    ImageView image;
+    //    @BindView(R.id.image)
+//    ImageView image;
     @BindView(R.id.edt_name)
     EditText edtName;
     @BindView(R.id.input_name)
@@ -39,20 +38,27 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
     RadioButton rgbHeightFeet;
     @BindView(R.id.rbg_main_height)
     RadioGroup rbgMainHeight;
-    @BindView(R.id.ll_height)
-    LinearLayout llHeight;
-    @BindView(R.id.edt_weight)
-    EditText edtWeight;
+    //    @BindView(R.id.ll_height)
+//    LinearLayout llHeight;
+//    @BindView(R.id.edt_weight)
+//    EditText edtWeight;
     @BindView(R.id.input_weight)
     TextInputLayout inputWeight;
-    @BindView(R.id.rgb_steps_today)
-    RadioButton rgbStepsToday;
-    @BindView(R.id.rgb_step_history)
-    RadioButton rgbStepHistory;
+
     @BindView(R.id.rbg_main_weight)
     RadioGroup rbgMainWeight;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.rl_profileImg)
+    RelativeLayout rlProfileImg;
+    @BindView(R.id.edt_weight)
+    EditText edtWeight;
+    @BindView(R.id.input_height_cm)
+    TextInputLayout inputHeightCm;
+    @BindView(R.id.rgb_weight_kg)
+    RadioButton rgbWeightKg;
+    @BindView(R.id.rgb_weight_pounds)
+    RadioButton rgbWeightPounds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +76,26 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
 
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-        switch (checkedId)
-        {
+        switch (checkedId) {
             case R.id.rgb_height_cm:
-                edtHeightCm.setVisibility(View.VISIBLE);
+                inputHeightCm.setVisibility(View.VISIBLE);
+                edtHeightCm.setHint("Height[cm]");
                 break;
             case R.id.rgb_height_feet:
-                edtHeightCm.setVisibility(View.GONE);
-                    break;
+                inputHeightCm.setVisibility(View.VISIBLE);
+                edtHeightCm.setHint("Height[inch]");
+                edtHeight.setHint("Height[feet]");
+                break;
+            case R.id.fab:
+
+                break;
+            case R.id.rgb_weight_kg:
+                edtWeight.setHint("Weight[kg]");
+                break;
+        case R.id.rgb_weight_pounds:
+            edtWeight.setHint("Weight[pounds]");
+                break;
+
         }
 
     }
