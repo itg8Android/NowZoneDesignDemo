@@ -51,5 +51,7 @@
     <string name="rationale_location">To better scan result we need permission for location. Dont worry we are not sharing your location with anybody.</string>
     <string name="rationale_storage">Please grant storage permission. We need this for storing details offline</string>
     <string name="title_activity_breath_history">Breath History</string>
+    <string name="title_activity_alarm">Alarm</string>
+    <string name="title_activity_profile">Profile</string>
 
 </resources>

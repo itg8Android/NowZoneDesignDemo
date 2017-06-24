@@ -24,6 +24,7 @@ import android.widget.RadioGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.steps.widget.ColorArcProgressBar;
 
 
@@ -43,13 +44,10 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-
-
     @BindView(R.id.fab)
     FloatingActionButton fab;
 //    @BindView(R.id.tabLayout)
 //    TabLayout tabLayout;
-
     @BindView(R.id.img_graph)
     ImageView imgGraph;
     @BindView(R.id.coordinator)
@@ -70,7 +68,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 
             switch (item.getItemId()) {
                 case R.id.nav_day:
-                    fragment = DayWeekFragment.newInstance("", "");
+                    fragment = TodayStepsFragment.newInstance(" "," ");
                     setFragmnet();
                     return true;
                 case R.id.nav_week:
@@ -126,7 +124,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         switch (checkedId) {
             case R.id.rgb_steps_today:
                 imgGraph.setVisibility(View.GONE);
-
                 navigation.setVisibility(View.GONE);
                 progressSteps.setVisibility(View.VISIBLE);
                 fragment = new TodayStepsFragment();
@@ -136,7 +133,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 //                imgGraph.setVisibility(View.VISIBLE);
                 progressSteps.setVisibility(View.GONE);
                 navigation.setVisibility(View.VISIBLE);
-                fragment = new DayWeekFragment();
+                fragment = new TodayStepsFragment();
                 break;
         }
         setFragmnet();
