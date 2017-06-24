@@ -114,8 +114,9 @@ public class SleepFragment extends Fragment {
         // green span
         mProgressItem = new ProgressItem();
         mProgressItem.progressItemPercentage = 20;
-        mProgressItem.color = R.color.color_green;
+        mProgressItem.color = R.color.color_skin;
         progressItemList.add(mProgressItem);
+
 
         // red span
         mProgressItem = new ProgressItem();
@@ -126,7 +127,7 @@ public class SleepFragment extends Fragment {
         // blue span
         mProgressItem = new ProgressItem();
         mProgressItem.progressItemPercentage = 30;
-        mProgressItem.color = R.color.color_skin;
+        mProgressItem.color = R.color.color_green;
         progressItemList.add(mProgressItem);
 
         customProgressbar.initData(progressItemList);

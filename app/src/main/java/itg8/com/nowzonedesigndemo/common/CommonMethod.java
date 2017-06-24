@@ -21,7 +21,7 @@ public class CommonMethod {
 
     public static final String USER_CURRENT_AVG = "USER_CURRENT_AVG";
 
-    public static final String DATE_FORMAT = "dd-mm-yyyy";
+
     public static final String SAVEDAYS = "SAVEDAYS";
 
 
