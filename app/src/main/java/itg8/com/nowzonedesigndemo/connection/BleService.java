@@ -72,7 +72,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             String action = intent.getAction();
             if (action.equals(getResources().getString(R.string.action_device_disconnect))) {
                 if (manager != null) {
-                    manager.disconnect();
+//                    manager.disconnect();
                     SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
                     Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
@@ -107,7 +107,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         profileModel=((AppApplication)getApplication()).getProfileModel();
         if(intent!=null && intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
             if(manager!=null){
-                manager.disconnect();
+//                manager.disconnect();
 
                 return START_STICKY;
             }
@@ -243,6 +243,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onDestroy() {
         super.onDestroy();
+        manager.disconnect();
         unregisterReceiver(receiver);
         manager.disconnect();
         startService(new Intent(this, BleService.class));
@@ -252,7 +253,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
         manager.disconnect();
-        manager.setBluetoothGatt(device.connectGatt(this, false, callback));
+        manager.setBluetoothGatt(device.connectGatt(this, true, callback));
 
     }
 
@@ -310,7 +311,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             sendBroadcastState(BreathState.CALM,count,timestamp);
         } else if (mLastOneCount >= newStressCheck && mSecondLastCount >= newStressCheck && count >= newStressCheck) {
             sendBroadcastState(BreathState.STRESS, count, timestamp);
-        } else {
+        } else if(mLastOneCount == count && mSecondLastCount == count){
             sendBroadcastState(BreathState.FOCUSED, count, timestamp);
         }
     }

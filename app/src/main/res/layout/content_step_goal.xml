@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,45 +12,86 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/flag"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:src="@drawable/goal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        android:layout_centerHorizontal="true"/>
 
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_circle_black_24dp"
-        app:layout_constraintEnd_toStartOf="@+id/flag"
-        android:id="@+id/imageView"
-        tools:layout_editor_absoluteY="152dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintRight_toLeftOf="@+id/flag"
-        android:layout_marginRight="8dp" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="142dp"
-        android:layout_height="40dp"
-        android:ems="10"
-        android:inputType="number"
-        tools:layout_editor_absoluteY="160dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.5" />
-
-    <ImageView
-        android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_remove_circle_black_24dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/flag"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/flag"
-        android:layout_marginLeft="8dp" />
-</android.support.constraint.ConstraintLayout>
+        android:id="@+id/btn_remove"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_below="@+id/flag"
+         />
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/btn_add"
+        android:layout_toEndOf="@+id/btn_remove"
+        android:ems="10"
+        android:inputType="number"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/flag"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:text="0"
+        android:textSize="@dimen/txt_sleep_value"
+        android:background="@drawable/border_step_week"
+        android:layout_toStartOf="@+id/btn_add"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/flag"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        app:srcCompat="@drawable/ic_add_circle_black_24dp"
+         />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="save"
+        android:background="@color/blue_half_transparent"
+        android:textColor="@color/colorWhite"/>
+
+    <View
+        android:id="@+id/line_1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorWhite"
+        android:layout_below="@+id/btn_save"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/lbl_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line_1"
+        android:layout_margin="10dp"
+        android:text="Notify when complete"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/txt_hr"
+        />
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/switch_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line_1"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"/>
+</RelativeLayout>

@@ -71,11 +71,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private static final String COLOR_NORMAL_M = "#24006bb7";
     private static final String COLOR_NORMAL_S = "#27BEFB";
-    private static final String COLOR_CALM_M = "#240CB700";
+    public static final String COLOR_CALM_M = "#240CB700";
     private static final String COLOR_CALM_S = "#FF35FB27";
-    private static final String COLOR_STRESS_M = "#24B70F00";
+    public static final String COLOR_STRESS_M = "#24B70F00";
     private static final String COLOR_STRESS_S = "#FFF92E27";
-    private static final String COLOR_FOCUSED_M = "#240C00B7";
+    public static final String COLOR_FOCUSED_M = "#240C00B7";
     private static final String COLOR_FOCUSED_S = "#FF4027FB";
     private static final int LAST_333 = 333;
     public static final double CONST_1 = -10.02d;
@@ -552,6 +552,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        Timber.i("Start device activity");
 //        startActivity(new Intent(this, ScanDeviceActivity.class));
 //        finish();
+//        checkDeviceConnection(rlWave);
     }
 
     @Override

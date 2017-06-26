@@ -45,6 +45,7 @@
 
     </string-array>
     <string name="title_activity_audio">Meditation</string>
+    <string name="title_activity_scan">Scan device</string>
     <string name="dialog_disconnected_device">It seems like you are not connected to Nowzone device. Please make sure device is having enough chanrging. Make it running and search.</string>
     <string name="selected_device">Please select device from list</string>
     <string name="not_have_bluetooth">Sorry, you dont have Bluetooth LE supported device. You cannot use this app on non BLE devices</string>

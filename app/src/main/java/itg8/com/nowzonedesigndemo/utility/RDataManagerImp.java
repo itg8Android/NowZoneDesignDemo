@@ -104,15 +104,16 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
             observable=Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
-
+                    processForStepCounting(model);
+                    dataStorageRaw.add(copy(model));
+                    processModelData(model, context);
                 }
             });
             /**
              * Currently we are working on pressure
              */
-            processForStepCounting(model);
-            dataStorageRaw.add(copy(model));
-            processModelData(model, context);
+
+
         } else {
             Log.d(RDataManagerImp.class.getSimpleName(), "data received: model is null");
         }

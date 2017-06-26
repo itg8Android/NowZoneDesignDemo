@@ -75,18 +75,22 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     void checkDeviceDisconnected(View v) {
         Log.d(TAG, "DISCONNECTED ALREADY");
         if (deviceDisconnected) {
-            Snackbar snackbar = Snackbar.make(v, R.string.dialog_disconnected_device, Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.CONNECTED);
-                    SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.DEVICE_ADDRESS);
-                    startActivity(new Intent(getBaseContext(), ScanDeviceActivity.class));
-                    finish();
-                }
-            });
-            snackbar.show();
+            showSnackbar(v);
         }
+    }
+
+    private void showSnackbar(View v) {
+        Snackbar snackbar = Snackbar.make(v, R.string.dialog_disconnected_device, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.CONNECTED);
+                SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.DEVICE_ADDRESS);
+                startActivity(new Intent(getBaseContext(), ScanDeviceActivity.class));
+                finish();
+            }
+        });
+        snackbar.show();
     }
 
 //    public String getClassName(){

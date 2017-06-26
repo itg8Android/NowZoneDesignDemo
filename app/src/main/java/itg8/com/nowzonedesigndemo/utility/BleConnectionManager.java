@@ -86,7 +86,7 @@ public class BleConnectionManager implements ConnectionManager {
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Timber.d("Characteristics written:%s",characteristic.getValue());
+            Logs.d("Characteristics written:"+characteristic.getValue());
             super.onCharacteristicWrite(gatt, characteristic, status);
         }
 
@@ -180,7 +180,8 @@ public class BleConnectionManager implements ConnectionManager {
     @Override
     public void disconnect() {
         if(mBluetoothGatt!=null){
-            mBluetoothGatt.disconnect();
+//            mBluetoothGatt.close();
+//            mBluetoothGatt.disconnect();
         }
     }
 
@@ -324,6 +325,7 @@ public class BleConnectionManager implements ConnectionManager {
 
 
     public void setBluetoothGatt(BluetoothGatt bluetoothGatt) {
-        this.mBluetoothGatt = bluetoothGatt;
+        if(mBluetoothGatt==null)
+            this.mBluetoothGatt = bluetoothGatt;
     }
 }
