@@ -106,6 +106,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (rgbStepsToday.isChecked()) {
             fragment = new TodayStepsFragment();
+            rgbStepsToday.setTextColor(Color.BLACK);
+            rgbStepHistory.setTextColor(Color.WHITE);
             setFragmnet();
             //  setTabLayout();
         }
@@ -127,6 +129,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
                 navigation.setVisibility(View.GONE);
                 progressSteps.setVisibility(View.VISIBLE);
                 fragment = new TodayStepsFragment();
+                rgbStepsToday.setTextColor(Color.BLACK);
+                rgbStepHistory.setTextColor(Color.WHITE);
                 break;
 
             case R.id.rgb_step_history:
@@ -134,6 +138,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
                 progressSteps.setVisibility(View.GONE);
                 navigation.setVisibility(View.VISIBLE);
                 fragment = new TodayStepsFragment();
+                rgbStepHistory.setTextColor(Color.BLACK);
+                rgbStepsToday.setTextColor(Color.WHITE);
                 break;
         }
         setFragmnet();

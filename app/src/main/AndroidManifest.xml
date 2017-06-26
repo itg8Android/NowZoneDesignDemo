@@ -73,6 +73,10 @@
         <activity
             android:name=".setting.SettingActivity"
             android:label="@string/title_activity_setting"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".steps.StepGoalActivity"
+            android:label="@string/title_activity_step_goal"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

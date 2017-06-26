@@ -105,7 +105,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         profileModel=((AppApplication)getApplication()).getProfileModel();
-        if(intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
+        if(intent!=null && intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
             if(manager!=null){
                 manager.disconnect();
 
@@ -121,7 +121,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             e.printStackTrace();
         }
         String address = null, name = null;
-        if (intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
+        if (intent!=null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
             address = intent.getStringExtra(CommonMethod.DEVICE_ADDRESS);
             name = intent.getStringExtra(CommonMethod.DEVICE_NAME);
         }

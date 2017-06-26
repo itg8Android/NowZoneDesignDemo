@@ -54,5 +54,6 @@
     <string name="title_activity_alarm">Alarm</string>
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_step_goal">Step Goal</string>
 
 </resources>

@@ -77,7 +77,10 @@ public class SleepActivity extends BaseSleepClass implements OnChartValueSelecte
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar()!=null) {
+            this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         imgLeft.setOnClickListener(this);
         imgRight.setOnClickListener(this);
         setUpViewPager();

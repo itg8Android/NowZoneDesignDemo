@@ -118,7 +118,7 @@ class CheckAccelImp {
             roll = Math.sqrt((xG* xG) + (yG*yG) + (zG*zG));
 
             log="X "+formatter.format( (model.getX() * 0.224)/1000)+ " Y "+formatter.format((model.getY() * 0.224)/1000)+" Z "+formatter.format((model.getZ() * 0.224)/1000);
-            Logs.d(String.valueOf(roll));
+          //  Logs.d(String.valueOf(roll));
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
@@ -159,19 +159,19 @@ class CheckAccelImp {
              * <TESTED
              */
 
-            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION-1) {
-                modelCounter=0;
-                e.onNext(analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000));
-                models[modelCounter]=model;
-            }else {
-                models[modelCounter]=model;
-                modelCounter++;
-            }
+//            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION-1) {
+//                modelCounter=0;
+//                e.onNext(analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000));
+//                models[modelCounter]=model;
+//            }else {
+//                models[modelCounter]=model;
+//                modelCounter++;
+//            }
 
             /**
              * This is old method providing value on tilt in sitting position  12/06/2017
              */
-//            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
+            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
 
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
             lastStepVal = pedi_step_counter;

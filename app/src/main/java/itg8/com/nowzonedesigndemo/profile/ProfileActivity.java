@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -16,14 +17,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
 
-public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
+public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     //    @BindView(R.id.image)
 //    ImageView image;
-    @BindView(R.id.edt_name)
-    EditText edtName;
     @BindView(R.id.input_name)
     TextInputLayout inputName;
     @BindView(R.id.edt_height)
@@ -42,8 +41,6 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
 //    LinearLayout llHeight;
 //    @BindView(R.id.edt_weight)
 //    EditText edtWeight;
-    @BindView(R.id.input_weight)
-    TextInputLayout inputWeight;
 
     @BindView(R.id.rbg_main_weight)
     RadioGroup rbgMainWeight;
@@ -59,6 +56,12 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
     RadioButton rgbWeightKg;
     @BindView(R.id.rgb_weight_pounds)
     RadioButton rgbWeightPounds;
+    @BindView(R.id.edt_name)
+    EditText edtName;
+    @BindView(R.id.input_weight)
+    TextInputLayout inputWeight;
+    @BindView(R.id.button)
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         rbgMainWeight.setOnCheckedChangeListener(this);
         rbgMainHeight.setOnCheckedChangeListener(this);
-
+        button.setOnClickListener(this);
 
     }
 
@@ -92,11 +95,15 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
             case R.id.rgb_weight_kg:
                 edtWeight.setHint("Weight[kg]");
                 break;
-        case R.id.rgb_weight_pounds:
-            edtWeight.setHint("Weight[pounds]");
+            case R.id.rgb_weight_pounds:
+                edtWeight.setHint("Weight[pounds]");
                 break;
-
         }
+
+    }
+
+    @Override
+    public void onClick(View view) {
 
     }
 }

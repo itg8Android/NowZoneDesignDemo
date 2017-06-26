@@ -1,5 +1,6 @@
 package itg8.com.nowzonedesigndemo.breath;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -35,10 +36,15 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_breath_history);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar()!=null) {
+            this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

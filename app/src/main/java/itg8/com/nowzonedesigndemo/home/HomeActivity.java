@@ -33,6 +33,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.alarm.AlarmActivity;
 import itg8.com.nowzonedesigndemo.audio.AudioActivity;
@@ -72,8 +78,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final String COLOR_FOCUSED_M = "#240C00B7";
     private static final String COLOR_FOCUSED_S = "#FF4027FB";
     private static final int LAST_333 = 333;
-    public static final double CONST_1 = -200d;
-    public static final double CONST_2 = 200d;
+    public static final double CONST_1 = -10.02d;
+    public static final double CONST_2 = 10.02d;
+    private static final double PI_MIN = -8.02d;
+    private static final double PI_MAX = 8.02d;
+    private static final double MIN_PRESSURE=800;
+    private static final double MAX_PRESSURE=8100;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -171,6 +181,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private double smoothed=0;
     private static final double smoothing=50;
     Rolling rolling;
+    private double dLast;
+    private float a=0.2f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -395,17 +407,45 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onPressureDataAvail(double pressure) {
 //            firstPreference(pressure);
         //Second Preference
-        if(count>30) {
+        Observable.create(new ObservableOnSubscribe<Double>() {
+            @Override
+            public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
+//                firstPreference(pressure);
+                e.onNext(calculateProportion(pressure));
+            }
+        }).observeOn(Schedulers.trampoline())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Double>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Double aDouble) {
+                        if (count > 30) {
 //            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
-//            firstPreference(pressure);
-            secondPref(pressure);
+//            secondPref(pressure);
 //            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
-            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(pressure));
-            return;
-        }
-        count++;
-//        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
+                            breathview.addSample(SystemClock.elapsedRealtime(),aDouble);
+                        }else {
+                            count++;
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
+//        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
 
     double smoothedValue( double pressure ){
 //        long now = Calendar.getInstance().getTimeInMillis();
@@ -417,13 +457,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void secondPref(double pressure){
         rolling.add(pressure);
-        lastMax=((int)rolling.getaverage()+1000)+1;
-        lastMin=(int)rolling.getaverage()-1000;
+        lastMax=((int)rolling.getaverage()+500)+1;
+        lastMin=(int)rolling.getaverage()-500;
     }
 
     private void firstPreference(double pressure) {
-        if(lastMax<pressure || lastMax-1000>pressure) {
-            lastMax = pressure+500;
+//        if(lastMax<pressure || lastMax-2000>pressure) {
+        if(lastMax<pressure) {
+            lastMax = pressure;
+        }else {
+            lastMax=lastMax-1;
         }
         if(count>30) {
             if(lastMin == 0)
@@ -441,30 +484,36 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                if(lastMin>lastMax-1000)
 //                    lastMax=lastMin+1000;
 
-            if(lastMax-lastMin>1000) {
-                lastMin = lastMax - 1000;
-            }
+//            if(lastMax-lastMin>2000) {
+//                lastMin = lastMax - 2000;
+//            }
 //            else
 //                lastMax=lastMin+2000;
             if(lastMin>pressure)
-                lastMin=pressure-500;
-
+                lastMin=pressure;
+            else
+                lastMin=lastMin+1;
 //
 ////            if (lastMin > pressure || lastMin == 0){
 ////                lastMin = pressure;
 ////        }
+        }else {
+            count++;
         }
 
-        count++;
 
     }
 
     private double calculateProportion(double pressure) {
 //        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
 //        double d=(double) Math.round((CONST_1+(CONST_2*((pressure-(lastMin))/(lastMax-lastMin)))) * 1000000000000000000d) / 1000000000000000000d;
-        double d=((-100.02d)+((100.02d)*((pressure-(lastMin))/(lastMax-lastMin))));
-        Log.d(TAG,"d:"+pressure);
-        return d;
+//        s(i)=a*y(i)+(1-a)*s(i-1)
+        double d=a*pressure+((1-a)*dLast);
+//        double d=pressure;
+        dLast=d;
+        Log.d(TAG,"ds:"+d);
+//        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
+        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
 
     @Override

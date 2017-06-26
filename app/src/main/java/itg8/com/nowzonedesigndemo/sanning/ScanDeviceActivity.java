@@ -88,6 +88,8 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_device);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+
         //Initialise ScanDevicePresenter
         presenter = new ScanDevicePresenter(this);
         presenter.checkAlreadyConnectedOnce(getApplicationContext());
