@@ -148,7 +148,7 @@ public class BreathwaveView extends View {
                 float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
 //                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
                 float y = getY(breathSample, canvas.getHeight(), CONST_1, CONST_2);
-                Log.d(TAG,"Y:"+y+" Breath: "+breathSample.getValue());
+//                Log.d(TAG,"Y:"+y+" Breath: "+breathSample.getValue());
                 int i5 = i + 1;
 //                this.mVert.add(i,x);
                 this.mVert[i] = x;
@@ -161,7 +161,7 @@ public class BreathwaveView extends View {
                 i3 = i7 + 1;
 //                this.mVert.add(i7,(BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y);
                 this.mVert[i7] = (BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y;
-                if (j == 0 || 200 + j >= breathSample.getTimestamp()) {
+                if (j == 0 || 400 + j >= breathSample.getTimestamp()) {
                     i5 = i3;
                     i4 = i6;
                     i7 = i2;

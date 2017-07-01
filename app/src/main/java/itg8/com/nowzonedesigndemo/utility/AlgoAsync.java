@@ -46,4 +46,9 @@ class AlgoAsync extends AsyncTask<List<DataModel>,Void,Integer> {
         }
         return null;
     }
+
+    @Override
+    protected void onPostExecute(Integer integer) {
+        super.onPostExecute(integer);
+    }
 }

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -18,12 +19,14 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
@@ -72,7 +75,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             String action = intent.getAction();
             if (action.equals(getResources().getString(R.string.action_device_disconnect))) {
                 if (manager != null) {
-                    manager.disconnect();
+//                    manager.disconnect();
                     SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
                     Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
@@ -105,9 +108,9 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         profileModel=((AppApplication)getApplication()).getProfileModel();
-        if(intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
+        if(intent!=null && intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
             if(manager!=null){
-                manager.disconnect();
+//                manager.disconnect();
 
                 return START_STICKY;
             }
@@ -121,7 +124,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             e.printStackTrace();
         }
         String address = null, name = null;
-        if (intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
+        if (intent!=null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
             address = intent.getStringExtra(CommonMethod.DEVICE_ADDRESS);
             name = intent.getStringExtra(CommonMethod.DEVICE_NAME);
         }
@@ -243,6 +246,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onDestroy() {
         super.onDestroy();
+        manager.disconnect();
         unregisterReceiver(receiver);
         manager.disconnect();
         startService(new Intent(this, BleService.class));
@@ -252,7 +256,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
         manager.disconnect();
-        manager.setBluetoothGatt(device.connectGatt(this, false, callback));
+        manager.setBluetoothGatt(device.connectGatt(this, true, callback));
 
     }
 
@@ -310,7 +314,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             sendBroadcastState(BreathState.CALM,count,timestamp);
         } else if (mLastOneCount >= newStressCheck && mSecondLastCount >= newStressCheck && count >= newStressCheck) {
             sendBroadcastState(BreathState.STRESS, count, timestamp);
-        } else {
+        } else if(mLastOneCount == count && mSecondLastCount == count){
             sendBroadcastState(BreathState.FOCUSED, count, timestamp);
         }
     }
@@ -385,10 +389,12 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             else
                 count=new TblStepCount();
 
-            count.setDate(Helper.getCurrentDate());
+            count.setDate(Calendar.getInstance().getTime());
             count.setSteps(step);
-//            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,));
-        });
+            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,profileModel));
+            count.setGoal(SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.GOAL));
+            stepDao.create(count);
+        }).observeOn(Schedulers.io());
     }
 
     private void sendStepBroadcast(String action, int step) {

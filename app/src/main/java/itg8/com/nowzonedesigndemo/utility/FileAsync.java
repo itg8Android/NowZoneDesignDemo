@@ -72,7 +72,7 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
      *
      * @param models
      */
-    private void storeToFile(List<DataModel> models) {
+    private synchronized void storeToFile(List<DataModel> models) {
         /**
          * We are first storing json in file. But now we will create simple text file
          * TODO uncomment after SAAS

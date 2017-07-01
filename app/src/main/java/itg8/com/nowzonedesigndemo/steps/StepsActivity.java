@@ -21,14 +21,22 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
+import itg8.com.nowzonedesigndemo.steps.mvp.MonthSteps;
+import itg8.com.nowzonedesigndemo.steps.mvp.StepMVP;
+import itg8.com.nowzonedesigndemo.steps.mvp.StepPresenterImp;
+import itg8.com.nowzonedesigndemo.steps.mvp.WeekStepModel;
 import itg8.com.nowzonedesigndemo.steps.widget.ColorArcProgressBar;
 
+import static itg8.com.nowzonedesigndemo.common.CommonMethod.GOAL;
 
-public class StepsActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, AppBarLayout.OnOffsetChangedListener {
+
+public class StepsActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, AppBarLayout.OnOffsetChangedListener, StepMVP.StepView {
 
 
     private static final long ANIMATION_TIME = 500;
@@ -59,6 +67,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     private String TAG = StepsActivity.class.getSimpleName();
     private Fragment fragment;
     private FragmentManager fm;
+    StepFragmentCommunicator todaysStepListener;
+    StepMVP.StepPresenter presenter;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -69,10 +79,12 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
             switch (item.getItemId()) {
                 case R.id.nav_day:
                     fragment = TodayStepsFragment.newInstance(" "," ");
+                    todaysStepListener= (StepFragmentCommunicator) fragment;
                     setFragmnet();
                     return true;
                 case R.id.nav_week:
                     fragment = DayWeekFragment.newInstance("", "");
+
                     setFragmnet();
                     return true;
                 case R.id.nav_month:
@@ -106,12 +118,16 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (rgbStepsToday.isChecked()) {
             fragment = new TodayStepsFragment();
+            rgbStepsToday.setTextColor(Color.BLACK);
+            rgbStepHistory.setTextColor(Color.WHITE);
             setFragmnet();
             //  setTabLayout();
         }
         rbgMainSteps.setOnCheckedChangeListener(this);
-        setView();
+        presenter=new StepPresenterImp(this);
     }
+
+
 
 
     @Override
@@ -127,6 +143,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
                 navigation.setVisibility(View.GONE);
                 progressSteps.setVisibility(View.VISIBLE);
                 fragment = new TodayStepsFragment();
+                rgbStepsToday.setTextColor(Color.BLACK);
+                rgbStepHistory.setTextColor(Color.WHITE);
                 break;
 
             case R.id.rgb_step_history:
@@ -134,6 +152,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
                 progressSteps.setVisibility(View.GONE);
                 navigation.setVisibility(View.VISIBLE);
                 fragment = new TodayStepsFragment();
+                rgbStepHistory.setTextColor(Color.BLACK);
+                rgbStepsToday.setTextColor(Color.WHITE);
                 break;
         }
         setFragmnet();
@@ -191,5 +211,36 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     protected void onStop() {
         super.onStop();
         appbar.removeOnOffsetChangedListener(this);
+    }
+
+    @Override
+    public void onTodaysStepAvailable(int goal, int covered, int weekTotal) {
+        if(todaysStepListener!=null){
+            todaysStepListener.onTodaysDataReceived(goal,covered,weekTotal);
+        }
+    }
+
+    @Override
+    public void onWeekStep(List<WeekStepModel> weekStepModelList) {
+
+    }
+
+    @Override
+    public void onMonthStep(List<MonthSteps> monthStepsList) {
+
+    }
+
+    @Override
+    public void onDaoUnableToConnect(String message) {
+
+    }
+
+    public void setListener(StepFragmentCommunicator communicator) {
+        this.todaysStepListener=communicator;
+    }
+
+
+    public void removeTodaysListener() {
+        todaysStepListener=null;
     }
 }

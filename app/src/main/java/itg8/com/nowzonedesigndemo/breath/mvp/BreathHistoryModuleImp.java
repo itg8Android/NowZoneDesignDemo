@@ -71,8 +71,8 @@ public class BreathHistoryModuleImp extends DBModule implements BreathHistoryMVP
         Observable.create((ObservableOnSubscribe<List<TblState>>) e -> {
             e.onNext(listAllDataFrom());
         })
-                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(o -> listener.onListAvailable(o), Throwable::printStackTrace,() -> Timber.d("CREATED"));
     }
 }

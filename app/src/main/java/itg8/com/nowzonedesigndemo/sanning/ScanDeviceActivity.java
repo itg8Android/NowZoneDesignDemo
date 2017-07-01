@@ -88,6 +88,8 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_device);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+
         //Initialise ScanDevicePresenter
         presenter = new ScanDevicePresenter(this);
         presenter.checkAlreadyConnectedOnce(getApplicationContext());
@@ -114,7 +116,8 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
                 Intent intent = new Intent(view.getContext(), BleService.class);
                 intent.putExtra(CommonMethod.DEVICE_ADDRESS, mSelectedDevice.getAddress());
                 intent.putExtra(CommonMethod.DEVICE_NAME, mSelectedDevice.getName());
-                view.getContext().startService(intent);
+                //TODO commment: test service
+//            view.getContext().startService(intent);
             }
         });
     }
@@ -323,6 +326,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     @Override
     public void startHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(CommonMethod.FROMWEEk,"true");
         startActivity(intent);
         finish();
     }
