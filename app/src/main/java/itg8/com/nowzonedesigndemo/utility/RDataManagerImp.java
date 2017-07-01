@@ -21,6 +21,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
@@ -59,6 +60,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private Observable<String> observable;
     private List<DataModel> dataStorageRaw;
     private DataModel modelTemp;
+    private AlgoAsync async;
 
     public RDataManagerImp(RDataManagerListener listener,Context mContext) {
         this.listener = listener;
@@ -101,12 +103,33 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     public void onRawDataModel(DataModel model, Context context) {
         if (model != null) {
           //  Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
-            observable=Observable.create(new ObservableOnSubscribe<String>() {
+            Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
                     processForStepCounting(model);
                     dataStorageRaw.add(copy(model));
                     processModelData(model, context);
+                }
+            }).subscribeOn(Schedulers.computation())
+            .subscribe(new Observer<String>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(String s) {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onComplete() {
+
                 }
             });
             /**
@@ -133,6 +156,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     private void processForStepCounting(DataModel model) {
             //TODO We need to check step and activity in this method
+
             accelImp.onModelAvail(model);
     }
 
@@ -212,7 +236,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     private void passForCalculation(List<DataModel> dataStorage) {
         Log.d(TAG,"came for calculation");
-        AlgoAsync async = new AlgoAsync(this);
+         async = new AlgoAsync(this);
         async.execute(dataStorage);
     }
 

@@ -17,6 +17,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import itg8.com.nowzonedesigndemo.common.BaseModuleOrm;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
@@ -31,9 +32,9 @@ import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STATE_ARRI
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STEP_COUNT;
 
 
-public class BreathModelImp implements BreathFragmentModel {
+public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel {
 
-    private static final long TIME_LIMIT_OF_CONNECT = 10000;
+    private static final long TIME_LIMIT_OF_CONNECT = 30000;
     private BreathPresenter.BreathFragmentModelListener listener;
 
     Dao<TblState,Integer> stateDao=null;
@@ -198,12 +199,6 @@ public class BreathModelImp implements BreathFragmentModel {
     }
 
 
-    private DbHelper getHelper(Context context) {
-        if (dbHelper == null) {
-            dbHelper = (DbHelper) OpenHelperManager.getHelper(context, DbHelper.class);
-        }
-        return dbHelper;
-    }
 
 
 

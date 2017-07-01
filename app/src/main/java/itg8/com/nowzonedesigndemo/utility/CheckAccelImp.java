@@ -93,7 +93,7 @@ class CheckAccelImp {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -111,20 +111,21 @@ class CheckAccelImp {
     private DecimalFormat formatter=new DecimalFormat("#0.00");
     String log;
     private Observable<Integer> checkMovement(DataModel model) {
+        Log.d(TAG,"RawXYZ:"+"X: "+model.getX()+" Y: "+model.getY()+" Z: "+model.getZ());
         return Observable.create(e -> {
             double xG = (model.getX() * 0.224)/1000;
             double yG = (model.getY() * 0.224)/1000;
             double zG = (model.getZ() * 0.224)/1000;
             roll = Math.sqrt((xG* xG) + (yG*yG) + (zG*zG));
 
-            log="X "+formatter.format( (model.getX() * 0.224)/1000)+ " Y "+formatter.format((model.getY() * 0.224)/1000)+" Z "+formatter.format((model.getZ() * 0.224)/1000);
+//            log="X "+formatter.format( (model.getX() * 0.224)/1000)+ " Y "+formatter.format((model.getY() * 0.224)/1000)+" Z "+formatter.format((model.getZ() * 0.224)/1000);
           //  Logs.d(String.valueOf(roll));
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
                     createFile(log);
                 }
-            }).subscribeOn(Schedulers.newThread())
+            }).subscribeOn(Schedulers.computation())
             .subscribe(new Observer<String>() {
                 @Override
                 public void onSubscribe(Disposable d) {
@@ -159,19 +160,21 @@ class CheckAccelImp {
              * <TESTED
              */
 
-//            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION-1) {
-//                modelCounter=0;
-//                e.onNext(analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000));
-//                models[modelCounter]=model;
-//            }else {
-//                models[modelCounter]=model;
-//                modelCounter++;
-//            }
+            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
+                modelCounter=0;
+                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
+                Logs.d("COUNT STEP:"+count);
+                e.onNext(count);
+                models[modelCounter]=model;
+            }else {
+                models[modelCounter]=model;
+                modelCounter++;
+            }
 
             /**
              * This is old method providing value on tilt in sitting position  12/06/2017
              */
-            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
+//            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
 
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
             lastStepVal = pedi_step_counter;
@@ -207,8 +210,8 @@ class CheckAccelImp {
 //    }
 
     void onModelAvail(DataModel model) {
-        checkMovement(model).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+        checkMovement(model).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 

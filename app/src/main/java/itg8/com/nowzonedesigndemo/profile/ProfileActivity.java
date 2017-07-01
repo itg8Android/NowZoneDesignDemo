@@ -127,8 +127,13 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
 
     private float calculateWeightInKg() {
         if(rgbWeightPounds.isChecked())
-            return 0;
-        return 0;
+            return (float) poundsToKilos(Double.parseDouble(edtWeight.getText().toString()));
+        else
+            return Float.parseFloat(edtWeight.getText().toString());
+    }
+
+    private static double poundsToKilos(double pounds) {
+        return pounds * 0.454;
     }
 
     private float calculateHeightInFeet() {

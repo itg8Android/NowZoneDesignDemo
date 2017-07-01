@@ -11,6 +11,7 @@ import itg8.com.nowzonedesigndemo.breath.mvp.BreathHistoryMVP;
 import itg8.com.nowzonedesigndemo.db.DbHelper;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 
 /**
  * Created by itg_Android on 6/10/2017.
@@ -53,6 +54,8 @@ public abstract class DBModule{
             initStateDao(false,"Error : "+e.getErrorCode()+":"+e.getMessage());
         }
     }
+
+
 
     public abstract void initStateDao();
     public abstract void initStateDao(boolean b, String issue);

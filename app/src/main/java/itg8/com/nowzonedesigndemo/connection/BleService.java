@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -18,12 +19,14 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
@@ -386,10 +389,12 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             else
                 count=new TblStepCount();
 
-            count.setDate(Helper.getCurrentDate());
+            count.setDate(Calendar.getInstance().getTime());
             count.setSteps(step);
-//            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,));
-        });
+            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,profileModel));
+            count.setGoal(SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.GOAL));
+            stepDao.create(count);
+        }).observeOn(Schedulers.io());
     }
 
     private void sendStepBroadcast(String action, int step) {

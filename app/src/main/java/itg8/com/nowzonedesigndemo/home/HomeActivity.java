@@ -46,6 +46,7 @@ import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
+import itg8.com.nowzonedesigndemo.connection.BleService;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenter;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
@@ -198,7 +199,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         Timber.tag(TAG);
 
         rolling=new Rolling(33);
-        checkDeviceConnection(rlWave);
+        if(!getIntent().hasExtra(CommonMethod.FROMWEEk)) {
+            startService(new Intent(this,BleService.class));
+
+            checkDeviceConnection(rlWave);
+        }
+
 
 
 
@@ -511,7 +517,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         double d=a*pressure+((1-a)*dLast);
 //        double d=pressure;
         dLast=d;
-        Log.d(TAG,"ds:"+d);
+       // Log.d(TAG,"ds:"+d);
 //        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
         return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }

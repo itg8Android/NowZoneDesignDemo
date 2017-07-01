@@ -199,6 +199,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
             Intent intent = new Intent(view.getContext(), BleService.class);
             intent.putExtra(CommonMethod.DEVICE_ADDRESS,mSelectedDevice.getAddress());
             intent.putExtra(CommonMethod.DEVICE_NAME,mSelectedDevice.getName());
+            //TODO commment: test service DONE
             view.getContext().startService(intent);
             handler.removeCallbacks(r);
         } else {
@@ -222,8 +223,9 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
     public void checkAlreadyConnectedOnce(Context context) {
         if(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE)!=null &&
                 !SharePrefrancClass.getInstance(context).getPref(CommonMethod.STATE).equalsIgnoreCase(DeviceState.DISCONNECTED.name())){
-            Intent intent = new Intent(context, BleService.class);
-            context.startService(intent);
+            //
+            //TODO commment: test service
+//            view.getContext().startService(intent);
             if(view!=null)
                 view.startHomeActivity();
         }

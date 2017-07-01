@@ -31,7 +31,6 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(BaseActivity.this));
 //        initDispatcher();
-        startService(new Intent(this, BleService.class));
     }
 
     private void initDispatcher() {
@@ -52,6 +51,8 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
         if (state == null || state.equalsIgnoreCase(DeviceState.DISCONNECTED.name())) {
             deviceDisconnected = true;
             checkDeviceDisconnected(v);
+        }else {
+            startService(new Intent(this, BleService.class));
         }
     }
 

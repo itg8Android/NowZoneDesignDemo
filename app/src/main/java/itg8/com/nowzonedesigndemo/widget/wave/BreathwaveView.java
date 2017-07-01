@@ -31,7 +31,7 @@ public class BreathwaveView extends View {
     private static final String TAG = BreathwaveView.class.getSimpleName();
 //    private static final int MAX_SIZE = 1300*2+64;
     private static final int MAX_SIZE = 1;
-    private static final long DURATION = 30;
+    private static final long DURATION = 200;
     //    private static final String TAG = BreathwaveView.class.getSimpleName();
     private float mDensity;
     private List<BreathSample> mSamples;
@@ -90,7 +90,7 @@ public class BreathwaveView extends View {
 
     private void findWaveSamples(long j) {
         long j2 = j - DURATION;
-        long j3 = (j - BREATHVIEW_DURATION) + 30;
+        long j3 = (j - BREATHVIEW_DURATION) + 200;
         BreathSample breathSample = null;
         BreathSample breathSample2 = null;
         this.mWaveSamples.clear();
