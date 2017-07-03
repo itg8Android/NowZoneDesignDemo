@@ -59,6 +59,6 @@
     <string name="title_activity_breath_history">Breath History</string>
     <string name="title_activity_alarm">Alarm</string>
     <string name="title_activity_profile">Profile</string>
-    <string name="title_activity_alarm_setting">AlarmSettingActivity</string>
+    <string name="title_activity_alarm_setting">Alarm Setting</string>
 
 </resources>

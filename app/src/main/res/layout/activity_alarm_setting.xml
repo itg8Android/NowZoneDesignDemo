@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_1"
+    android:fitsSystemWindows="true"
     tools:context="itg8.com.nowzonedesigndemo.setting.AlarmSettingActivity">
 
     <android.support.design.widget.AppBarLayout
