@@ -18,9 +18,6 @@ import itg8.com.nowzonedesigndemo.common.BaseModuleOrm;
 import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.utility.Helper;
 
-/**
- * Created by itg_Android on 7/1/2017.
- */
 
 public class StepModuleImp implements StepMVP.StepModule{
 
@@ -54,6 +51,20 @@ public class StepModuleImp implements StepMVP.StepModule{
     @Override
     public void onWeeksFragmentLoaded() {
         startCollectingWeekStepData();
+    }
+
+    @Override
+    public void onMonthFragmentLoaded() {
+        startCollectingMonthData();
+    }
+
+    private void startCollectingMonthData() {
+        try {
+            List<TblStepCount> counts=stepDao.queryForAll();
+            listener.get().onMonthStep(counts);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startCollectingWeekStepData() {
@@ -132,7 +143,7 @@ public class StepModuleImp implements StepMVP.StepModule{
             if(counts.size()>0 && getListener())
             {
                 TblStepCount count=counts.get(0);
-                listener.get().onTodaysStepAvailable(count.getGoal(),count.getSteps(),getThisWeekTotal(dao));
+                listener.get().onTodaysStepAvailable(count.getGoal(),count.getSteps(),getThisWeekTotal(dao),count.getCalBurn());
             }
         } catch (SQLException e) {
             e.printStackTrace();

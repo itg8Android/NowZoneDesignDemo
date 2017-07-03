@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -27,13 +26,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
-import itg8.com.nowzonedesigndemo.steps.mvp.MonthSteps;
+import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.steps.mvp.StepMVP;
 import itg8.com.nowzonedesigndemo.steps.mvp.StepPresenterImp;
 import itg8.com.nowzonedesigndemo.steps.mvp.WeekStepModel;
 import itg8.com.nowzonedesigndemo.steps.widget.ColorArcProgressBar;
-
-import static itg8.com.nowzonedesigndemo.common.CommonMethod.GOAL;
 
 
 public class StepsActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, AppBarLayout.OnOffsetChangedListener, StepMVP.StepView {
@@ -95,6 +93,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         }
 
     };
+    private MonthFragmentCommunicator monthStepCommunicator;
 
 
     @Override
@@ -124,6 +123,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
             //  setTabLayout();
         }
         rbgMainSteps.setOnCheckedChangeListener(this);
+
     }
 
 
@@ -165,11 +165,11 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     }
 
 
-    private void setView() {
-        progressSteps.setCurrentValues(50);
+    private void setView(int steps) {
+        progressSteps.setCurrentValues(steps);
         progressSteps.setHintSize(30);
         progressSteps.setIsNeedTitle(true);
-        progressSteps.setTitle("Steps to covered");
+        progressSteps.setTitle("Steps covered");
         progressSteps.setTextSize(30);
         progressSteps.setIsNeedUnit(true);
         progressSteps.setUnit("%");
@@ -213,9 +213,11 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     }
 
     @Override
-    public void onTodaysStepAvailable(int goal, int covered, int weekTotal) {
+    public void onTodaysStepAvailable(int goal, int covered, int weekTotal, double calBurn) {
         if(todaysStepListener!=null){
-            todaysStepListener.onTodaysDataReceived(goal,covered,weekTotal);
+            todaysStepListener.onTodaysDataReceived(goal,covered,weekTotal,calBurn);
+            float stepsToCover=(covered/goal)*100;
+            setView((int)stepsToCover);
         }
     }
 
@@ -224,9 +226,11 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         dayWeekFragmentCommunicator.onWeekStepModelGot(weekStepModelList);
     }
 
-    @Override
-    public void onMonthStep(List<MonthSteps> monthStepsList) {
 
+
+    @Override
+    public void onMonthStep(List<TblStepCount> monthStepsList) {
+        monthStepCommunicator.onMonthStepHistoryGot(monthStepsList);
     }
 
     @Override
@@ -247,5 +251,10 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     public void setDayWeekListener(DayWeekFragmentCommunicator communicator) {
         this.dayWeekFragmentCommunicator=communicator;
         presenter.onWeekDayReady();
+    }
+
+    public void setMonthListener(MonthFragmentCommunicator communicator){
+        this.monthStepCommunicator=communicator;
+        presenter.onMonthReady();
     }
 }

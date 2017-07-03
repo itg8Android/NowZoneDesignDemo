@@ -48,6 +48,11 @@ public class StepPresenterImp extends BasePresenter implements StepMVP.StepPrese
     }
 
     @Override
+    public void onMonthReady() {
+        module.onMonthFragmentLoaded();
+    }
+
+    @Override
     public void onStart() {
 
     }
@@ -60,9 +65,9 @@ public class StepPresenterImp extends BasePresenter implements StepMVP.StepPrese
     }
 
     @Override
-    public void onTodaysStepAvailable(int goal, int covered, int weekTotal) {
+    public void onTodaysStepAvailable(int goal, int covered, int weekTotal, double calBurn) {
         if(isNotNull())
-            stepViewWeakReference.get().onTodaysStepAvailable(goal,covered,weekTotal);
+            stepViewWeakReference.get().onTodaysStepAvailable(goal,covered,weekTotal,calBurn);
     }
 
     @Override
@@ -74,9 +79,9 @@ public class StepPresenterImp extends BasePresenter implements StepMVP.StepPrese
     }
 
     @Override
-    public void onMonthStep(List<MonthSteps> monthStepsList) {
+    public void onMonthStep(List<TblStepCount> monthStepsList) {
         if(isNotNull()){
-
+            stepViewWeakReference.get().onMonthStep(monthStepsList);
         }
     }
 

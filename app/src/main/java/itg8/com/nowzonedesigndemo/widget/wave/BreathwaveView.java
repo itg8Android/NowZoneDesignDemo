@@ -130,7 +130,6 @@ public class BreathwaveView extends View {
         long elapsedRealtime = SystemClock.elapsedRealtime();
         findWaveSamples(elapsedRealtime);
         if (this.mWaveSamples.size() >= 2) {
-               Log.d(TAG, "Size of mWaveSamples:" + mWaveSamples.size());
             int size = (this.mWaveSamples.size() - 1) * 4;
             if (this.mVert.length < size * 2) {
                 this.mVert = new float[((size * 2) + 64)];

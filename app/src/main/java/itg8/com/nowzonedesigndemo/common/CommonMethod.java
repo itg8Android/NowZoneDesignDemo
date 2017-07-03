@@ -32,6 +32,7 @@ public class CommonMethod {
     public static final String ENABLE_TO_CONNECT = "enableToConnect";
     public static final String GOAL = "stepGoal";
     public static final String SLEEP_STARTED = "sleepStarted";
+    public static final String STEP_GOAL = "stepGoal";
 
     private static Typeface typeface;
     public static String FROMWEEk="from_week";

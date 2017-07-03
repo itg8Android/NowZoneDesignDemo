@@ -5,5 +5,5 @@ package itg8.com.nowzonedesigndemo.steps;
  */
 
 interface StepFragmentCommunicator {
-    void onTodaysDataReceived(int goal, int steps, int weekTotal);
+    void onTodaysDataReceived(int goal, int steps, int weekTotal, double calBurn);
 }

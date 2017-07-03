@@ -6,7 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.steps.stickyHeader.StickyHeaderAdapter;
 
 /**
@@ -17,9 +21,23 @@ class MonthHistoryListAdapter extends RecyclerView.Adapter<MonthHistoryListAdapt
 
 
     private final LayoutInflater mInflater;
+    private List<TblStepCount> list;
 
     public MonthHistoryListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
+        list=new ArrayList<>();
+    }
+
+    public void addAll(List<TblStepCount> counts){
+        for (TblStepCount count :
+                counts){
+            add(count);
+        }
+        notifyDataSetChanged();
+    }
+
+    private void add(TblStepCount count) {
+        this.list.add(count);
     }
 
     @Override

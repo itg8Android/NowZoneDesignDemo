@@ -9,6 +9,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -122,7 +123,15 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
             model.setHeight(calculateHeightInFeet());
             model.setWeight(calculateWeightInKg());
             ((AppApplication)getApplication()).setProfileModel(model);
+            onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home)
+            onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     private float calculateWeightInKg() {

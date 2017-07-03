@@ -12,10 +12,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.steps.stickyHeader.DividerDecoration;
 import itg8.com.nowzonedesigndemo.steps.stickyHeader.StickyHeaderDecoration;
 
@@ -24,7 +27,7 @@ import itg8.com.nowzonedesigndemo.steps.stickyHeader.StickyHeaderDecoration;
  * Use the {@link HistoryMonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HistoryMonthFragment extends Fragment implements RecyclerView.OnItemTouchListener {
+public class HistoryMonthFragment extends Fragment implements RecyclerView.OnItemTouchListener, MonthFragmentCommunicator {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -39,6 +42,7 @@ public class HistoryMonthFragment extends Fragment implements RecyclerView.OnIte
     private String mParam1;
     private String mParam2;
     private StickyHeaderDecoration decor;
+    private MonthHistoryListAdapter adapter;
 
 
     public HistoryMonthFragment() {
@@ -78,14 +82,14 @@ public class HistoryMonthFragment extends Fragment implements RecyclerView.OnIte
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history_steps, container, false);
         unbinder = ButterKnife.bind(this, view);
-
+        ((StepsActivity)getActivity()).setMonthListener(this);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setStikyHeader();
+//        setStikyHeader();
     }
 
     private void setStikyHeader() {
@@ -104,7 +108,7 @@ public class HistoryMonthFragment extends Fragment implements RecyclerView.OnIte
     }
 
     private void setAdapterAndDecor() {
-        final MonthHistoryListAdapter adapter = new MonthHistoryListAdapter(this.getActivity());
+        adapter = new MonthHistoryListAdapter(this.getActivity());
         decor = new StickyHeaderDecoration(adapter);
         recyclerview.addItemDecoration(decor, 1);
 //        setHasOptionsMenu(true);
@@ -157,5 +161,11 @@ public class HistoryMonthFragment extends Fragment implements RecyclerView.OnIte
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
+    }
+
+    @Override
+    public void onMonthStepHistoryGot(List<TblStepCount> counts) {
+        setStikyHeader();
+        adapter.addAll(counts);
     }
 }

@@ -61,7 +61,8 @@ public class Helper {
     }
 
     public static double calculateCalBurnByStepCount(int stepsCount, ProfileModel model) {
-
+        if(model==null)
+            return 0;
         double caloriesBurnedPerMile = walkingFactor * (model.getWeight() * 2.2);
 
         double strip = model.getHeight() * 0.415;
