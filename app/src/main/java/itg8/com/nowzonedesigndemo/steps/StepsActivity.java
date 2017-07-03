@@ -82,7 +82,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
             }
             return false;
         }
-
     };
 
 
@@ -95,10 +94,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         setContentView(R.layout.activity_steps);
         ButterKnife.bind(this);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -181,10 +177,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         float alphaVal = verticalOffset / -276f;
         Log.d(TAG, "Offset : " + alphaVal + " vertical offset : " + verticalOffset);
         float newAlphaVal = 1 - alphaVal;
-
         progressSteps.setAlpha(newAlphaVal);
         imgGraph.setAlpha(newAlphaVal);
-
     }
 
     @Override

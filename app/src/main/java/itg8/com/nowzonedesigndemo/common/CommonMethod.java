@@ -27,6 +27,7 @@ public class CommonMethod {
 
     public static final String DATE_FORMAT = "dd-MM-yyyy";
     public static final String DATE_FORMAT_WITH_TIME = "hh:mm a";
+    public static final String SAVEALARMTIME = "SAVEALARMTIME";
 
     private static Typeface typeface;
     public static String FROMWEEk="from_week";

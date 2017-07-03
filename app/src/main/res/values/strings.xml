@@ -1,6 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Nowzone </string>
-    <string name="action_settings">Settings</string>
+    <string name="action_alarm">Alarm</string>
+    <string name="action_profile">Profile</string>
+    <string name="action_device">Device</string>
+    <string name="action_contact">Contact Us</string>
+    <string name="action_step_goal">Step Goal</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_about">About Us</string>
     <string name="title_activity_base">Base</string>
 
 
@@ -53,5 +59,6 @@
     <string name="title_activity_breath_history">Breath History</string>
     <string name="title_activity_alarm">Alarm</string>
     <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_alarm_setting">AlarmSettingActivity</string>
 
 </resources>
