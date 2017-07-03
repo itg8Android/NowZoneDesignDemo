@@ -53,6 +53,7 @@ import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
 import itg8.com.nowzonedesigndemo.home.mvp.StateTimeModel;
 import itg8.com.nowzonedesigndemo.profile.ProfileActivity;
 import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
+import itg8.com.nowzonedesigndemo.setting.AlarmSettingActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
@@ -334,27 +335,32 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            // startActivity(new Intent(this, AudioActivity.class));
-            startActivity(new Intent(this, AlarmActivity.class));
-            return true;
+        switch (item.getItemId())
+        {
+            case R.id.action_settings:
+                startActivity(new Intent(getApplicationContext(), AlarmSettingActivity.class));
+                break;
+            case R.id.action_profile:
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                break;
+            case R.id.action_device:
+                break;
+            case R.id.action_alram:
+                startActivity(new Intent(getApplicationContext(), AlarmActivity.class));
+                break;
+            case R.id.action_step_goal:
+                break;
+            case R.id.action_about:
+                break;
+          case R.id.action_logout:
+                onDeviceDisconnected();
+                break;
+
+
         }
 
-            if(id == R.id.action_profile)
-            {
-                startActivity(new Intent(this, ProfileActivity.class));
-                return true;
-
-
-            }
-
-            if(id == R.id.action_logout)
-            {
-                onDeviceDisconnected();
-            }
         return super.onOptionsItemSelected(item);
     }
 

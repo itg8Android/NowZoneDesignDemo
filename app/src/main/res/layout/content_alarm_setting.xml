@@ -9,22 +9,18 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="itg8.com.nowzonedesigndemo.setting.AlarmSettingActivity"
     tools:showIn="@layout/activity_alarm_setting">
-
-
-
-
 <RelativeLayout
-    android:layout_width="wrap_content"
+    android:id="@+id/releative"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="60dp"
     android:layout_centerHorizontal="true">
-
-
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_awakeAlarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
         android:text="Wakeup Time"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/txt_value"
@@ -48,43 +44,45 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/txt_alarm_time"
         android:layout_below="@+id/lbl_awakeAlarm"
-        android:layout_marginLeft="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         android:layout_toEndOf="@+id/txt_alarm_time"
         android:text="Am"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_sleep_normal"
         app:font_value="0" />
+
+
+
 </RelativeLayout>
 
-
-
-<ProgressBar
-    android:id="@+id/progress_bar"
-    android:layout_width="match_parent"
-    android:layout_height="20dp"
-    android:layout_above="@+id/btn_alarmSetting"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:visibility="gone"
-    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-    android:progressDrawable="@drawable/custom_progressbar"
-    android:layout_marginBottom="30dp"/>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerInParent="true"
+        android:progressDrawable="@drawable/custom_progressbar"
+        android:visibility="visible" />
 
 
 
 
-        <Button
-            android:id="@+id/btn_alarmSetting"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/btn_alarm"
-            android:layout_centerInParent="true"
-            android:text="Start alarm"
-            android:textColor="@color/colorBlue"
-            android:textSize="@dimen/txt_home" />
-
-
+    <Button
+        android:id="@+id/btn_alarmSetting"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/btn_alarm"
+        android:text="Start alarm"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/txt_home" />
 
 
 </RelativeLayout>
