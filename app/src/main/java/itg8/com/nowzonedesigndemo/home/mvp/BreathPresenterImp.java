@@ -25,6 +25,14 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
         model = new BreathModelImp(this);
     }
 
+
+    @Override
+    public void onDeviceNotConnectedInTime() {
+        if(checkNotNull()){
+            view.onDeviceDisconnected();
+        }
+    }
+
     @Override
     public void startShowingDevicesList() {
         if(view!=null){

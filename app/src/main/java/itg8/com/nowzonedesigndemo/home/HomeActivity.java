@@ -33,6 +33,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.alarm.AlarmActivity;
 import itg8.com.nowzonedesigndemo.audio.AudioActivity;
@@ -40,6 +46,7 @@ import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
+import itg8.com.nowzonedesigndemo.connection.BleService;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenter;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
@@ -66,13 +73,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private static final String COLOR_NORMAL_M = "#24006bb7";
     private static final String COLOR_NORMAL_S = "#27BEFB";
-    private static final String COLOR_CALM_M = "#240CB700";
+    public static final String COLOR_CALM_M = "#240CB700";
     private static final String COLOR_CALM_S = "#FF35FB27";
-    private static final String COLOR_STRESS_M = "#24B70F00";
+    public static final String COLOR_STRESS_M = "#24B70F00";
     private static final String COLOR_STRESS_S = "#FFF92E27";
-    private static final String COLOR_FOCUSED_M = "#240C00B7";
+    public static final String COLOR_FOCUSED_M = "#240C00B7";
     private static final String COLOR_FOCUSED_S = "#FF4027FB";
     private static final int LAST_333 = 333;
+    public static final double CONST_1 = -10.02d;
+    public static final double CONST_2 = 10.02d;
+    private static final double PI_MIN = -8.02d;
+    private static final double PI_MAX = 8.02d;
+    private static final double MIN_PRESSURE=800;
+    private static final double MAX_PRESSURE=8100;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -168,8 +181,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private int lastCount=1;
     private long lastUpdate=0;
     private double smoothed=0;
-    private static final double smoothing=200;
+    private static final double smoothing=50;
     Rolling rolling;
+    private double dLast;
+    private float a=0.2f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +199,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-        rolling=new Rolling(8);
-      //  checkDeviceConnection(rlWave);
+        rolling=new Rolling(33);
+        if(!getIntent().hasExtra(CommonMethod.FROMWEEk)) {
+            startService(new Intent(this,BleService.class));
+
+            checkDeviceConnection(rlWave);
+        }
+
 
 
 
@@ -398,16 +418,45 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onPressureDataAvail(double pressure) {
 //            firstPreference(pressure);
         //Second Preference
-        if(count>30) {
-            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
-//            firstPreference(smoothedValue(pressure));
-            secondPref(pressure);
-            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
-            return;
-        }
-        count++;
-//        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
+        Observable.create(new ObservableOnSubscribe<Double>() {
+            @Override
+            public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
+//                firstPreference(pressure);
+                e.onNext(calculateProportion(pressure));
+            }
+        }).observeOn(Schedulers.trampoline())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Double>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Double aDouble) {
+                        if (count > 30) {
+//            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
+//            secondPref(pressure);
+//            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
+                            breathview.addSample(SystemClock.elapsedRealtime(),aDouble);
+                        }else {
+                            count++;
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
+//        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
 
     double smoothedValue( double pressure ){
 //        long now = Calendar.getInstance().getTimeInMillis();
@@ -419,13 +468,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void secondPref(double pressure){
         rolling.add(pressure);
-        lastMax=rolling.getaverage()+500;
-        lastMin=rolling.getaverage()-500;
+        lastMax=((int)rolling.getaverage()+500)+1;
+        lastMin=(int)rolling.getaverage()-500;
     }
 
     private void firstPreference(double pressure) {
-        if(lastMax<pressure || lastMax-1000>pressure) {
+//        if(lastMax<pressure || lastMax-2000>pressure) {
+        if(lastMax<pressure) {
             lastMax = pressure;
+        }else {
+            lastMax=lastMax-1;
         }
         if(count>30) {
             if(lastMin == 0)
@@ -443,27 +495,36 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                if(lastMin>lastMax-1000)
 //                    lastMax=lastMin+1000;
 
-            if(lastMax-1000>lastMin) {
-                lastMin = lastMax - 1000;
-            }
+//            if(lastMax-lastMin>2000) {
+//                lastMin = lastMax - 2000;
+//            }
 //            else
 //                lastMax=lastMin+2000;
             if(lastMin>pressure)
                 lastMin=pressure;
-
+            else
+                lastMin=lastMin+1;
 //
 ////            if (lastMin > pressure || lastMin == 0){
 ////                lastMin = pressure;
 ////        }
+        }else {
+            count++;
         }
 
-        count++;
 
     }
 
     private double calculateProportion(double pressure) {
 //        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
-        return (-0.02+(1.02*((pressure-(lastMin))/(lastMax-lastMin))));
+//        double d=(double) Math.round((CONST_1+(CONST_2*((pressure-(lastMin))/(lastMax-lastMin)))) * 1000000000000000000d) / 1000000000000000000d;
+//        s(i)=a*y(i)+(1-a)*s(i-1)
+        double d=a*pressure+((1-a)*dLast);
+//        double d=pressure;
+        dLast=d;
+       // Log.d(TAG,"ds:"+d);
+//        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
+        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
 
     @Override
@@ -474,21 +535,26 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onDeviceDisconnected() {
         Log.d(TAG, "Device disconnected");
+        Intent intent = new Intent("ACTION_NW_DEVICE_DISCONNECT");
+        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT,true);
+        sendBroadcast(intent);
     }
 
     @Override
     public void onBreathCountAvailable(int intExtra) {
         Log.d(TAG, "Breath count: " + intExtra);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                breathValue.setText(String.valueOf(intExtra));
-            }
-        },30);
+        new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)),30);
     }
 
     @Override
     public void onStepCountReceived(int intExtra) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                txtStepCountValue.setText(String.valueOf(intExtra));
+
+            }
+        });
         Log.d(TAG, "Step count: " + intExtra);
     }
 
@@ -497,6 +563,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        Timber.i("Start device activity");
 //        startActivity(new Intent(this, ScanDeviceActivity.class));
 //        finish();
+//        checkDeviceConnection(rlWave);
     }
 
     @Override

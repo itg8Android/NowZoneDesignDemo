@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.steps;
 
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
-import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 
 /**
@@ -25,7 +25,7 @@ import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
  * Use the {@link TodayStepsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TodayStepsFragment extends Fragment {
+public class TodayStepsFragment extends Fragment implements StepFragmentCommunicator {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,7 +47,7 @@ public class TodayStepsFragment extends Fragment {
     @BindView(R.id.txt_caloriesText)
     CustomFontTextView txtCaloriesText;
     @BindView(R.id.txt)
-    CustomFontTextView txt;
+    CustomFontTextView txtGoal;
     @BindView(R.id.ll_calories)
     LinearLayout llCalories;
     @BindView(R.id.card_calories)
@@ -62,6 +62,10 @@ public class TodayStepsFragment extends Fragment {
     CardView cardTotalCalories;
     @BindView(R.id.rl_step_value)
     RelativeLayout rlStepValue;
+    @BindView(R.id.txtStepComplete)
+    CustomFontTextView txtStepComplete;
+    @BindView(R.id.txtWeekTotal)
+    CustomFontTextView txtWeekTotal;
 
 
     // TODO: Rename and change types of parameters
@@ -74,6 +78,17 @@ public class TodayStepsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        ((StepsActivity)context).setListener(this);
+    }
+
+    @Override
+    public void onDetach() {
+        ((StepsActivity)getActivity()).removeTodaysListener();
+        super.onDetach();
+    }
 
     // TODO: Rename and change types and number of parameters
     public static TodayStepsFragment newInstance(String param1, String param2) {
@@ -100,9 +115,9 @@ public class TodayStepsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_today_steps, container, false);
         unbinder = ButterKnife.bind(this, view);
-            setProgressbar();
-            customProgressRectangle.setProgress(60);
-            rlStepValue.setVisibility(View.VISIBLE);
+        setProgressbar();
+        customProgressRectangle.setProgress(60);
+        rlStepValue.setVisibility(View.VISIBLE);
         return view;
     }
 
@@ -120,5 +135,12 @@ public class TodayStepsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onTodaysDataReceived(int goal, int steps, int weekTotal) {
+        txtGoal.setText(String.valueOf(goal));
+        txtStepComplete.setText(String.valueOf(steps));
+        txtWeekTotal.setText(String.valueOf(weekTotal));
     }
 }

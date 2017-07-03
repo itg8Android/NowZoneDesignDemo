@@ -21,6 +21,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
@@ -55,18 +56,20 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
      * this will be use to send data from service to store in file.
      */
     FirebaseJobDispatcher dispatcher;
-    private Rolling rolling, rolling2;
+    private Rolling rolling, rolling2,rolling3;
     private Observable<String> observable;
     private List<DataModel> dataStorageRaw;
     private DataModel modelTemp;
+    private AlgoAsync async;
 
-    public RDataManagerImp(RDataManagerListener listener) {
+    public RDataManagerImp(RDataManagerListener listener,Context mContext) {
         this.listener = listener;
         rolling = new Rolling(ROLLING_AVG_SIZE);
         rolling2 = new Rolling(ROLLING_AVG_SIZE);
+        rolling3 = new Rolling(ROLLING_AVG_SIZE);
         dataStorage = new ArrayList<>(PACKET_READY_TO_IMP+4);
         dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
-        accelImp=new CheckAccelImp(this);
+        accelImp=new CheckAccelImp(this,SharePrefrancClass.getInstance(mContext).getIPreference(CommonMethod.STEP_COUNT));
         observer= new Observer<DataModel>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -100,18 +103,40 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     public void onRawDataModel(DataModel model, Context context) {
         if (model != null) {
           //  Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
-            observable=Observable.create(new ObservableOnSubscribe<String>() {
+            Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+                    processForStepCounting(model);
+                    dataStorageRaw.add(copy(model));
+                    processModelData(model, context);
+                }
+            }).subscribeOn(Schedulers.computation())
+            .subscribe(new Observer<String>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(String s) {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onComplete() {
 
                 }
             });
             /**
              * Currently we are working on pressure
              */
-       //     processForStepCounting(model);
-            dataStorageRaw.add(copy(model));
-            processModelData(model, context);
+
+
         } else {
             Log.d(RDataManagerImp.class.getSimpleName(), "data received: model is null");
         }
@@ -131,16 +156,22 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     private void processForStepCounting(DataModel model) {
             //TODO We need to check step and activity in this method
+
             accelImp.onModelAvail(model);
     }
+
+    DataModel dataModel;
 
     private void processModelData(DataModel model, Context context) {
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
+        listener.onDataProcessed(model);
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
-        listener.onDataProcessed(model);
         checkIfDataGatheringCompleted(model, context);
+//        rolling3.add(rolling2.getaverage());
+//        dataModel=new DataModel();
+//        dataModel.setPressure(rolling3.getaverage());
     }
 
     private synchronized void checkIfDataGatheringCompleted(DataModel model, Context context) {
@@ -205,7 +236,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     private void passForCalculation(List<DataModel> dataStorage) {
         Log.d(TAG,"came for calculation");
-        AlgoAsync async = new AlgoAsync(this);
+         async = new AlgoAsync(this);
         async.execute(dataStorage);
     }
 

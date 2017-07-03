@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static itg8.com.nowzonedesigndemo.home.HomeActivity.CONST_1;
+import static itg8.com.nowzonedesigndemo.home.HomeActivity.CONST_2;
+
 public class BreathwaveView extends View {
     //    private static final int BREATHVIEW_CROP = 200;
     private static final int BREATHVIEW_DURATION = 10000;
@@ -28,6 +31,7 @@ public class BreathwaveView extends View {
     private static final String TAG = BreathwaveView.class.getSimpleName();
 //    private static final int MAX_SIZE = 1300*2+64;
     private static final int MAX_SIZE = 1;
+    private static final long DURATION = 200;
     //    private static final String TAG = BreathwaveView.class.getSimpleName();
     private float mDensity;
     private List<BreathSample> mSamples;
@@ -85,7 +89,7 @@ public class BreathwaveView extends View {
     }
 
     private void findWaveSamples(long j) {
-        long j2 = j - 200;
+        long j2 = j - DURATION;
         long j3 = (j - BREATHVIEW_DURATION) + 200;
         BreathSample breathSample = null;
         BreathSample breathSample2 = null;
@@ -112,11 +116,11 @@ public class BreathwaveView extends View {
 
         if (this.mWaveSamples.size() >= 2) {
             BreathSample breathSample32 = this.mWaveSamples.get(0);
-            if (breathSample != null && breathSample.getTimestamp() + 200 >= breathSample32.getTimestamp()) {
+            if (breathSample != null && breathSample.getTimestamp() + DURATION >= breathSample32.getTimestamp()) {
                 this.mWaveSamples.add(0, breathSample.interpolate(breathSample32, j3));
             }
             breathSample32 = this.mWaveSamples.get(this.mWaveSamples.size() - 1);
-            if (breathSample2 != null && breathSample32.getTimestamp() + 200 >= breathSample2.getTimestamp()) {
+            if (breathSample2 != null && breathSample32.getTimestamp() + DURATION >= breathSample2.getTimestamp()) {
                 this.mWaveSamples.add(this.mWaveSamples.size(), breathSample32.interpolate(breathSample2, j2));
             }
         }
@@ -143,8 +147,8 @@ public class BreathwaveView extends View {
                 int i4;
                 float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
 //                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
-                float y = getY(breathSample, canvas.getHeight(), -0.02d, 1.02d);
-              //  Log.d(TAG,"Y:"+y);
+                float y = getY(breathSample, canvas.getHeight(), CONST_1, CONST_2);
+//                Log.d(TAG,"Y:"+y+" Breath: "+breathSample.getValue());
                 int i5 = i + 1;
 //                this.mVert.add(i,x);
                 this.mVert[i] = x;
@@ -157,7 +161,7 @@ public class BreathwaveView extends View {
                 i3 = i7 + 1;
 //                this.mVert.add(i7,(BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y);
                 this.mVert[i7] = (BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y;
-                if (j == 0 || 200 + j >= breathSample.getTimestamp()) {
+                if (j == 0 || 400 + j >= breathSample.getTimestamp()) {
                     i5 = i3;
                     i4 = i6;
                     i7 = i2;

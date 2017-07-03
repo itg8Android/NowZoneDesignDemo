@@ -17,4 +17,9 @@ public interface ScanDeviceView {
 
     void startHomeActivity();
 
+    void onScanningStarted(CharSequence text);
+
+    void onShowScanning();
+
+    void onShowButton();
 }

@@ -1,6 +1,13 @@
 package itg8.com.nowzonedesigndemo.utility;
 
+import android.os.Environment;
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -21,6 +28,8 @@ class CheckAccelImp {
     private static final int X = 0;
     private static final int Y = 1;
     private static final int Z = 2;
+    private static final int TOTAL_SIZE_OF_DATA_COLLECTION = 33;
+    private static int nStepCount=0;
     private AccelVerifyListener listener;
     private Observer observer;
     private double x2, y2, z2;
@@ -55,12 +64,18 @@ class CheckAccelImp {
     private double degconvert = 57.29;
     private double pitch;
     private double roll;
+    DataModel[] models;
+    private int modelCounter=0;
 
-
-    public CheckAccelImp(final AccelVerifyListener listener) {
+    /**
+     * We will pass the listener and latest step count received before service destroyed.
+     * @param listener Listener back for RdataManagerImp.
+     * @param mPreviousStepCount reent step count
+     */
+    public CheckAccelImp(final AccelVerifyListener listener, int mPreviousStepCount) {
         this.listener = listener;
-        initPedometer();
-
+        initPedometer(mPreviousStepCount);
+        models=new DataModel[TOTAL_SIZE_OF_DATA_COLLECTION];
         observer = new Observer<Integer>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -78,7 +93,7 @@ class CheckAccelImp {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -89,21 +104,101 @@ class CheckAccelImp {
 
     }
 
+    public void resetStepCount(){
+        pedi_step_counter=0;
+    }
+
+    private DecimalFormat formatter=new DecimalFormat("#0.00");
+    String log;
     private Observable<Integer> checkMovement(DataModel model) {
+        Log.d(TAG,"RawXYZ:"+"X: "+model.getX()+" Y: "+model.getY()+" Z: "+model.getZ());
         return Observable.create(e -> {
-            roll = Math.atan2(model.getY(), Math.sqrt((model.getX() * model.getX()) + (model.getZ() * model.getZ()))) * degconvert;
+            double xG = (model.getX() * 0.224)/1000;
+            double yG = (model.getY() * 0.224)/1000;
+            double zG = (model.getZ() * 0.224)/1000;
+            roll = Math.sqrt((xG* xG) + (yG*yG) + (zG*zG));
+
+//            log="X "+formatter.format( (model.getX() * 0.224)/1000)+ " Y "+formatter.format((model.getY() * 0.224)/1000)+" Z "+formatter.format((model.getZ() * 0.224)/1000);
+          //  Logs.d(String.valueOf(roll));
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+                    createFile(log);
+                }
+            }).subscribeOn(Schedulers.computation())
+            .subscribe(new Observer<String>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(String s) {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+//                    print(" Y =   %fG  #####" % ((ACCy * 0.224)/1000)),
+//                    print(" Z =  %fG  #####" % ((ACCz * 0.224)/1000))
             pitch = Math.atan2(-model.getX(), Math.sqrt((model.getY() * model.getY()) + (model.getZ() * model.getZ()))) * degconvert;
 
-          //  Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " roll " + roll + " pitch " + pitch);
+           // Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " roll " + roll + " pitch " + pitch);
+//            Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " theta " + theta + " pie " + pie+" alpha "+alpha);
 //                double vector = calculateVector(model.getX(), model.getY(), model.getZ());
 //                Log.d(TAG, "vector: " + vector);
+            /**
+             * This is new method for testing 22/06/2017
+             * <TESTED
+             */
 
-            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
+            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
+                modelCounter=0;
+                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
+                Logs.d("COUNT STEP:"+count);
+                e.onNext(count);
+                models[modelCounter]=model;
+            }else {
+                models[modelCounter]=model;
+                modelCounter++;
+            }
+
+            /**
+             * This is old method providing value on tilt in sitting position  12/06/2017
+             */
+//            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
 
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
             lastStepVal = pedi_step_counter;
         });
     }
+
+    private void createFile(String log) {
+        File completeFileStructure = new File(Environment.getExternalStorageDirectory()+File.separator+"nowzone","StepDataWithGImp.txt");
+        try {
+            FileWriter fWriter;
+            if(completeFileStructure.exists()) {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.append(log).append("\n");
+            }else {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.write(log);
+            }
+            fWriter.flush();
+            fWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 //    private double calculateVector(double x, double y, double z) {
 //        Log.v(TAG, "axis: x:" + x + " y:" + y + " z:" + z);
@@ -115,8 +210,8 @@ class CheckAccelImp {
 //    }
 
     void onModelAvail(DataModel model) {
-        checkMovement(model).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+        checkMovement(model).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 
@@ -164,7 +259,7 @@ class CheckAccelImp {
 //        }
     }
 
-    private void initPedometer() {
+    private void initPedometer(int mPreviousStepCount) {
         //Steps parameter variables
         pedi_sampling_counter = 0;
         for (i = 0; i < 3; i++) {
@@ -185,10 +280,21 @@ class CheckAccelImp {
 
         //Time window variables
         pedi_bad_flag = 0;
-        pedi_step_counter = 0;
+
+        pedi_step_counter = mPreviousStepCount;
     }
 
 //convert the 2 hex values into int for easier processing
+
+    /**
+     * this algorithm for step count is getting result even after large tilt in sitting position.
+     * <RED>FAIL</RED>
+     * @param x
+     * @param y
+     * @param z
+     * @param timestamp
+     * @return
+     */
 
     private int updateStepParameter(int x, int y, int z, long timestamp) {
 
@@ -243,8 +349,277 @@ class CheckAccelImp {
         return pedi_step_counter;
     /*Tested*/
     }
+    private static int nLastDetectedTime = 0;
+    int mSamplingInterval ;
+    int mTotalTime ;
+    public static int analyzeAccel(DataModel[] objectArray, int samplingInterval, int totalTime) {
+
+        if(objectArray == null || objectArray.length < 1) {
+            return 0;
+        }
+        int mSamplingInterval = samplingInterval;
+        int mTotalTime = totalTime;
 
 
+        // [kbjung]
+//        ContentObject co1 = objectArray.get(0);
+
+        int idx = objectArray.length;
+
+        float [] nX = new float[idx];
+        float [] nY = new float[idx];
+        float [] nZ = new float[idx];
+        float [] n3D = new float[idx];
+
+        for(int i = 0; i < idx; ++i)
+        {
+//            nX[i] = (float)(co1.mAccelData[i*3]+32768)/65535.f;
+            nX[i] = (float)(objectArray[i].getX()+32768)/65535.f;
+            //Logs.d("#"+nX[i]);
+//            nY[i] = (float)(co1.mAccelData[i*3+1]+32768)/65535.f;
+            nY[i] = (float)(objectArray[i].getY()+32768)/65535.f;
+            //Logs.d("#"+nY[i]);
+//            nZ[i] = (float)(co1.mAccelData[i*3+2]+32768)/65535.f;
+            nZ[i] = (float)(objectArray[i].getZ()+32768)/65535.f;
+            //Logs.d("#"+nZ[i]);
+            n3D[i] = (float) Math.sqrt(nX[i]*nX[i]+nY[i]*nY[i]+nZ[i]*nZ[i]);
+//            Log.d("###","#"+n3D[i]);
+        }
+
+        //PeakDetector peakDetect = new PeakDetector(nY);
+        PeakDetector peakDetect = new PeakDetector(n3D);
+        int[] res = peakDetect.process(3, 1.5f);
+
+        float fStepTime = 0.f;
+        float fStepVelocity = 0.f;
+        float fAvgVelocity = 0.f;
+        int nTotalSamplingData = 20;
+
+        if(res.length <= 0)
+        {
+            //ar.mCalorie = 0;
+            //return ar;
+            return 0;
+        }
+
+        fStepTime = (res[0] + (nTotalSamplingData-nLastDetectedTime))*0.05f;
+        fStepVelocity = 0.5f/fStepTime;
+        fAvgVelocity = fStepVelocity;
+        for(int i = 1; i < res.length - 1; ++i)
+        {
+            fStepTime = (res[i+1] - res[i])*0.05f;
+            fStepVelocity = 0.5f/fStepTime;
+            fAvgVelocity += fStepVelocity;
+        }
+        fAvgVelocity /= res.length;
+        fAvgVelocity *= 3.6f; // convert m/s to km/h
+        nLastDetectedTime = res[res.length-1];
+
+        nStepCount += res.length;
+//        ar.mShakeActionCount = nStepCount;
+
+        Logs.d("#");
+        Logs.d("# of Xdata: "+nX.length+", shake: "+nStepCount);
+
+        double MET = 1.0;
+        if(fAvgVelocity < 2.7)
+        {
+            MET = 2.3;
+        }
+        else if(fAvgVelocity < 4)
+        {
+            MET = 2.9;
+        }
+        else if(fAvgVelocity < 4.8)
+        {
+            MET = 3.3;
+        }
+        else if(fAvgVelocity < 5.5)
+        {
+            MET = 3.6;
+        }
+        else if(fAvgVelocity < 10)
+        {
+            MET = 3.8;
+        }
+        else if(fAvgVelocity < 16)
+        {
+            MET = 4.0;
+        }
+
+        // 70kg�� ����� 3.5 mph(1.5m/s)�� 30�� �ɾ��� ��: 139.65 kcal
+//        ar.mCalorie = MET*mWeight*(1/3600.)*1000;
+//        duCalorie += ar.mCalorie;
+//        ar.mSumOfCalorie = duCalorie;
+
+/*
+		int nPrevX;
+		int nPrevY;
+		int nPrevZ;
+		int nDiffX;
+		int nDiffY;
+		int nDiffZ;
+		int nPrevDiffX;
+		int nPrevDiffY;
+		int nPrevDiffZ;
+
+		int nDirection1X = 0;
+		int nDirection1Y = 0;
+		int nDirection1Z = 0;
+
+		int nDirection2X = 0;
+		int nDirection2Y = 0;
+		int nDirection2Z = 0;
+
+		int idx = co1.mAccelData.length/3;
+
+		nPrevX = co1.mAccelData[idx];
+		nPrevY = co1.mAccelData[idx+1];
+		nPrevZ = co1.mAccelData[idx+2];
+
+		nPrevDiffX = nPrevX - co1.mAccelData[idx-3];
+		nPrevDiffY = nPrevY - co1.mAccelData[idx-2];
+		nPrevDiffZ = nPrevZ - co1.mAccelData[idx-1];
+
+
+		int nThreshold = 100;
+		if(Math.abs(nPrevDiffX) > nThreshold)
+			nDirection2X = 1;
+		else if(Math.abs(nPrevDiffX) < -nThreshold)
+			nDirection2X = -1;
+
+		if(Math.abs(nPrevDiffY) > nThreshold)
+			nDirection2Y = 1;
+		else if(Math.abs(nPrevDiffY) < -nThreshold)
+			nDirection2Y = -1;
+
+		if(Math.abs(nPrevDiffZ) > nThreshold)
+			nDirection2Z = 1;
+		else if(Math.abs(nPrevDiffZ) < -nThreshold)
+			nDirection2Z = -1;
+
+
+		for(int j=1; j<objectArray.size(); j++) {
+			ContentObject co = objectArray.get(j);
+			if(j == 0)
+				ar.mStartTime = co.mTimeInMilli;
+
+			/**
+			 * Make your own analyzing code here.
+			 */
+			/*
+			if(co.mAccelData != null) {
+				int last_x = 0;
+				int last_y = 0;
+				int last_z = 0;
+
+				// [kbjung]
+				nDiffX = co.mAccelData[0] - nPrevX;
+				nDiffY = co.mAccelData[1] - nPrevY;
+				nDiffZ = co.mAccelData[2] - nPrevZ;
+
+				if(nDiffX > nThreshold)
+					nDirection1X = 1;
+				else if(nDiffX < -nThreshold)
+					nDirection1X = -1;
+
+				if(nDiffY > nThreshold)
+					nDirection1Y = 1;
+				else if(nDiffY < -nThreshold)
+					nDirection1Y = -1;
+
+				if(nDiffZ > nThreshold)
+					nDirection1Z = 1;
+				else if(nDiffZ < -nThreshold)
+					nDirection1Z = -1;
+
+				if(nDirection1Y != 0 && nDirection2Y != 0 && nDirection1Y != nDirection2Y)
+					nStepCount++;
+//					ar.mShakeActionCount++;
+
+				nPrevDiffX = nDiffX;
+				nPrevDiffY = nDiffY;
+				nPrevDiffZ = nDiffZ;
+
+				for(int i=3; i<co.mAccelData.length/3; i+=3) {
+					int axis_x = co.mAccelData[i];
+					int axis_y = co.mAccelData[i+1];
+					int axis_z = co.mAccelData[i+2];
+
+					// [kbjung]
+					nDiffX = axis_x - nPrevX;
+					nDiffY = axis_y - nPrevY;
+					nDiffZ = axis_z - nPrevZ;
+
+					if(nDiffX > nThreshold)
+						nDirection1X = 1;
+					else if(nDiffX < -nThreshold)
+						nDirection1X = -1;
+
+					if(nDiffY > nThreshold)
+						nDirection1Y = 1;
+					else if(nDiffY < -nThreshold)
+						nDirection1Y = -1;
+
+					if(nDiffZ > nThreshold)
+						nDirection1Z = 1;
+					else if(nDiffZ < -nThreshold)
+						nDirection1Z = -1;
+
+					if(nDirection1Y != 0 && nDirection2Y != 0 && nDirection1Y != nDirection2Y)
+						nStepCount++;
+					ar.mShakeActionCount = nStepCount;
+
+					nPrevDiffX = nDiffX;
+					nPrevDiffY = nDiffY;
+					nPrevDiffZ = nDiffZ;
+
+//					double difference = 0;
+//
+//					if(last_x == 0 && last_y == 0 && last_z == 0) {
+//
+//					} else {
+//						difference = Math.abs(axis_x + axis_y + axis_z - last_x - last_y - last_z) / samplingInterval * 10000;
+//						ar.mSumOfDifference += difference;
+//						ar.mCount++;
+//
+//						if(difference > SHAKE_THRESHHOLD) {
+//							// This is shake action
+//							ar.mShakeActionCount++;
+//						}
+//					}
+//					last_x = axis_x;
+//					last_y = axis_y;
+//					last_z = axis_z;
+
+					/*
+					if(axis_x == 0 && axis_y == 0 && axis_z == 0) {
+						previousMagnitude = 0;
+					} else {
+						difference = Math.sqrt(Math.pow(axis_x, 2) + Math.pow(axis_y, 2) + Math.pow(axis_z, 2));
+						if(previousMagnitude > 0) {
+							ar.mSumOfDifference += Math.abs(previousMagnitude - difference);
+							ar.mCount++;
+						}
+						previousMagnitude = difference;
+					}
+					*/
+					/*
+				}	// End of for loop
+			}
+
+		}	// End of for loop
+//
+//		if(ar.mCount > 0)
+//			ar.mAverageDifference = ar.mSumOfDifference / ar.mCount;
+//		else
+//			ar.mAverageDifference = 0;
+		*/
+
+        //ar.mCalorie = Analyzer.calculateCalorie(ar.mShakeActionCount);	// Calculate calorie!!
+
+        return nStepCount;
+    }
 
 
 

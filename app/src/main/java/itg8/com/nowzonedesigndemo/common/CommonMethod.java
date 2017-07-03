@@ -27,7 +27,14 @@ public class CommonMethod {
 
     public static final String DATE_FORMAT = "dd-MM-yyyy";
     public static final String DATE_FORMAT_WITH_TIME = "hh:mm a";
+
     public static final String SAVEALARMTIME = "SAVEALARMTIME";
+
+    public static final String AVG_MILE_BY_HEIGHT = "avgKmHeight";
+    public static final String STEP_COUNT = "stepCount";
+    public static final String ENABLE_TO_CONNECT = "enableToConnect";
+    public static final String GOAL = "stepGoal";
+
 
     private static Typeface typeface;
     public static String FROMWEEk="from_week";
@@ -199,5 +206,7 @@ public class CommonMethod {
         }
         return ss;
     }
+
+
 
 }

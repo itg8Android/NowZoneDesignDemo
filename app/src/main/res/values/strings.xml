@@ -51,14 +51,20 @@
 
     </string-array>
     <string name="title_activity_audio">Meditation</string>
+    <string name="title_activity_scan">Scan device</string>
     <string name="dialog_disconnected_device">It seems like you are not connected to Nowzone device. Please make sure device is having enough chanrging. Make it running and search.</string>
-    <string name="selected_device">Selected device is</string>
+    <string name="selected_device">Please select device from list</string>
     <string name="not_have_bluetooth">Sorry, you dont have Bluetooth LE supported device. You cannot use this app on non BLE devices</string>
     <string name="rationale_location">To better scan result we need permission for location. Dont worry we are not sharing your location with anybody.</string>
     <string name="rationale_storage">Please grant storage permission. We need this for storing details offline</string>
     <string name="title_activity_breath_history">Breath History</string>
     <string name="title_activity_alarm">Alarm</string>
     <string name="title_activity_profile">Profile</string>
-    <string name="title_activity_alarm_setting">Alarm Setting</string>
+
+    <string name="title_activity_alarm_setting">AlarmSettingActivity</string>
+
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_step_goal">Step Goal</string>
+
 
 </resources>
