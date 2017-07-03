@@ -12,4 +12,8 @@ public interface RDataManagerListener {
     void onCountAvailable(int count, long timestamp);
 
     void onStepCountReceived(int step);
+
+    void onSleepInterrupted(long timestamp);
+
+    void onStartWakeupSevice();
 }

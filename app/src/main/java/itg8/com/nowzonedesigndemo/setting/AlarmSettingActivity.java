@@ -4,6 +4,9 @@ import android.animation.ObjectAnimator;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.support.design.widget.FloatingActionButton;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,9 +16,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
+
+import android.widget.RelativeLayout;
+
 import android.widget.TimePicker;
 
-import java.text.SimpleDateFormat;
+
 import java.util.Calendar;
 
 import butterknife.BindView;
@@ -37,6 +43,14 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     Button btnAlarmSetting;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @BindView(R.id.txtAmPm)
+    CustomFontTextView txtAmPm;
+    @BindView(R.id.releative)
+    RelativeLayout releative;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
     @BindView(R.id.txt_alarm_status)
     CustomFontTextView txtAlarmStatus;
     @BindView(R.id.txt_am)
@@ -93,7 +107,11 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
           if(v.getId() == R.id.btn_alarmStarted)
           {
 
+
+            startAnimation();
+
           }
+
 
     }
 
@@ -177,6 +195,9 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
+                 
+
                             btnAlarmSetting.setVisibility(View.GONE);
                             btnAlarmCalibarating.setVisibility(View.GONE);
                             btnAlarmStarted.setVisibility(View.VISIBLE);
@@ -187,6 +208,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                             ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
                             objectAnimator.start();
                             sendBroadCast(false);
+
 
                         }
                     });

@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -36,7 +37,7 @@ class CheckAccelImp {
     private double vector;
     //Digital sum filter variables
     private int[] pedi_fil_x = new int[4];
-
+    private boolean calibarated=false;
 
     //TODO
     private int[] pedi_fil_y = new int[4];
@@ -66,6 +67,12 @@ class CheckAccelImp {
     private double roll;
     DataModel[] models;
     private int modelCounter=0;
+    private int count=0;
+
+    Rolling rolling;
+    private double sleep_threshold=0;
+    private boolean isSleepThresholdCalculated=false;
+    private long alarmStartTime;
 
     /**
      * We will pass the listener and latest step count received before service destroyed.
@@ -76,6 +83,7 @@ class CheckAccelImp {
         this.listener = listener;
         initPedometer(mPreviousStepCount);
         nStepCount=mPreviousStepCount;
+        rolling=new Rolling(2000);
         models=new DataModel[TOTAL_SIZE_OF_DATA_COLLECTION];
         observer = new Observer<Integer>() {
             @Override
@@ -623,5 +631,74 @@ class CheckAccelImp {
     }
 
 
+    public void onSleepdataAvail(DataModel model,long alarmStartTime, long alarmEndsTime) {
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            Calendar calendar;
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
+                calendar=Calendar.getInstance();
+                if(!calibarated){
+                    if(!isSleepThresholdCalculated) {
+                        if (count < 2000) {
+                            rolling.add(calculateVector(model));
+                            count++;
+                        } else {
+                            sleep_threshold = rolling.getaverage();
+                            isSleepThresholdCalculated=true;
+                        }
+                        return;
+                    }
 
+                    if(calculateVector(model)+2000>sleep_threshold || calculateVector(model)-2000<sleep_threshold ){
+
+                        sleepInterrupted(model.getTimestamp());
+                        if(checkTime(model.getTimestamp())>checkTime(alarmStartTime) && checkTime(model.getTimestamp())<checkTime(alarmEndsTime)){
+                            startWakeupService();
+                        }else if(checkTime(model.getTimestamp())>checkTime(alarmEndsTime)){
+                            startWakeupService();
+                        }
+                    }
+
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Object>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG,e.getMessage(),e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
+
+    private long checkTime(long time) {
+        return time % (24*60*60*1000L);
+    }
+
+    private void startWakeupService() {
+        listener.startWakeupService();
+    }
+
+    private void sleepInterrupted(long timestamp) {
+        listener.onSleepInterrupted(timestamp);
+    }
+
+    private double calculateVector(DataModel model) {
+        return Math.sqrt((model.getX()*model.getX())+(model.getY()*model.getY())+(model.getZ()*model.getZ()));
+    }
 }
