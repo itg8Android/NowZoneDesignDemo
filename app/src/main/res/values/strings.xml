@@ -65,6 +65,7 @@
 
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_step_goal">Step Goal</string>
+    <string name="title_activity_alarm_notification">AlarmNotification</string>
 
 
 </resources>

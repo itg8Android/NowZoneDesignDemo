@@ -2,8 +2,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
 
-<size android:height="150dp" android:width="150dp"></size>
+    <size android:height="150dp" android:width="150dp"></size>
     <solid android:color="@android:color/transparent"></solid>
-    <stroke android:color="@color/colorWhite" android:width="3px"></stroke>
+    <stroke android:color="@color/colorGreen" android:width="3dp">
+
+    </stroke>
 
 </shape>

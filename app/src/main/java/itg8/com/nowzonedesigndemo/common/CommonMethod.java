@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.common;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 
 import java.text.SimpleDateFormat;
@@ -36,6 +37,8 @@ public class CommonMethod {
     public static final String GOAL = "stepGoal";
     public static final String START_ALARM_TIME = "START_ALARM_TIME";
     public static final String END_ALARM_TIME = "END_ALARM_TIME";
+    public static final String ALARM_FROMTIMEPICKER = "ALARM_FROMTIMEPICKER";
+    public static final String ACTION_ALARM_NOTIFICATION = "ACTION_ALARM_NOTIFICATION";
     public static final String SLEEP_STARTED = "sleepStarted";
     public static final String STEP_GOAL = "stepGoal";
 

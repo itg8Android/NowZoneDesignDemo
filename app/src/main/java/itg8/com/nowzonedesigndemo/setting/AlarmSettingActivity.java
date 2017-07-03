@@ -1,10 +1,12 @@
 package itg8.com.nowzonedesigndemo.setting;
 
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
+import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+
 import android.support.design.widget.FloatingActionButton;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,13 +16,19 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
+
 import android.widget.RelativeLayout;
+
+import android.widget.TimePicker;
+
 
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
+import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 
 public class AlarmSettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -35,12 +43,22 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     Button btnAlarmSetting;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
     @BindView(R.id.txtAmPm)
     CustomFontTextView txtAmPm;
     @BindView(R.id.releative)
     RelativeLayout releative;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
+    @BindView(R.id.txt_alarm_status)
+    CustomFontTextView txtAlarmStatus;
+    @BindView(R.id.txt_am)
+    CustomFontTextView txtAm;
+    @BindView(R.id.btn_alarmCalibarating)
+    Button btnAlarmCalibarating;
+    @BindView(R.id.btn_alarmStarted)
+    Button btnAlarmStarted;
     private Animation zoomIn, zoomOut;
     boolean isFinished;
 
@@ -64,6 +82,9 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         Log.d(getClass().getSimpleName(), "Calender:" + Calendar.getInstance().getTimeInMillis());
         Log.d(getClass().getSimpleName(), "Calender:" + System.currentTimeMillis());
         btnAlarmSetting.setOnClickListener(this);
+        btnAlarmStarted.setOnClickListener(this);
+        btnAlarmCalibarating.setOnClickListener(this);
+        txtAlarmTime.setOnClickListener(this);
     }
 
     @Override
@@ -77,11 +98,64 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_alarmSetting) {
+            startAnimation();
+        }
+         if(v.getId() == R.id.txt_alarm_time)
+         {
+             OpenTimePickerDia();
+         }
+          if(v.getId() == R.id.btn_alarmStarted)
+          {
+
 
             startAnimation();
 
-        }
+          }
 
+
+    }
+
+    private void OpenTimePickerDia() {
+        // Get Current Time
+        final Calendar c = Calendar.getInstance();
+        int mHour = c.get(Calendar.HOUR_OF_DAY);
+        int mMinute = c.get(Calendar.MINUTE);
+
+
+
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        c.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        c.set(Calendar.MINUTE, minute);
+
+                        SharePrefrancClass.getInstance(getApplicationContext()).setLPref(CommonMethod.START_ALARM_TIME, c.getTimeInMillis());
+                        c.add(Calendar.MINUTE, 30);
+                        SharePrefrancClass.getInstance(getApplicationContext()).setLPref(CommonMethod.END_ALARM_TIME, c.getTimeInMillis());
+                        SimpleDateFormat formatDate = new SimpleDateFormat("hh:mm");
+                        SimpleDateFormat formatDate2 = new SimpleDateFormat("a");
+                        String time = (hourOfDay+":"+minute);
+                        c.add(Calendar.MINUTE,-30);
+                        txtAm.setText(formatDate2.format(c.getTime()));
+                        time = formatDate.format(c.getTime());
+                        txtAlarmTime.setText(time);
+
+                        Log.d(getClass().getSimpleName(),"Time:"+time);
+                        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEALARMTIME,time);
+                        sendBroadCast(true);
+                    }
+                }, mHour, mMinute, false);
+        timePickerDialog.show();
+
+    }
+
+    private void sendBroadCast(boolean b) {
+        Intent intent = new Intent(CommonMethod.ACTION_ALARM_NOTIFICATION);
+        intent.putExtra(CommonMethod.ALARM_FROMTIMEPICKER,b );
+        sendBroadcast(intent);
     }
 
     private void startAnimation() {
@@ -98,13 +172,14 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                         @Override
                         public void run() {
                             progressBar.setVisibility(View.VISIBLE);
-                            btnAlarmSetting.startAnimation(zoomOut);
-                            btnAlarmSetting.startAnimation(zoomIn);
-                            btnAlarmSetting.setPadding(8, 0, 8, 0);
-                            btnAlarmSetting.setText("Calibarating");
+                            progressBar.setProgress(0);
+                            txtAlarmStatus.setVisibility(View.VISIBLE);
+                            txtAlarmStatus.setText("Calibrating Alarm");
+                            btnAlarmSetting.setVisibility(View.GONE);
+                            btnAlarmCalibarating.setVisibility(View.VISIBLE);
+                            btnAlarmCalibarating.startAnimation(zoomOut);
+                            btnAlarmCalibarating.startAnimation(zoomIn);
 
-                            ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
-                            objectAnimator.start();
 
                         }
                     });
@@ -120,15 +195,21 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
+                 
+
+                            btnAlarmSetting.setVisibility(View.GONE);
+                            btnAlarmCalibarating.setVisibility(View.GONE);
+                            btnAlarmStarted.setVisibility(View.VISIBLE);
                             btnAlarmSetting.startAnimation(zoomOut);
                             btnAlarmSetting.startAnimation(zoomIn);
-                            btnAlarmSetting.setPadding(8, 0, 8, 0);
-                            btnAlarmSetting.setText("Alarm Started");
-                            btnAlarmSetting.setTextColor(Color.GREEN);
-                            GradientDrawable drawable = (GradientDrawable) btnAlarmSetting.getBackground();
-                            drawable.setStroke(1, Color.GREEN);
+                            txtAlarmStatus.setVisibility(View.VISIBLE);
+                            txtAlarmStatus.setText(" Alarm Started");
                             ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
                             objectAnimator.start();
+                            sendBroadCast(false);
+
+
                         }
                     });
                 }

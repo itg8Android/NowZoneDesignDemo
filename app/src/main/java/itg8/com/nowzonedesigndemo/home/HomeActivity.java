@@ -203,7 +203,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if(!getIntent().hasExtra(CommonMethod.FROMWEEk)) {
             startService(new Intent(this,BleService.class));
 
-            checkDeviceConnection(rlWave);
+         //   checkDeviceConnection(rlWave);
         }
 
 
