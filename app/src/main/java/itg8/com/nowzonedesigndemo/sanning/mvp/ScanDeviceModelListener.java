@@ -39,4 +39,6 @@ public interface ScanDeviceModelListener {
     void showButton();
 
     void showLoading();
+
+    void cancelScanning();
 }

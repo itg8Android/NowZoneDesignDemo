@@ -249,4 +249,12 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
             if(view!=null)
                 view.onShowScanning();
     }
+
+    @Override
+    public void cancelScanning() {
+        if(handler!=null)
+            handler.removeCallbacks(r);
+        stopScanning();
+    }
+
 }

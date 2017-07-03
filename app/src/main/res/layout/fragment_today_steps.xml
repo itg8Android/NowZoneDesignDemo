@@ -1,5 +1,6 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res/itg8.com.nowzonedesigndemo"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -76,7 +77,8 @@
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView xmlns:custom="http://schemas.android.com/apk/res/itg8.com.nowzonedesigndemo"
+                            <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                                android:id="@+id/customFontTextView2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -87,6 +89,7 @@
                                 app:font_value="3" />
 
                             <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView xmlns:custom="http://schemas.android.com/apk/res/itg8.com.nowzonedesigndemo"
+                                android:id="@+id/txt_daliy_avg"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/txt_caloriesText"
@@ -103,7 +106,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="03dp"
                                 android:gravity="center"
-                                android:text="Calories"
+                                android:text="Steps"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="@dimen/txt_value"
@@ -167,7 +170,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="03dp"
                                 android:gravity="center"
-                                android:text="Calories"
+                                android:text="Steps"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="@dimen/txt_value"
@@ -304,7 +307,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="03dp"
                                 android:gravity="center"
-                                android:text="Calories"
+                                android:text="Steps"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="@dimen/txt_value"

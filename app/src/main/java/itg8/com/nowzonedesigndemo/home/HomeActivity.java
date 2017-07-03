@@ -239,6 +239,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
 //        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
+        SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.GOAL,6000);
 
     }
 
@@ -415,7 +416,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                firstPreference(pressure);
                 e.onNext(calculateProportion(pressure));
             }
-        }).observeOn(Schedulers.trampoline())
+        })
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Double>() {
                     @Override
@@ -510,9 +511,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
 //        double d=(double) Math.round((CONST_1+(CONST_2*((pressure-(lastMin))/(lastMax-lastMin)))) * 1000000000000000000d) / 1000000000000000000d;
 //        s(i)=a*y(i)+(1-a)*s(i-1)
-        double d=a*pressure+((1-a)*dLast);
-//        double d=pressure;
-        dLast=d;
+//        double d=a*pressure+((1-a)*dLast);
+        double d=pressure;
+//        dLast=d;
        // Log.d(TAG,"ds:"+d);
 //        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
         return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));

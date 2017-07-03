@@ -100,6 +100,12 @@ public class ScanDeviceModelImp implements ScanDeviceModel {
         initStartScanningText();
     }
 
+    @Override
+    public void cancelScanning() {
+        scanningCompleted=true;
+        initStartScanningText();
+    }
+
     private void setText(final CharSequence text) {
                 listener.setLoadingText(text);
     }

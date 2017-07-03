@@ -1,25 +1,32 @@
 package itg8.com.nowzonedesigndemo.steps.mvp;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
 
 import java.lang.ref.WeakReference;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.Observable;
 import itg8.com.nowzonedesigndemo.common.BaseModuleOrm;
 import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.utility.Helper;
 
-/**
- * Created by itg_Android on 7/1/2017.
- */
 
 public class StepModuleImp implements StepMVP.StepModule{
 
     private WeakReference<StepMVP.StepPresenterListener> listener;
     private Dao<TblStepCount, Integer> stepDao;
+    private int woy;
+    private String lastWeekLabel="";
+    private float[] dataToCollect;
+    private int i=0;
 
     @Override
     public void onListenerReady(StepMVP.StepPresenterListener listener) {
@@ -34,7 +41,97 @@ public class StepModuleImp implements StepMVP.StepModule{
     @Override
     public void onDaoReady(Dao<TblStepCount,Integer> dao) {
         this.stepDao=dao;
-        startCollectingData(dao);
+    }
+
+    @Override
+    public void onTodaysFragmentLoaded() {
+        startCollectingData(stepDao);
+    }
+
+    @Override
+    public void onWeeksFragmentLoaded() {
+        startCollectingWeekStepData();
+    }
+
+    @Override
+    public void onMonthFragmentLoaded() {
+        startCollectingMonthData();
+    }
+
+    private void startCollectingMonthData() {
+        try {
+            List<TblStepCount> counts=stepDao.queryForAll();
+            listener.get().onMonthStep(counts);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startCollectingWeekStepData() {
+        List<WeekStepModel> models=new ArrayList<>();
+        WeekStepModel model;
+        try {
+            List<TblStepCount> counts=stepDao.queryForAll();
+//            Collections.sort(counts, new WeekComparator());
+//
+//            for (TblStepCount date : counts) {
+//                if (woy != getWeekOfYear(date.getDate())) {
+//                    woy = getWeekOfYear(date.getDate());
+//                    week++;
+//                    System.out.println("Week " + week + ":");
+//                }
+//                System.out.println(date);
+//            }
+            Calendar calender=Calendar.getInstance();
+
+            for (TblStepCount stepDate:counts
+                 ) {
+                calender.setTime(stepDate.getDate());
+                calender.set(Calendar.DAY_OF_WEEK,calender.getFirstDayOfWeek()+1);
+                String weekLabel=calender.get(Calendar.DAY_OF_MONTH)+" "+calender.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.UK);
+                calender.add(Calendar.DAY_OF_YEAR,6);
+                weekLabel+="-"+calender.get(Calendar.DAY_OF_MONTH)+" "+calender.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.UK);
+                if(!lastWeekLabel.equalsIgnoreCase(weekLabel)){
+                    lastWeekLabel=weekLabel;
+                    model=new WeekStepModel();
+                    model.setWeekLabel(lastWeekLabel);
+
+                    dataToCollect=new float[7];
+                    i=0;
+                    dataToCollect[i]=stepDate.getSteps();
+                    model.setStepsCount(dataToCollect);
+                    models.add(model);
+
+
+                }else {
+                    dataToCollect[i]=stepDate.getSteps();
+                    i++;
+                }
+            }
+
+            listener.get().onWeekStep(models);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static class WeekComparator implements Comparator<TblStepCount> {
+
+        @Override
+        public int compare(TblStepCount o1, TblStepCount o2) {
+            int result = getWeekOfYear(o1.getDate()) - getWeekOfYear(o2.getDate());
+            if (result == 0) {
+                result = o1.getDate().compareTo(o2.getDate());
+            }
+            return result;
+        }
+
+    }
+
+    protected static int getWeekOfYear(Date date) {
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.WEEK_OF_YEAR);
     }
 
     private void startCollectingData(Dao<TblStepCount, Integer> dao) {
@@ -46,7 +143,7 @@ public class StepModuleImp implements StepMVP.StepModule{
             if(counts.size()>0 && getListener())
             {
                 TblStepCount count=counts.get(0);
-                listener.get().onTodaysStepAvailable(count.getGoal(),count.getSteps(),getThisWeekTotal(dao));
+                listener.get().onTodaysStepAvailable(count.getGoal(),count.getSteps(),getThisWeekTotal(dao),count.getCalBurn());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,7 +153,8 @@ public class StepModuleImp implements StepMVP.StepModule{
     private int getThisWeekTotal(Dao<TblStepCount, Integer> dao) {
         int total=0;
         try {
-            List<TblStepCount> counts =dao.query(dao.queryBuilder().where().between (TblStepCount.FIELD_DATE,"datetime('now', '-6 days')","datetime('now', 'localtime')").prepare());
+            GenericRawResults<TblStepCount> countsRaw =dao.queryRaw("select * from "+TblStepCount.TABLE_NAME+" where "+TblStepCount.FIELD_DATE+" BETWEEN "+"date('now', '-6 days') AND date('now', 'localtime')",stepDao.getRawRowMapper());
+            List<TblStepCount> counts=countsRaw.getResults();
             if(counts.size()>0){
                 for (TblStepCount tblCount :
                         counts) {
