@@ -91,7 +91,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
             }
             return false;
         }
-
     };
     private MonthFragmentCommunicator monthStepCommunicator;
 
@@ -108,8 +107,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         presenter=new StepPresenterImp(this);
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -200,10 +197,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         float alphaVal = verticalOffset / -276f;
         Log.d(TAG, "Offset : " + alphaVal + " vertical offset : " + verticalOffset);
         float newAlphaVal = 1 - alphaVal;
-
         progressSteps.setAlpha(newAlphaVal);
         imgGraph.setAlpha(newAlphaVal);
-
     }
 
     @Override

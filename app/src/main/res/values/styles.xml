@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:editTextStyle">@style/App_EditTextStyle</item>
+        <item name="actionMenuTextColor">@color/colorWhite</item>
+
 
     </style>
 
@@ -18,6 +20,7 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:editTextStyle">@style/App_EditTextStyle</item>
+        <item name="android:actionMenuTextColor">@color/colorBlack</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -53,6 +56,10 @@
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
 
+    <style name="MyToolbarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/colorBlack</item>
+    </style>
     <!---
       for Alarm Switching style-->
 
@@ -70,8 +77,6 @@
     <style name="App_EditTextStyle" parent="@android:style/Widget.EditText">
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">@dimen/txt_edit_text_size</item>
-
-
     </style>
 
 

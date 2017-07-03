@@ -1,5 +1,6 @@
 package itg8.com.nowzonedesigndemo.alarm;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,10 +19,12 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,16 +93,34 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         frmContainerSmartAlarm.setOnClickListener(this);
+         frameLayoutMeditation.setOnClickListener(this);
 
     }
 
     private void setMeditationSenceAlarm() {
         ViewGroup containerMeditation = (ViewGroup) findViewById(R.id.frame_layout_meditation);
+        sceneSmartAlarmExpand = Scene.getSceneForLayout(containerMeditation, R.layout.layout_alarm_set, this);
+        sceneSmartAlarmCollapse = Scene.getSceneForLayout(containerMeditation, R.layout.layout_smart_alarm, this);
+        sceneSmartAlarmCollapse.enter();
 
+        View expandView = createView(containerMeditation, R.layout.layout_smart_alarm);
+        CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
+        CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
+        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+        {
+            alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
+        }else
+        {
+            alarmTime.setText("Set alarm time..!!!");
+        }
 
-
-
-
+        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+        {
+            alarmDay.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS));
+        }else
+        {
+            alarmDay.setText("Set alarm Day...!!!");
+        }
 
     }
 
@@ -108,12 +129,31 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         sceneSmartAlarmExpand = Scene.getSceneForLayout(container, R.layout.layout_alarm_set, this);
         sceneSmartAlarmCollapse = Scene.getSceneForLayout(container, R.layout.layout_smart_alarm, this);
         sceneSmartAlarmCollapse.enter();
+
+        View expandView = createView(frmContainerSmartAlarm, R.layout.layout_smart_alarm);
+        CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
+        CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
+        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+        {
+            alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
+        }else
+        {
+            alarmTime.setText("Set alarm time..!!!");
+        }
+
+        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+        {
+            alarmDay.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS));
+        }else
+        {
+            alarmDay.setText("Set alarm Day...!!!");
+        }
+
     }
 
 
     private View createView(ViewGroup container, int resId) {
-        return LayoutInflater.from(this).inflate(resId, container, false);
-
+   return   LayoutInflater.from(this).inflate(resId, container, false);
     }
 
     private void toggleSmartAlarm() {
@@ -144,6 +184,11 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
             alarmTime.setOnClickListener(v -> openDateTimeDialogue(v));
+
+            if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME) != null)
+            {
+                alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
+            }
             frmContainerSmartAlarm.addView(expandView);
 
         } else {
@@ -154,30 +199,31 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
             CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
             String textview ="";
-               String  time ="";
 
             for (int i = 0; i < days.size(); i++) {
                     if (days.get(i).isChecked()) {
                         textview += days.get(i).getDays() + " ";
-                  time = days.get(i).getTime();
-
                     }
                 }
             alarmDay.setText(textview);
-            alarmTime.setText(time);
+            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+            {
+                 alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
 
-//            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
-//                     {
-//                    String oldDays = SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS);
-//                     alarmTime.setText(oldDays);
-//
-//                     }else
-//                      {
-//
-//                     }
-//            SharePrefrancClass.getInstance(this).savePref(CommonMethod.SAVEDAYS, textview);
-
-                frmContainerSmartAlarm.addView(expandView);
+            }else
+            {
+                alarmTime.setText("Set alarm time..!!!");
+            }
+            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+                     {
+                    String oldDays = SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS);
+                         alarmDay.setText(oldDays);
+                     }else
+                     {
+                         alarmDay.setText(textview);
+                     }
+                 SharePrefrancClass.getInstance(this).savePref(CommonMethod.SAVEDAYS, textview);
+            frmContainerSmartAlarm.addView(expandView);
         }
     }
 
@@ -244,12 +290,26 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         int mMinute = c.get(Calendar.MINUTE);
         TextView txt = (TextView) v.findViewById(R.id.lbl_alarmTime);
 
-        // Launch Time Picker Dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, hourOfDay, minute) -> txt.setText(hourOfDay + ":" + minute), mHour, mMinute, false);
-        model.setTime( mHour+ ":"+mMinute);
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                            txt.setText(hourOfDay + ":" + minute);
+                            String time = (hourOfDay+":"+minute);
+                            Log.d(TAG,"Time:"+time);
+                            SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEALARMTIME,time);
+
+
+
+                    }
+                }, mHour, mMinute, false);
         timePickerDialog.show();
+
     }
+    /// (view, hourOfDay, minute) ->
+       // {txt.setText(hourOfDay + ":" + minute), mHour, mMinute, false);
 
 
     @Override
@@ -261,12 +321,78 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             case R.id.frame_layout_meditation:
                 toggleMeditationAlarm();
                 break;
-
         }
 
     }
 
     private void toggleMeditationAlarm() {
+        visible = !visible;
+        if (visible) {
+            TransitionManager.beginDelayedTransition(frameLayoutMeditation, TransitionInflater.from(AlarmActivity.this).
+                    inflateTransition(R.transition.transition_manager));
+            frameLayoutMeditation.removeAllViews();
+            View expandView = createView(frameLayoutMeditation, R.layout.layout_alarm_set);
+
+            ((CardView)expandView.findViewById(R.id.cardView)).setCardElevation(18f);
+
+            TextView alarmTime = (TextView) expandView.findViewById(R.id.lbl_alarmTime);
+            gridView = (GridView) expandView.findViewById(R.id.gridView);
+            adapter = new AlarmDaysAdapter(this, days);
+            gridView.setAdapter(adapter);
+
+            gridView.setOnItemClickListener((parent, view, position, id) -> {
+                //  View singleView  = (View) adapter.getItem(position);
+
+                if (days.get(position).isChecked()) {
+                    setImageViewFadeOut(view, position);
+
+                } else {
+                    setImageViewFadeIn(view, position);
+
+                }
+            });
+            alarmTime.setOnClickListener(v -> openDateTimeDialogue(v));
+
+            if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME) != null)
+            {
+                alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
+            }
+            frameLayoutMeditation.addView(expandView);
+
+        } else {
+            TransitionManager.beginDelayedTransition(frameLayoutMeditation, TransitionInflater.from(AlarmActivity.this).
+                    inflateTransition(R.transition.transition_manager));
+            frameLayoutMeditation.removeAllViews();
+            View expandView = createView(frameLayoutMeditation, R.layout.layout_smart_alarm);
+            CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
+            CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
+            String textview ="";
+
+            for (int i = 0; i < days.size(); i++) {
+                if (days.get(i).isChecked()) {
+                    textview += days.get(i).getDays() + " ";
+                }
+            }
+            alarmDay.setText(textview);
+            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+            {
+                alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
+
+            }else
+            {
+                alarmTime.setText("Set alarm time..!!!");
+            }
+            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+            {
+                String oldDays = SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS);
+                alarmDay.setText(oldDays);
+            }else
+            {
+                alarmDay.setText(textview);
+            }
+            SharePrefrancClass.getInstance(this).savePref(CommonMethod.SAVEDAYS, textview);
+            frameLayoutMeditation.addView(expandView);
+        }
 
     }
 
@@ -278,6 +404,5 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }

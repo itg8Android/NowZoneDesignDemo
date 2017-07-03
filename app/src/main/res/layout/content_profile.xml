@@ -143,7 +143,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="feet"
-                android:textColor="@drawable/rbtn_text_color_steps" />
+                android:textColor="@drawable/rbtn_height_color" />
         </RadioGroup>
 
 
@@ -209,7 +209,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="pounds"
-                android:textColor="@drawable/rbtn_text_color_steps" />
+                android:textColor="@drawable/rbtn_height_color" />
         </RadioGroup>
 
     </LinearLayout>

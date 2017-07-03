@@ -42,14 +42,14 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/ic_right_arrow" />
 
-        <com.github.mikephil.charting.charts.BarChart
+        <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/barchart"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_below="@+id/txt_day"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:scaleType="fitXY"
             android:src="@drawable/stacked_bar_chart" />
 
@@ -57,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/barchart"
+            android:visibility="gone"
             android:id="@+id/rl_time">
 
         <TextView
