@@ -6,11 +6,8 @@
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_alarm"
         android:orderInCategory="100"
-
         android:title="@string/action_alarm"
-
-        android:visible="false"
-
+        android:visible="true"
         app:showAsAction="always" />
 
     <item

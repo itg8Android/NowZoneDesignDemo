@@ -96,6 +96,15 @@ public class SharePrefrancClass {
         }
         return 0;
     }
+    public void  setLPref(String key, long value) {
+        if(preference!=null) {
+            editor = preference.edit();
+            editor.putLong(key, value);
+            editor.apply();
+        }
+    }
+
+
 
     /**
      * getBoolean()  for use

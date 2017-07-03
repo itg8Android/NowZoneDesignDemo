@@ -71,14 +71,12 @@
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-
             android:name=".setting.AlarmSettingActivity"
             android:label="@string/title_activity_alarm_setting"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-            android:name=".setting.SettingActivity"
-            android:label="@string/title_activity_setting"
             android:theme="@style/AppTheme.NoActionBar" />
+        android:name=".setting.SettingActivity"
+        android:label="@string/title_activity_setting"
+        android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".steps.StepGoalActivity"
             android:label="@string/title_activity_step_goal"
@@ -89,9 +87,22 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="ACTION_NZ_DATA_AVAIL"></action>
+                <action android:name="ACTION_NZ_DATA_AVAIL" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".setting.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="ACTION_ALARM_NOTIFICATION" />
+            </intent-filter>
+            </receiver>
+
+        <activity
+            android:name=".setting.notification.AlarmNotification"
+            android:label="@string/title_activity_alarm_notification"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
