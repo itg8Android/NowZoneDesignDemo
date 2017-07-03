@@ -25,6 +25,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     public boolean deviceDisconnected;
     String TAG = BaseActivity.class.getSimpleName();
     private FirebaseJobDispatcher dispatcher;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     }
 
     private void showSnackbar(View v) {
-        Snackbar snackbar = Snackbar.make(v, R.string.dialog_disconnected_device, Snackbar.LENGTH_INDEFINITE);
+        snackbar = Snackbar.make(v, R.string.dialog_disconnected_device, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("OK", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,6 +93,12 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
             }
         });
         snackbar.show();
+    }
+
+    public void hideSnackbar(){
+        if(snackbar!=null && snackbar.isShown()){
+            snackbar.dismiss();
+        }
     }
 
 //    public String getClassName(){

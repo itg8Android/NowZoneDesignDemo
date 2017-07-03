@@ -39,6 +39,8 @@ public class CommonMethod {
     public static final String END_ALARM_TIME = "END_ALARM_TIME";
     public static final String ALARM_FROMTIMEPICKER = "ALARM_FROMTIMEPICKER";
     public static final String ACTION_ALARM_NOTIFICATION = "ACTION_ALARM_NOTIFICATION";
+    public static final String SLEEP_STARTED = "sleepStarted";
+    public static final String STEP_GOAL = "stepGoal";
 
 
     private static Typeface typeface;

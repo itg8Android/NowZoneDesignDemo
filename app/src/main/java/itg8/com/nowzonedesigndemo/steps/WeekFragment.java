@@ -4,7 +4,6 @@ package itg8.com.nowzonedesigndemo.steps;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.os.Bundle;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -29,6 +28,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.steps.mvp.WeekStepModel;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomMarkerView;
 
@@ -47,7 +49,7 @@ import itg8.com.nowzonedesigndemo.steps.widget.CustomMarkerView;
 public class WeekFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = WeekFragment.class.getSimpleName();
     @BindView(R.id.txt_week)
@@ -86,6 +88,8 @@ public class WeekFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private float[] dataArray;
+    private WeekStepModel model;
     // public Tooltip mTip;
 
 
@@ -98,11 +102,13 @@ public class WeekFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment WeekFragment.
+     * @param stepsCount
      */
     // TODO: Rename and change types and number of parameters
-    public static WeekFragment newInstance() {
+    public static WeekFragment newInstance(WeekStepModel stepsCount) {
         WeekFragment fragment = new WeekFragment();
         Bundle args = new Bundle();
+        args.putParcelable(PARAM1,stepsCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -111,7 +117,8 @@ public class WeekFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
+            model=getArguments().getParcelable(PARAM1);
+            dataArray = model.getStepsCount();
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -121,6 +128,7 @@ public class WeekFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_week, container, false);
         unbinder = ButterKnife.bind(this, view);
+        txtWeek.setText(model.getWeekLabel());
 
         getScreenSize();
 
@@ -253,10 +261,13 @@ public class WeekFragment extends Fragment {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
         int i = 1;
-        for (Float val : entryValues) {
+        float totalSteps=0;
+        for (Float val : dataArray) {
             values.add(new Entry(i, val));
             i++;
+            totalSteps+=val;
         }
+        txtStepsValue.setText(new DecimalFormat("#,###,###").format(totalSteps));
         LineDataSet set1;
 
         if (chart.getData() != null &&

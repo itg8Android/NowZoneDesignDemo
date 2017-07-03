@@ -4,6 +4,7 @@ package itg8.com.nowzonedesigndemo.steps;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -66,6 +67,10 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
     CustomFontTextView txtStepComplete;
     @BindView(R.id.txtWeekTotal)
     CustomFontTextView txtWeekTotal;
+    @BindView(R.id.customFontTextView2)
+    CustomFontTextView customFontTextView2;
+    @BindView(R.id.txt_daliy_avg)
+    CustomFontTextView txtDaliyAvg;
 
 
     // TODO: Rename and change types of parameters
@@ -81,12 +86,11 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ((StepsActivity)context).setListener(this);
     }
 
     @Override
     public void onDetach() {
-        ((StepsActivity)getActivity()).removeTodaysListener();
+        ((StepsActivity) getActivity()).removeTodaysListener();
         super.onDetach();
     }
 
@@ -115,17 +119,18 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_today_steps, container, false);
         unbinder = ButterKnife.bind(this, view);
-        setProgressbar();
-        customProgressRectangle.setProgress(60);
+        ((StepsActivity) getActivity()).setListener(this);
+
+//        setProgressbar((int) stepsToCover);
         rlStepValue.setVisibility(View.VISIBLE);
         return view;
     }
 
-    private void setProgressbar() {
+    private void setProgressbar(int steps) {
         Resources res = getResources();
         Drawable drawable = res.getDrawable(R.drawable.custom_progressbar);
-        customProgressRectangle.setProgress(25);
-        customProgressRectangle.setSecondaryProgress(50);
+        customProgressRectangle.setProgress(steps);
+        customProgressRectangle.setSecondaryProgress(steps);
         customProgressRectangle.setMax(100);
         customProgressRectangle.setProgressDrawable(drawable);
     }
@@ -138,9 +143,14 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
     }
 
     @Override
-    public void onTodaysDataReceived(int goal, int steps, int weekTotal) {
+    public void onTodaysDataReceived(int goal, int steps, int weekTotal, double calBurn) {
         txtGoal.setText(String.valueOf(goal));
         txtStepComplete.setText(String.valueOf(steps));
         txtWeekTotal.setText(String.valueOf(weekTotal));
+        txtDaliyAvg.setText(String.valueOf(steps));
+        String calBurnText = new DecimalFormat("#.##").format(calBurn) + " Calories burned today";
+        float stepsToCover=((float) ((float)steps/(float)goal)*100.0f);
+        setProgressbar((int)stepsToCover);
+        txtCalories.setText(calBurnText);
     }
 }

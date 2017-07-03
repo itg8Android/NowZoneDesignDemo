@@ -71,6 +71,8 @@ public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel
             public void run() {
                 if(!isReceivingStarted){
                     listener.onDeviceNotConnectedInTime();
+                }else {
+                    listener.onDataReceivingStarted();
                 }
             }
         },TIME_LIMIT_OF_CONNECT);

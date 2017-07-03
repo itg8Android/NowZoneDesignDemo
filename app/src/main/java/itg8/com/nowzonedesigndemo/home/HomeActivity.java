@@ -240,6 +240,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
 //        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
+        SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.GOAL,6000);
 
     }
 
@@ -264,11 +265,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if (!newExternalStorageDir.exists()) {
             //noinspection ResultOfMethodCallIgnored
             newExternalStorageDir.mkdir();
+
         }
 
         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STORAGE_PATH, newExternalStorageDir.getAbsolutePath());
 
     }
+
+
     private void initOtherView() {
         int mAvgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
         if (mAvgCount > 0) {
@@ -350,6 +354,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.action_about:
                 break;
+          case R.id.action_logout:
+                onDeviceDisconnected();
+                break;
 
 
         }
@@ -424,7 +431,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                firstPreference(pressure);
                 e.onNext(calculateProportion(pressure));
             }
-        }).observeOn(Schedulers.trampoline())
+        })
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Double>() {
                     @Override
@@ -563,8 +570,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        Timber.i("Start device activity");
 //        startActivity(new Intent(this, ScanDeviceActivity.class));
 //        finish();
-//        checkDeviceConnection(rlWave);
+        checkDeviceConnection(rlWave);
     }
+
+
 
     @Override
     public void onBreathingStateAvailable(BreathState state) {
@@ -580,6 +589,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             txtFocusValue.setText(stateTimeModel.getFocus());
             txtStressValue.setText(stateTimeModel.getStress());
         }
+    }
+
+    @Override
+    public void onRemoveSnackbar() {
+        hideSnackbar();
     }
 
     private void setStateRelatedDetails(BreathState state) {

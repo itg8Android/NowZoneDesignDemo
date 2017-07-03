@@ -12,21 +12,27 @@ import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 
 public class StepMVP {
     public interface StepView{
-        void onTodaysStepAvailable(int goal, int covered, int weekTotal);
+        void onTodaysStepAvailable(int goal, int covered, int weekTotal, double calBurn);
         void onWeekStep(List<WeekStepModel> weekStepModelList);
-        void onMonthStep(List<MonthSteps> monthStepsList);
+        void onMonthStep(List<TblStepCount> monthStepsList);
         void onDaoUnableToConnect(String message);
     }
 
     public interface StepPresenter{
         void onStart();
         void onStop();
+
+        void onTodaysStepReady();
+
+        void onWeekDayReady();
+
+        void onMonthReady();
     }
 
     public interface StepPresenterListener{
-        void onTodaysStepAvailable(int goal, int covered, int weekTotal);
+        void onTodaysStepAvailable(int goal, int covered, int weekTotal, double calBurn);
         void onWeekStep(List<WeekStepModel> weekStepModelList);
-        void onMonthStep(List<MonthSteps> monthStepsList);
+        void onMonthStep(List<TblStepCount> monthStepsList);
         void onDaoError(String msg);
     }
 
@@ -34,6 +40,11 @@ public class StepMVP {
         void onListenerReady(StepPresenterListener listener);
         void onDestroy();
         void onDaoReady(Dao<TblStepCount,Integer> dao);
+        void onTodaysFragmentLoaded();
+
+        void onWeeksFragmentLoaded();
+
+        void onMonthFragmentLoaded();
     }
 
 }

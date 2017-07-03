@@ -48,6 +48,7 @@ import itg8.com.nowzonedesigndemo.utility.OnStateAvailableListener;
 import itg8.com.nowzonedesigndemo.utility.RDataManagerImp;
 import itg8.com.nowzonedesigndemo.utility.StateCheckImp;
 
+import static itg8.com.nowzonedesigndemo.common.CommonMethod.STEP_COUNT;
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.getArragedData;
 
 
@@ -75,7 +76,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             String action = intent.getAction();
             if (action.equals(getResources().getString(R.string.action_device_disconnect))) {
                 if (manager != null) {
-//                    manager.disconnect();
+                    manager.disconnect();
                     SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
                     Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
@@ -377,24 +378,55 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onStepCountReceived(int step) {
         storeStepToDb(step);
+        SharePrefrancClass.getInstance(getApplicationContext()).setIPreference(STEP_COUNT,step);
         sendStepBroadcast(ACTION_STEP_COUNT, step);
     }
 
     private void storeStepToDb(int step) {
+        if(profileModel==null){
+            profileModel=((AppApplication)getApplication()).getProfileModel();
+        }
         Observable.create((ObservableOnSubscribe<Long>) e->{
-            List<TblStepCount> countList=stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE,Helper.getCurrentDate()).query();
+            List<TblStepCount> countList=stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE,Calendar.getInstance().getTime()).query();
             TblStepCount count;
-            if(countList.size()>0)
-                count =countList.get(countList.size()-1);
-            else
+            boolean fi=false;
+            if(countList.size()>0) {
+                count = countList.get(countList.size() - 1);
+                fi=true;
+            }else
                 count=new TblStepCount();
 
             count.setDate(Calendar.getInstance().getTime());
             count.setSteps(step);
             count.setCalBurn(Helper.calculateCalBurnByStepCount(step,profileModel));
             count.setGoal(SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.GOAL));
-            stepDao.create(count);
-        }).observeOn(Schedulers.io());
+            if(!fi)
+                stepDao.create(count);
+            else
+                stepDao.update(count);
+
+        }).subscribeOn(Schedulers.io())
+        .subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Long aLong) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG,e.getMessage(),e);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     private void sendStepBroadcast(String action, int step) {

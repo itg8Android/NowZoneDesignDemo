@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -45,11 +44,11 @@ public class BleConnectionManager implements ConnectionManager {
 
 
     private Queue<BluetoothGattDescriptor> descriptorWriteQueue = new LinkedList<>();
-    private boolean broadcasted;
     private BluetoothGattCallback callback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
+                listener.onDeviceConnected(address);
                 listener.currentState(DeviceState.CONNECTED);
                 Log.d(TAG, "Connected to GATT Server");
                 Log.i(TAG, "Attempting to start service discovery:" + newState);
@@ -97,7 +96,6 @@ public class BleConnectionManager implements ConnectionManager {
 
             if (writeCharacteristics(TEMP_SERVICE_UUID, SENSOR_ON_OFF)) {
                 listener.currentState(DeviceState.WRITE);
-
             } else {
                 failWithReason(DeviceState.WRITE_FAIL, status);
             }
@@ -108,15 +106,10 @@ public class BleConnectionManager implements ConnectionManager {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 //            Log.d(TAG,"characteristics int value: "+ characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, ERR).intValue());
-        if(!broadcasted) {
-            listener.onDeviceConnected(address);
-            broadcasted=true;
-        }
-            dataReceived(characteristic.getValue());
+                dataReceived(characteristic.getValue());
         }
     };
     private Queue<BluetoothGattCharacteristic> characteristicReadQueue = new LinkedList<BluetoothGattCharacteristic>();
-    private boolean connectionStarted;
 
     public BleConnectionManager(ConnectionStateListener listener) {
         if (listener == null) {
@@ -157,11 +150,10 @@ public class BleConnectionManager implements ConnectionManager {
 
     }
 
-
+    
     private boolean writeCharacteristic(BluetoothGattCharacteristic gattCharacteristic, byte[] value) {
         gattCharacteristic.setValue(value);
-        boolean b = mBluetoothGatt.writeCharacteristic(gattCharacteristic);
-        return b;
+        return mBluetoothGatt.writeCharacteristic(gattCharacteristic);
     }
 
     private void failWithReason(DeviceState state, int status) {
@@ -187,11 +179,10 @@ public class BleConnectionManager implements ConnectionManager {
 
     @Override
     public void disconnect() {
-//        if(mBluetoothGatt!=null){
-//            mBluetoothGatt.disconnect();
-//            mBluetoothGatt.close();
-//            connectionStarted=false;
-//        }
+        if(mBluetoothGatt!=null){
+            mBluetoothGatt.disconnect();
+            mBluetoothGatt.close();
+        }
     }
 
     private void connectToDevice(String address) throws StringEmptyException {
@@ -225,8 +216,7 @@ public class BleConnectionManager implements ConnectionManager {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
                 return true;
-                }
-            else {
+            } else {
                 return false;
             }
         }
@@ -240,7 +230,8 @@ public class BleConnectionManager implements ConnectionManager {
         // parameter to false.
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
-            listener.connectGatt(device, callback);
+        listener.connectGatt(device, callback);
+
         return true;
     }
 
@@ -319,7 +310,7 @@ public class BleConnectionManager implements ConnectionManager {
                 descriptorWriteQueue.add(descriptor);
                 //if there is only 1 item in the queue, then write it.  If more than 1, we handle asynchronously in the callback above
                 if (descriptorWriteQueue.size() == 1) {
-                   return mBluetoothGatt.writeDescriptor(descriptor);
+                    mBluetoothGatt.writeDescriptor(descriptor);
                 }
                 return true;
             }
