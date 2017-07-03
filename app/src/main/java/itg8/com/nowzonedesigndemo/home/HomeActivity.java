@@ -263,14 +263,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if (!newExternalStorageDir.exists()) {
             //noinspection ResultOfMethodCallIgnored
             newExternalStorageDir.mkdir();
-
         }
 
         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STORAGE_PATH, newExternalStorageDir.getAbsolutePath());
 
     }
-
-
     private void initOtherView() {
         int mAvgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
         if (mAvgCount > 0) {
@@ -343,8 +340,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
 
             if(id == R.id.action_profile)
-            {
-                startActivity(new Intent(this, ProfileActivity.class));
+            {startActivity(new Intent(this, ProfileActivity.class));
                 return true;
 
 

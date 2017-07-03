@@ -1,6 +1,7 @@
 package itg8.com.nowzonedesigndemo.sleep;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
@@ -96,13 +97,15 @@ public class SleepFragment extends Fragment {
       //  circularProgressGoal.setTextColor(R.color.colorWhite);
 //        circularProgressGoal.setInnerBottomText("10");
         //circularProgressGoal.setInnerBottomTextColor(R.color.colorWhite);
-        circularProgressGoal.setProgress(60);
+        // circularProgressGoal.setInnerBottomTextColor(R.color.colorWhite);
+        // circularProgressGoal.setDonut_progress("80");
         //circularProgressGoal.setPrefixText("10");
-      //  circularProgressGoal.setUnfinishedStrokeColor(R.color.colorWhite);
+
+        circularProgressGoal.setProgress(60);
+        circularProgressGoal.setUnfinishedStrokeColor(R.color.color_green);
         circularProgressGoal.setUnfinishedStrokeWidth(4.0f);
         circularProgressGoal.setFinishedStrokeWidth(4.0f);
-       // circularProgressGoal.setInnerBottomTextColor(R.color.colorWhite);
-        // circularProgressGoal.setDonut_progress("80");
+
 
 
     }
