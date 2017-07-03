@@ -4,21 +4,19 @@ import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,8 +35,14 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     Button btnAlarmSetting;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.txtAmPm)
+    CustomFontTextView txtAmPm;
+    @BindView(R.id.releative)
+    RelativeLayout releative;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
     private Animation zoomIn, zoomOut;
-      boolean isFinished;
+    boolean isFinished;
 
 
     @Override
@@ -57,8 +61,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         zoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.animator.zoom_in_text);
         zoomOut = AnimationUtils.loadAnimation(getApplicationContext(), R.animator.zoomout_text);
-        Log.d(getClass().getSimpleName(),"Calender:"+Calendar.getInstance().getTimeInMillis());
-        Log.d(getClass().getSimpleName(),"Calender:"+System.currentTimeMillis());
+        Log.d(getClass().getSimpleName(), "Calender:" + Calendar.getInstance().getTimeInMillis());
+        Log.d(getClass().getSimpleName(), "Calender:" + System.currentTimeMillis());
         btnAlarmSetting.setOnClickListener(this);
     }
 
@@ -74,20 +78,19 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         if (v.getId() == R.id.btn_alarmSetting) {
 
-                startAnimation();
+            startAnimation();
 
         }
 
     }
 
     private void startAnimation() {
-        if (btnAlarmSetting.getText().equals("Calibarating"))
-        {
+        if (btnAlarmSetting.getText().equals("Calibarating")) {
             btnAlarmSetting.startAnimation(zoomOut);
             btnAlarmSetting.startAnimation(zoomIn);
             btnAlarmSetting.setText("Finished");
 
-        }else {
+        } else {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -105,41 +108,38 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
 
                         }
                     });
-                    Calendar calendar =   Calendar.getInstance();
-                    calendar.add(Calendar.MINUTE,1);
-                    long timerEnd =calendar.getTimeInMillis();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.MINUTE, 1);
+                    long timerEnd = calendar.getTimeInMillis();
                     while (timerEnd > System.currentTimeMillis()) {
                         int progress = (int) (timerEnd - System.currentTimeMillis()) / 600;
                         progress = 100 - progress;
                         progressBar.setProgress(progress);
                     }
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                btnAlarmSetting.startAnimation(zoomOut);
-                                btnAlarmSetting.startAnimation(zoomIn);
-                                btnAlarmSetting.setPadding(8, 0, 8, 0);
-                                btnAlarmSetting.setText("Alarm Started");
-                                btnAlarmSetting.setTextColor(Color.GREEN);
-                                GradientDrawable drawable = (GradientDrawable)btnAlarmSetting.getBackground();
-                                drawable.setStroke(1, Color.GREEN);
-                                ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
-                                objectAnimator.start();
-                            }
-                        });
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnAlarmSetting.startAnimation(zoomOut);
+                            btnAlarmSetting.startAnimation(zoomIn);
+                            btnAlarmSetting.setPadding(8, 0, 8, 0);
+                            btnAlarmSetting.setText("Alarm Started");
+                            btnAlarmSetting.setTextColor(Color.GREEN);
+                            GradientDrawable drawable = (GradientDrawable) btnAlarmSetting.getBackground();
+                            drawable.setStroke(1, Color.GREEN);
+                            ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
+                            objectAnimator.start();
+                        }
+                    });
                 }
             }).start();
 
 
-
-
-                     }
-                 }
-
-
-
         }
+    }
+
+
+}
 
 
 

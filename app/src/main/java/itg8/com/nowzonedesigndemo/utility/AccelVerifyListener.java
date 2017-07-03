@@ -10,4 +10,8 @@ package itg8.com.nowzonedesigndemo.utility;
     void onMotionEnds();
 
     void onStep(int step);
+
+    void onSleepInterrupted(long timestamp);
+
+    void startWakeupService();
 }

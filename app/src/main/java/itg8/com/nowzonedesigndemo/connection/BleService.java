@@ -501,6 +501,20 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         }
 
         //TODO Notification: create notification for average here
+
+
+    }
+
+    @Override
+    public void onSleepInterrupted(long timestamp) {
+
+    }
+
+    @Override
+    public void onStartWakeupSevice() {
+        Log.d(TAG,"notification alarm start active");
+//        Intent intent=new Intent(getApplicationContext(),.class);
+//        startActivity(intent);
     }
 
     public class LocalBinder extends Binder {

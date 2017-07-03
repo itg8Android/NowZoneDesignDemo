@@ -34,6 +34,8 @@ public class CommonMethod {
     public static final String STEP_COUNT = "stepCount";
     public static final String ENABLE_TO_CONNECT = "enableToConnect";
     public static final String GOAL = "stepGoal";
+    public static final String START_ALARM_TIME = "START_ALARM_TIME";
+    public static final String END_ALARM_TIME = "END_ALARM_TIME";
     public static final String SLEEP_STARTED = "sleepStarted";
     public static final String STEP_GOAL = "stepGoal";
 

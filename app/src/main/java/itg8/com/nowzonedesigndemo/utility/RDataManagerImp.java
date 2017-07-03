@@ -106,7 +106,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
                     if(SharePrefrancClass.getInstance(context).hasSPreference(CommonMethod.SLEEP_STARTED)){
-
+                        pushToSleep(model,context);
+                        return;
                     }
 
                     processForStepCounting(model);
@@ -142,6 +143,11 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         } else {
             Log.d(RDataManagerImp.class.getSimpleName(), "data received: model is null");
         }
+    }
+
+    private void pushToSleep(DataModel model,Context context) {
+            accelImp.onSleepdataAvail(model,SharePrefrancClass.getInstance(context).getLPref(CommonMethod.START_ALARM_TIME),
+                    SharePrefrancClass.getInstance(context).getLPref(CommonMethod.END_ALARM_TIME));
     }
 
     private DataModel copy(DataModel model) {
@@ -270,5 +276,15 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     public void onStep(int step) {
     //    Log.d(TAG,"Step count: "+step);
         listener.onStepCountReceived(step);
+    }
+
+    @Override
+    public void onSleepInterrupted(long timestamp) {
+        listener.onSleepInterrupted(timestamp);
+    }
+
+    @Override
+    public void startWakeupService() {
+        listener.onStartWakeupSevice();
     }
 }
