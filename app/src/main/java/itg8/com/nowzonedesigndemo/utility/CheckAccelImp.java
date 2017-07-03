@@ -75,6 +75,7 @@ class CheckAccelImp {
     public CheckAccelImp(final AccelVerifyListener listener, int mPreviousStepCount) {
         this.listener = listener;
         initPedometer(mPreviousStepCount);
+        nStepCount=mPreviousStepCount;
         models=new DataModel[TOTAL_SIZE_OF_DATA_COLLECTION];
         observer = new Observer<Integer>() {
             @Override

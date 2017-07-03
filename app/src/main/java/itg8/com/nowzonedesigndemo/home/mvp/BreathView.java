@@ -20,4 +20,7 @@ public interface BreathView {
 
 
     void onStateTimeHistoryReceived(StateTimeModel stateTimeModel);
+
+    void onRemoveSnackbar();
+
 }

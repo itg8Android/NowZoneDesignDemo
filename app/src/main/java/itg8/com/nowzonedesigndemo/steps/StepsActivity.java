@@ -211,7 +211,8 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     public void onTodaysStepAvailable(int goal, int covered, int weekTotal, double calBurn) {
         if(todaysStepListener!=null){
             todaysStepListener.onTodaysDataReceived(goal,covered,weekTotal,calBurn);
-            float stepsToCover=(covered/goal)*100;
+            float stepsToCover=((float) ((float)covered/(float)goal)*100.0f);
+            Log.d(TAG,"stepcover: "+stepsToCover);
             setView((int)stepsToCover);
         }
     }

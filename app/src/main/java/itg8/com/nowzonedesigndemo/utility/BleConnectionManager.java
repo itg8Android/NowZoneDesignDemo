@@ -180,8 +180,8 @@ public class BleConnectionManager implements ConnectionManager {
     @Override
     public void disconnect() {
         if(mBluetoothGatt!=null){
-//            mBluetoothGatt.close();
-//            mBluetoothGatt.disconnect();
+            mBluetoothGatt.disconnect();
+            mBluetoothGatt.close();
         }
     }
 
