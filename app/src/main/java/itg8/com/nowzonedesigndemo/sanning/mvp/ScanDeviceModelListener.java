@@ -33,4 +33,10 @@ public interface ScanDeviceModelListener {
     void selectedDevice(DeviceModel model, Context baseContext);
 
     void checkAlreadyConnectedOnce(Context context);
+
+    void setLoadingText(CharSequence text);
+
+    void showButton();
+
+    void showLoading();
 }

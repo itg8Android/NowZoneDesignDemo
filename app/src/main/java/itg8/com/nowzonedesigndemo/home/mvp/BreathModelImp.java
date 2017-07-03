@@ -3,6 +3,7 @@ package itg8.com.nowzonedesigndemo.home.mvp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -16,6 +17,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import itg8.com.nowzonedesigndemo.common.BaseModuleOrm;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
@@ -30,13 +32,15 @@ import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STATE_ARRI
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STEP_COUNT;
 
 
-public class BreathModelImp implements BreathFragmentModel {
+public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel {
 
+    private static final long TIME_LIMIT_OF_CONNECT = 30000;
     private BreathPresenter.BreathFragmentModelListener listener;
 
     Dao<TblState,Integer> stateDao=null;
     private DbHelper dbHelper;
     private boolean dbInited;
+    private boolean isReceivingStarted=false;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -44,6 +48,7 @@ public class BreathModelImp implements BreathFragmentModel {
             if (intent != null) {
                 if(intent.hasExtra(CommonMethod.ACTION_DATA_AVAILABLE)){
                     double model = intent.getDoubleExtra(CommonMethod.ACTION_DATA_AVAILABLE,0);
+                    isReceivingStarted=true;
                     listener.onPressureReceived(model);
                 }
                 if(intent.hasExtra(CommonMethod.BPM_COUNT)){
@@ -52,6 +57,8 @@ public class BreathModelImp implements BreathFragmentModel {
                     listener.onStepReceived(intent.getIntExtra(ACTION_STEP_COUNT,0));
                 }if(intent.hasExtra(ACTION_STATE_ARRIVED)){
                     listener.onStateReceived((BreathState) intent.getSerializableExtra(ACTION_STATE_ARRIVED));
+                }if(intent.hasExtra(CommonMethod.ACTION_GATT_DISCONNECTED)){
+                    listener.startShowingDevicesList();
                 }
             }
         }
@@ -59,6 +66,14 @@ public class BreathModelImp implements BreathFragmentModel {
 
     BreathModelImp(BreathPresenter.BreathFragmentModelListener listener) {
         this.listener = listener;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(!isReceivingStarted){
+                    listener.onDeviceNotConnectedInTime();
+                }
+            }
+        },TIME_LIMIT_OF_CONNECT);
     }
 
     @Override
@@ -184,12 +199,6 @@ public class BreathModelImp implements BreathFragmentModel {
     }
 
 
-    private DbHelper getHelper(Context context) {
-        if (dbHelper == null) {
-            dbHelper = (DbHelper) OpenHelperManager.getHelper(context, DbHelper.class);
-        }
-        return dbHelper;
-    }
 
 
 

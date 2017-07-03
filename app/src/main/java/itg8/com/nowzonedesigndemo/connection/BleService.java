@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -18,15 +19,19 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
+import itg8.com.nowzonedesigndemo.common.ProfileModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.db.DbHelper;
 import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
@@ -53,6 +58,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public static final String ACTION_COUNT_RESULT = TAGWithFull + ".ACTION_COUNT_RESULT";
     public static final String ACTION_STEP_COUNT = TAGWithFull + ".ACTION_STEP_COUNT";
     public static final String ACTION_STATE_ARRIVED = TAGWithFull + ".ACTION_STATE_AVAIL";
+    public static final String ACTION_DEVICE = TAGWithFull + ".ACTION_DEVICE";
     private final IBinder mBinder = new LocalBinder();
     private final StateCheckImp stateManager;
     TblBreathCounter counter;
@@ -69,7 +75,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             String action = intent.getAction();
             if (action.equals(getResources().getString(R.string.action_device_disconnect))) {
                 if (manager != null) {
-                    manager.disconnect();
+//                    manager.disconnect();
+                    SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
+                    Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
+                    i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
+                    sendBroadcast(i);
                 }
             }
         }
@@ -77,11 +87,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private BluetoothManager mBluetoothManager;
     private RDataManager dataManager;
     private TblState tblState;
+    private ProfileModel profileModel;
 
 
     public BleService() {
         manager = new BleConnectionManager(this);
-        dataManager = new RDataManagerImp(this);
         stateManager = new StateCheckImp(this, this);
 
     }
@@ -90,11 +100,21 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "BLE Service started");
+        dataManager = new RDataManagerImp(this,getApplicationContext());
         registerReceiver(receiver, new IntentFilter(getResources().getString(R.string.action_device_disconnect)));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        profileModel=((AppApplication)getApplication()).getProfileModel();
+        if(intent!=null && intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
+            if(manager!=null){
+//                manager.disconnect();
+
+                return START_STICKY;
+            }
+        }
         try {
             userDao = getHelper().getCountDao();
             avgDao = getHelper().getAvgDao();
@@ -104,7 +124,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             e.printStackTrace();
         }
         String address = null, name = null;
-        if (intent != null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
+        if (intent!=null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
             address = intent.getStringExtra(CommonMethod.DEVICE_ADDRESS);
             name = intent.getStringExtra(CommonMethod.DEVICE_NAME);
         }
@@ -226,14 +246,16 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onDestroy() {
         super.onDestroy();
+        manager.disconnect();
         unregisterReceiver(receiver);
-
+        manager.disconnect();
         startService(new Intent(this, BleService.class));
         Log.d(TAG, "On destroy  called");
     }
 
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
+        manager.disconnect();
         manager.setBluetoothGatt(device.connectGatt(this, true, callback));
 
     }
@@ -292,7 +314,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             sendBroadcastState(BreathState.CALM,count,timestamp);
         } else if (mLastOneCount >= newStressCheck && mSecondLastCount >= newStressCheck && count >= newStressCheck) {
             sendBroadcastState(BreathState.STRESS, count, timestamp);
-        } else {
+        } else if(mLastOneCount == count && mSecondLastCount == count){
             sendBroadcastState(BreathState.FOCUSED, count, timestamp);
         }
     }
@@ -367,10 +389,12 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             else
                 count=new TblStepCount();
 
-            count.setDate(Helper.getCurrentDate());
+            count.setDate(Calendar.getInstance().getTime());
             count.setSteps(step);
-            count.setCalBurn(Helper.calculateCalBurnByStepCount(step));
-        });
+            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,profileModel));
+            count.setGoal(SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.GOAL));
+            stepDao.create(count);
+        }).observeOn(Schedulers.io());
     }
 
     private void sendStepBroadcast(String action, int step) {
