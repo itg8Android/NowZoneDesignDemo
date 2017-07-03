@@ -27,6 +27,9 @@
     <color name="colorGreen">#43A047</color>
     <color name="colorBlue">#03A9F4</color>
     <color name="colorOrange">#ed7a56</color>
+    <color name="colorOrangeStart">#65f57e58</color>
+    <color name="colorOrangeEnd">#65f28360</color>
+    <color name="colorOrangeCenter">#53f78b69</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
     <color name="transparent">#00000000</color>
