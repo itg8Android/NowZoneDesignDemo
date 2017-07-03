@@ -130,8 +130,8 @@ public class BreathwaveView extends View {
         long elapsedRealtime = SystemClock.elapsedRealtime();
         findWaveSamples(elapsedRealtime);
         if (this.mWaveSamples.size() >= 2) {
+               Log.d(TAG, "Size of mWaveSamples:" + mWaveSamples.size());
             int size = (this.mWaveSamples.size() - 1) * 4;
-         //   Log.d(TAG, "Size of mWaveSamples:" + size);
             if (this.mVert.length < size * 2) {
                 this.mVert = new float[((size * 2) + 64)];
 //                Arrays.fill(mVert, 0);
@@ -194,6 +194,7 @@ public class BreathwaveView extends View {
         }
         invalidate();
 
+
     }
 
     public void reset() {
@@ -203,6 +204,8 @@ public class BreathwaveView extends View {
     public void addSample(long timeStamp, double value) {
 //        Log.d(TAG,"value : "+value+" , "+" timestamp: "+ CommonMethod.getTimeFromTMP(timeStamp));
         this.mSamples.add(new BreathSample(timeStamp, value));
+
+
 //        Log.d(TAG,"sample:"+value);
 //        if(lastMax<value)
 //            lastMax=value;

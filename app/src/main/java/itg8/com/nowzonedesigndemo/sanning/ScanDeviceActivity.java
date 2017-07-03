@@ -112,12 +112,12 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         listOfBluetoothDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                DeviceModel mSelectedDevice = deviceListAdapter.getSelectedDevice(i);
-                Intent intent = new Intent(view.getContext(), BleService.class);
-                intent.putExtra(CommonMethod.DEVICE_ADDRESS, mSelectedDevice.getAddress());
-                intent.putExtra(CommonMethod.DEVICE_NAME, mSelectedDevice.getName());
-                //TODO commment: test service
-//            view.getContext().startService(intent);
+//                DeviceModel mSelectedDevice = deviceListAdapter.getSelectedDevice(i);
+//                Intent intent = new Intent(view.getContext(), BleService.class);
+//                intent.putExtra(CommonMethod.DEVICE_ADDRESS, mSelectedDevice.getAddress());
+//                intent.putExtra(CommonMethod.DEVICE_NAME, mSelectedDevice.getName());
+//                view.getContext().startService(intent);
+                presenter.cancelScanning();
             }
         });
     }
@@ -326,7 +326,6 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     @Override
     public void startHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra(CommonMethod.FROMWEEk,"true");
         startActivity(intent);
         finish();
     }

@@ -68,6 +68,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
     private Fragment fragment;
     private FragmentManager fm;
     StepFragmentCommunicator todaysStepListener;
+    DayWeekFragmentCommunicator dayWeekFragmentCommunicator;
     StepMVP.StepPresenter presenter;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -79,12 +80,10 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
             switch (item.getItemId()) {
                 case R.id.nav_day:
                     fragment = TodayStepsFragment.newInstance(" "," ");
-                    todaysStepListener= (StepFragmentCommunicator) fragment;
                     setFragmnet();
                     return true;
                 case R.id.nav_week:
                     fragment = DayWeekFragment.newInstance("", "");
-
                     setFragmnet();
                     return true;
                 case R.id.nav_month:
@@ -107,6 +106,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         setContentView(R.layout.activity_steps);
         ButterKnife.bind(this);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+        presenter=new StepPresenterImp(this);
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -124,7 +124,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
             //  setTabLayout();
         }
         rbgMainSteps.setOnCheckedChangeListener(this);
-        presenter=new StepPresenterImp(this);
     }
 
 
@@ -222,7 +221,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 
     @Override
     public void onWeekStep(List<WeekStepModel> weekStepModelList) {
-
+        dayWeekFragmentCommunicator.onWeekStepModelGot(weekStepModelList);
     }
 
     @Override
@@ -237,10 +236,16 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 
     public void setListener(StepFragmentCommunicator communicator) {
         this.todaysStepListener=communicator;
+        presenter.onTodaysStepReady();
     }
 
 
     public void removeTodaysListener() {
         todaysStepListener=null;
+    }
+
+    public void setDayWeekListener(DayWeekFragmentCommunicator communicator) {
+        this.dayWeekFragmentCommunicator=communicator;
+        presenter.onWeekDayReady();
     }
 }

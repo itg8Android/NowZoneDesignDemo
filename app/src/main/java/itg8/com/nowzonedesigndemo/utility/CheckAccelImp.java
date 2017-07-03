@@ -160,21 +160,21 @@ class CheckAccelImp {
              * <TESTED
              */
 
-            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
-                modelCounter=0;
-                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
-                Logs.d("COUNT STEP:"+count);
-                e.onNext(count);
-                models[modelCounter]=model;
-            }else {
-                models[modelCounter]=model;
-                modelCounter++;
-            }
+//            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
+//                modelCounter=0;
+//                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
+//                Logs.d("COUNT STEP:"+count);
+//                e.onNext(count);
+//                models[modelCounter]=model;
+//            }else {
+//                models[modelCounter]=model;
+//                modelCounter++;
+//            }
 
             /**
              * This is old method providing value on tilt in sitting position  12/06/2017
              */
-//            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
+            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
 
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
             lastStepVal = pedi_step_counter;

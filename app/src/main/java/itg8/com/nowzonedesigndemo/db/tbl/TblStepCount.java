@@ -23,7 +23,7 @@ public class TblStepCount implements Parcelable {
     public static final String FIELD_DATE="date";
     public static final String FIELD_STEPS="steps";
     public static final String FIELD_CAL_BURN="calburn";
-    public static final String FIELD_GOAL="goal";
+    public static final String FIELD_GOAL="goals";
 
     @DatabaseField(columnName = FILED_ID,generatedId = true)
     private long id;

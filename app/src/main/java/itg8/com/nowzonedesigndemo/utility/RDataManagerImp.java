@@ -60,7 +60,6 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private Observable<String> observable;
     private List<DataModel> dataStorageRaw;
     private DataModel modelTemp;
-    private AlgoAsync async;
 
     public RDataManagerImp(RDataManagerListener listener,Context mContext) {
         this.listener = listener;
@@ -106,15 +105,18 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+                    if(SharePrefrancClass.getInstance(context).hasSPreference(CommonMethod.SLEEP_STARTED)){
+
+                    }
+
                     processForStepCounting(model);
                     dataStorageRaw.add(copy(model));
                     processModelData(model, context);
                 }
-            }).subscribeOn(Schedulers.computation())
-            .subscribe(new Observer<String>() {
+            }).observeOn(Schedulers.computation())
+                    .subscribe(new Observer<String>() {
                 @Override
                 public void onSubscribe(Disposable d) {
-
                 }
 
                 @Override
@@ -156,7 +158,6 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     private void processForStepCounting(DataModel model) {
             //TODO We need to check step and activity in this method
-
             accelImp.onModelAvail(model);
     }
 
@@ -236,7 +237,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     private void passForCalculation(List<DataModel> dataStorage) {
         Log.d(TAG,"came for calculation");
-         async = new AlgoAsync(this);
+        AlgoAsync async = new AlgoAsync(this);
         async.execute(dataStorage);
     }
 

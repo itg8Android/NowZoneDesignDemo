@@ -81,7 +81,6 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ((StepsActivity)context).setListener(this);
     }
 
     @Override
@@ -115,6 +114,8 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_today_steps, container, false);
         unbinder = ButterKnife.bind(this, view);
+        ((StepsActivity)getActivity()).setListener(this);
+
         setProgressbar();
         customProgressRectangle.setProgress(60);
         rlStepValue.setVisibility(View.VISIBLE);

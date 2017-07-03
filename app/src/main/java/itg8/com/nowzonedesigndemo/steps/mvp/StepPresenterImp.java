@@ -38,6 +38,16 @@ public class StepPresenterImp extends BasePresenter implements StepMVP.StepPrese
     }
 
     @Override
+    public void onTodaysStepReady() {
+        module.onTodaysFragmentLoaded();
+    }
+
+    @Override
+    public void onWeekDayReady() {
+        module.onWeeksFragmentLoaded();
+    }
+
+    @Override
     public void onStart() {
 
     }
@@ -57,7 +67,10 @@ public class StepPresenterImp extends BasePresenter implements StepMVP.StepPrese
 
     @Override
     public void onWeekStep(List<WeekStepModel> weekStepModelList) {
-
+        if(isNotNull())
+        {
+            stepViewWeakReference.get().onWeekStep(weekStepModelList);
+        }
     }
 
     @Override

@@ -9,4 +9,6 @@ public interface ScanDeviceModel {
     void onLeScanCall(BluetoothLeScanner callback, ScanDeviceModelListener listener);
 
     void onStopScanning(BluetoothLeScanner scanner);
+
+    void cancelScanning();
 }

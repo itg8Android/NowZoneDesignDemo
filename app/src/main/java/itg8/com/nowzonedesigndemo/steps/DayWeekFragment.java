@@ -11,17 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.steps.mvp.WeekStepModel;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link DayWeekFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DayWeekFragment extends Fragment implements View.OnClickListener {
+public class DayWeekFragment extends Fragment implements View.OnClickListener, DayWeekFragmentCommunicator {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -77,8 +80,8 @@ public class DayWeekFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_day_week, container, false);
         unbinder = ButterKnife.bind(this, view);
-        adapter = new SampleAdapter(getChildFragmentManager());
-        viewpager.setAdapter(adapter);
+        ((StepsActivity)getActivity()).setDayWeekListener(this);
+
         imgLeft.setOnClickListener(this);
         imgRight.setOnClickListener(this);
         return view;
@@ -107,25 +110,35 @@ public class DayWeekFragment extends Fragment implements View.OnClickListener {
         viewpager.setCurrentItem(viewpager.getCurrentItem() - 1 > 0 ? viewpager.getCurrentItem() - 1 : adapter.getCount()-1);
     }
 
+    @Override
+    public void onWeekStepModelGot(List<WeekStepModel> models) {
+
+        adapter = new SampleAdapter(getChildFragmentManager(), models);
+        viewpager.setAdapter(adapter);
+    }
+
 
     public class SampleAdapter extends FragmentPagerAdapter {
-        public SampleAdapter(FragmentManager mgr) {
+        private final List<WeekStepModel> models;
+
+        public SampleAdapter(FragmentManager mgr, List<WeekStepModel> models) {
             super(mgr);
+            this.models=models;
         }
 
         @Override
         public int getCount() {
-            return (10);
+            return models.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return (WeekFragment.newInstance());
+            return (WeekFragment.newInstance(models.get(position)));
         }
 
         @Override
         public String getPageTitle(int position) {
-            return "";
+            return models.get(position).getWeekLabel();
         }
     }
 }

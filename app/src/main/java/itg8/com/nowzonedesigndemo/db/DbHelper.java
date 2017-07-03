@@ -19,7 +19,7 @@ import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 public class DbHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DB_NAME="Nowzone.db";
-    private static final int DB_VERSION=1;
+    private static final int DB_VERSION=2;
 
     private Dao<TblBreathCounter,Integer> breathDao=null;
     private Dao<TblState,Integer> stateDao=null;

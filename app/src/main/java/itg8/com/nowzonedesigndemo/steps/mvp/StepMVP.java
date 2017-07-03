@@ -21,6 +21,10 @@ public class StepMVP {
     public interface StepPresenter{
         void onStart();
         void onStop();
+
+        void onTodaysStepReady();
+
+        void onWeekDayReady();
     }
 
     public interface StepPresenterListener{
@@ -34,6 +38,9 @@ public class StepMVP {
         void onListenerReady(StepPresenterListener listener);
         void onDestroy();
         void onDaoReady(Dao<TblStepCount,Integer> dao);
+        void onTodaysFragmentLoaded();
+
+        void onWeeksFragmentLoaded();
     }
 
 }
