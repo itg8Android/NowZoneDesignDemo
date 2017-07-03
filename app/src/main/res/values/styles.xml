@@ -9,6 +9,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:editTextStyle">@style/App_EditTextStyle</item>
         <item name="actionMenuTextColor">@color/colorWhite</item>
+        <item name="android:textColorSecondary">@color/colorWhite</item>
 
 
     </style>

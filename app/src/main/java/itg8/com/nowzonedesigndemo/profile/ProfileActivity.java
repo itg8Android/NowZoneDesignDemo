@@ -180,12 +180,5 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
         edtName.requestFocus();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==android.R.id.home)
-        {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 }

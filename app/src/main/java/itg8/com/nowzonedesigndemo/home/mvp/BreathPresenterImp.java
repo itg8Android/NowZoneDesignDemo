@@ -34,6 +34,12 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     }
 
     @Override
+    public void onDataReceivingStarted() {
+        if(checkNotNull())
+            view.onRemoveSnackbar();
+    }
+
+    @Override
     public void startShowingDevicesList() {
         if(view!=null){
             view.onStartDeviceScanActivity();

@@ -149,7 +149,7 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
         txtWeekTotal.setText(String.valueOf(weekTotal));
         txtDaliyAvg.setText(String.valueOf(steps));
         String calBurnText = new DecimalFormat("#.##").format(calBurn) + " Calories burned today";
-        float stepsToCover=(steps/goal)*100;
+        float stepsToCover=((float) ((float)steps/(float)goal)*100.0f);
         setProgressbar((int)stepsToCover);
         txtCalories.setText(calBurnText);
     }
