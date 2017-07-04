@@ -30,14 +30,14 @@ class CheckAccelImp {
     private static final int Y = 1;
     private static final int Z = 2;
     private static final int TOTAL_SIZE_OF_DATA_COLLECTION = 33;
-    private static int nStepCount=0;
+    private static int nStepCount = 0;
     private AccelVerifyListener listener;
     private Observer observer;
     private double x2, y2, z2;
     private double vector;
     //Digital sum filter variables
     private int[] pedi_fil_x = new int[4];
-    private boolean calibarated=false;
+    private boolean calibarated = false;
 
     //TODO
     private int[] pedi_fil_y = new int[4];
@@ -66,25 +66,26 @@ class CheckAccelImp {
     private double pitch;
     private double roll;
     DataModel[] models;
-    private int modelCounter=0;
-    private int count=0;
+    private int modelCounter = 0;
+    private int count = 0;
 
     Rolling rolling;
-    private double sleep_threshold=0;
-    private boolean isSleepThresholdCalculated=false;
+    private double sleep_threshold = 0;
+    private boolean isSleepThresholdCalculated = false;
     private long alarmStartTime;
 
     /**
      * We will pass the listener and latest step count received before service destroyed.
-     * @param listener Listener back for RdataManagerImp.
+     *
+     * @param listener           Listener back for RdataManagerImp.
      * @param mPreviousStepCount reent step count
      */
     public CheckAccelImp(final AccelVerifyListener listener, int mPreviousStepCount) {
         this.listener = listener;
         initPedometer(mPreviousStepCount);
-        nStepCount=mPreviousStepCount;
-        rolling=new Rolling(2000);
-        models=new DataModel[TOTAL_SIZE_OF_DATA_COLLECTION];
+        nStepCount = mPreviousStepCount;
+        rolling = new Rolling(2000);
+        models = new DataModel[TOTAL_SIZE_OF_DATA_COLLECTION];
         observer = new Observer<Integer>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -113,54 +114,55 @@ class CheckAccelImp {
 
     }
 
-    public void resetStepCount(){
-        pedi_step_counter=0;
+    public void resetStepCount() {
+        pedi_step_counter = 0;
     }
 
-    private DecimalFormat formatter=new DecimalFormat("#0.00");
+    private DecimalFormat formatter = new DecimalFormat("#0.00");
     String log;
+
     private Observable<Integer> checkMovement(DataModel model) {
-        Log.d(TAG,"RawXYZ:"+"X: "+model.getX()+" Y: "+model.getY()+" Z: "+model.getZ());
+        Log.d(TAG, "RawXYZ:" + "X: " + model.getX() + " Y: " + model.getY() + " Z: " + model.getZ());
         return Observable.create(e -> {
-            double xG = (model.getX() * 0.224)/1000;
-            double yG = (model.getY() * 0.224)/1000;
-            double zG = (model.getZ() * 0.224)/1000;
-            roll = Math.sqrt((xG* xG) + (yG*yG) + (zG*zG));
+            double xG = (model.getX() * 0.224) / 1000;
+            double yG = (model.getY() * 0.224) / 1000;
+            double zG = (model.getZ() * 0.224) / 1000;
+            roll = Math.sqrt((xG * xG) + (yG * yG) + (zG * zG));
 
 //            log="X "+formatter.format( (model.getX() * 0.224)/1000)+ " Y "+formatter.format((model.getY() * 0.224)/1000)+" Z "+formatter.format((model.getZ() * 0.224)/1000);
-          //  Logs.d(String.valueOf(roll));
+            //  Logs.d(String.valueOf(roll));
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
                     createFile(log);
                 }
             }).subscribeOn(Schedulers.computation())
-            .subscribe(new Observer<String>() {
-                @Override
-                public void onSubscribe(Disposable d) {
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                }
+                        }
 
-                @Override
-                public void onNext(String s) {
+                        @Override
+                        public void onNext(String s) {
 
-                }
+                        }
 
-                @Override
-                public void onError(Throwable e) {
+                        @Override
+                        public void onError(Throwable e) {
 
-                }
+                        }
 
-                @Override
-                public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                }
-            });
+                        }
+                    });
 //                    print(" Y =   %fG  #####" % ((ACCy * 0.224)/1000)),
 //                    print(" Z =  %fG  #####" % ((ACCz * 0.224)/1000))
             pitch = Math.atan2(-model.getX(), Math.sqrt((model.getY() * model.getY()) + (model.getZ() * model.getZ()))) * degconvert;
 
-           // Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " roll " + roll + " pitch " + pitch);
+            // Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " roll " + roll + " pitch " + pitch);
 //            Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " theta " + theta + " pie " + pie+" alpha "+alpha);
 //                double vector = calculateVector(model.getX(), model.getY(), model.getZ());
 //                Log.d(TAG, "vector: " + vector);
@@ -191,13 +193,13 @@ class CheckAccelImp {
     }
 
     private void createFile(String log) {
-        File completeFileStructure = new File(Environment.getExternalStorageDirectory()+File.separator+"nowzone","StepDataWithGImp.txt");
+        File completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "StepDataWithGImp.txt");
         try {
             FileWriter fWriter;
-            if(completeFileStructure.exists()) {
+            if (completeFileStructure.exists()) {
                 fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.append(log).append("\n");
-            }else {
+            } else {
                 fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.write(log);
             }
@@ -298,6 +300,7 @@ class CheckAccelImp {
     /**
      * this algorithm for step count is getting result even after large tilt in sitting position.
      * <RED>FAIL</RED>
+     *
      * @param x
      * @param y
      * @param z
@@ -358,12 +361,14 @@ class CheckAccelImp {
         return pedi_step_counter;
     /*Tested*/
     }
+
     private static int nLastDetectedTime = 0;
-    int mSamplingInterval ;
-    int mTotalTime ;
+    int mSamplingInterval;
+    int mTotalTime;
+
     public static int analyzeAccel(DataModel[] objectArray, int samplingInterval, int totalTime) {
 
-        if(objectArray == null || objectArray.length < 1) {
+        if (objectArray == null || objectArray.length < 1) {
             return 0;
         }
         int mSamplingInterval = samplingInterval;
@@ -375,23 +380,22 @@ class CheckAccelImp {
 
         int idx = objectArray.length;
 
-        float [] nX = new float[idx];
-        float [] nY = new float[idx];
-        float [] nZ = new float[idx];
-        float [] n3D = new float[idx];
+        float[] nX = new float[idx];
+        float[] nY = new float[idx];
+        float[] nZ = new float[idx];
+        float[] n3D = new float[idx];
 
-        for(int i = 0; i < idx; ++i)
-        {
+        for (int i = 0; i < idx; ++i) {
 //            nX[i] = (float)(co1.mAccelData[i*3]+32768)/65535.f;
-            nX[i] = (float)(objectArray[i].getX()+32768)/65535.f;
+            nX[i] = (float) (objectArray[i].getX() + 32768) / 65535.f;
             //Logs.d("#"+nX[i]);
 //            nY[i] = (float)(co1.mAccelData[i*3+1]+32768)/65535.f;
-            nY[i] = (float)(objectArray[i].getY()+32768)/65535.f;
+            nY[i] = (float) (objectArray[i].getY() + 32768) / 65535.f;
             //Logs.d("#"+nY[i]);
 //            nZ[i] = (float)(co1.mAccelData[i*3+2]+32768)/65535.f;
-            nZ[i] = (float)(objectArray[i].getZ()+32768)/65535.f;
+            nZ[i] = (float) (objectArray[i].getZ() + 32768) / 65535.f;
             //Logs.d("#"+nZ[i]);
-            n3D[i] = (float) Math.sqrt(nX[i]*nX[i]+nY[i]*nY[i]+nZ[i]*nZ[i]);
+            n3D[i] = (float) Math.sqrt(nX[i] * nX[i] + nY[i] * nY[i] + nZ[i] * nZ[i]);
 //            Log.d("###","#"+n3D[i]);
         }
 
@@ -404,55 +408,42 @@ class CheckAccelImp {
         float fAvgVelocity = 0.f;
         int nTotalSamplingData = 20;
 
-        if(res.length <= 0)
-        {
+        if (res.length <= 0) {
             //ar.mCalorie = 0;
             //return ar;
             return 0;
         }
 
-        fStepTime = (res[0] + (nTotalSamplingData-nLastDetectedTime))*0.05f;
-        fStepVelocity = 0.5f/fStepTime;
+        fStepTime = (res[0] + (nTotalSamplingData - nLastDetectedTime)) * 0.05f;
+        fStepVelocity = 0.5f / fStepTime;
         fAvgVelocity = fStepVelocity;
-        for(int i = 1; i < res.length - 1; ++i)
-        {
-            fStepTime = (res[i+1] - res[i])*0.05f;
-            fStepVelocity = 0.5f/fStepTime;
+        for (int i = 1; i < res.length - 1; ++i) {
+            fStepTime = (res[i + 1] - res[i]) * 0.05f;
+            fStepVelocity = 0.5f / fStepTime;
             fAvgVelocity += fStepVelocity;
         }
         fAvgVelocity /= res.length;
         fAvgVelocity *= 3.6f; // convert m/s to km/h
-        nLastDetectedTime = res[res.length-1];
+        nLastDetectedTime = res[res.length - 1];
 
         nStepCount += res.length;
 //        ar.mShakeActionCount = nStepCount;
 
         Logs.d("#");
-        Logs.d("# of Xdata: "+nX.length+", shake: "+nStepCount);
+        Logs.d("# of Xdata: " + nX.length + ", shake: " + nStepCount);
 
         double MET = 1.0;
-        if(fAvgVelocity < 2.7)
-        {
+        if (fAvgVelocity < 2.7) {
             MET = 2.3;
-        }
-        else if(fAvgVelocity < 4)
-        {
+        } else if (fAvgVelocity < 4) {
             MET = 2.9;
-        }
-        else if(fAvgVelocity < 4.8)
-        {
+        } else if (fAvgVelocity < 4.8) {
             MET = 3.3;
-        }
-        else if(fAvgVelocity < 5.5)
-        {
+        } else if (fAvgVelocity < 5.5) {
             MET = 3.6;
-        }
-        else if(fAvgVelocity < 10)
-        {
+        } else if (fAvgVelocity < 10) {
             MET = 3.8;
-        }
-        else if(fAvgVelocity < 16)
-        {
+        } else if (fAvgVelocity < 16) {
             MET = 4.0;
         }
 
@@ -462,7 +453,7 @@ class CheckAccelImp {
 //        ar.mSumOfCalorie = duCalorie;
 
 /*
-		int nPrevX;
+        int nPrevX;
 		int nPrevY;
 		int nPrevZ;
 		int nDiffX;
@@ -631,34 +622,38 @@ class CheckAccelImp {
     }
 
 
-    public void onSleepdataAvail(DataModel model,long alarmStartTime, long alarmEndsTime) {
+    public void onSleepdataAvail(DataModel model, long alarmStartTime, long alarmEndsTime) {
         Observable.create(new ObservableOnSubscribe<Object>() {
             Calendar calendar;
+
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
-                calendar=Calendar.getInstance();
-                if(!calibarated){
-                    if(!isSleepThresholdCalculated) {
+                calendar = Calendar.getInstance();
+                if (!calibarated) {
+                    if (!isSleepThresholdCalculated) {
                         if (count < 2000) {
                             rolling.add(calculateVector(model));
                             count++;
                         } else {
                             sleep_threshold = rolling.getaverage();
-                            isSleepThresholdCalculated=true;
+                            isSleepThresholdCalculated = true;
+                            calibarated = true;
+                            createFileSleep(calendar.getTimeInMillis());
                         }
                         return;
                     }
+                }
 
-                    if(calculateVector(model)+2000>sleep_threshold || calculateVector(model)-2000<sleep_threshold ){
-
-                        sleepInterrupted(model.getTimestamp());
-                        if(checkTime(model.getTimestamp())>checkTime(alarmStartTime) && checkTime(model.getTimestamp())<checkTime(alarmEndsTime)){
-                            startWakeupService();
-                        }else if(checkTime(model.getTimestamp())>checkTime(alarmEndsTime)){
-                            startWakeupService();
-                        }
+                if (calculateVector(model) + 1000 < sleep_threshold || calculateVector(model) - 1000 > sleep_threshold) {
+                    sleepInterrupted(model.getTimestamp());
+                    createFileSleep(model.getTimestamp());
+                    if (checkTime(model.getTimestamp()) > checkTime(alarmStartTime) && checkTime(model.getTimestamp()) < checkTime(alarmEndsTime)) {
+                        startWakeupService();
+                        isSleepThresholdCalculated = false;
+                    } else if (checkTime(model.getTimestamp()) > checkTime(alarmEndsTime)) {
+                        startWakeupService();
+                        isSleepThresholdCalculated = false;
                     }
-
                 }
             }
         }).subscribeOn(Schedulers.io())
@@ -675,7 +670,7 @@ class CheckAccelImp {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG,e.getMessage(),e);
+                        Log.e(TAG, e.getMessage(), e);
                     }
 
                     @Override
@@ -686,8 +681,26 @@ class CheckAccelImp {
 
     }
 
+    private void createFileSleep(long timeInMillis) {
+        File completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "sleepInterrupt.txt");
+        try {
+            FileWriter fWriter;
+            if (completeFileStructure.exists()) {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.append(String.valueOf(timeInMillis)).append("\n");
+            } else {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.write(String.valueOf(timeInMillis));
+            }
+            fWriter.flush();
+            fWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private long checkTime(long time) {
-        return time % (24*60*60*1000L);
+        return time % (24 * 60 * 60 * 1000L);
     }
 
     private void startWakeupService() {
@@ -699,6 +712,6 @@ class CheckAccelImp {
     }
 
     private double calculateVector(DataModel model) {
-        return Math.sqrt((model.getX()*model.getX())+(model.getY()*model.getY())+(model.getZ()*model.getZ()));
+        return Math.sqrt((model.getX() * model.getX()) + (model.getY() * model.getY()) + (model.getZ() * model.getZ()));
     }
 }

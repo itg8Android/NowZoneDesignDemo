@@ -513,6 +513,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onStartWakeupSevice() {
         Log.d(TAG,"notification alarm start active");
+        SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.SLEEP_STARTED);
 //        Intent intent=new Intent(getApplicationContext(),.class);
 //        startActivity(intent);
     }

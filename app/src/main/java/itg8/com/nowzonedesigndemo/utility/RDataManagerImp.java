@@ -280,6 +280,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     @Override
     public void onSleepInterrupted(long timestamp) {
+
         listener.onSleepInterrupted(timestamp);
     }
 
