@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/colorWhite"
         android:text="Your Basic details"
         android:textSize="16sp"
         android:id="@+id/basic_detail"
@@ -55,6 +55,8 @@
         android:layout_below="@+id/basic_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColorHint="@color/colorWhite"
+        android:textColor="@color/colorWhite"
         android:layout_marginTop="8dp">
 
         <EditText
@@ -63,8 +65,10 @@
             android:layout_height="wrap_content"
             android:hint="Name"
             android:inputType="text"
+            android:textColorHint="@color/colorWhite"
             android:lines="1"
-            android:textSize="@dimen/txt_edit_text_size" />
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/txt_value_sleep" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -74,20 +78,27 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/input_name"
         android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:weightSum="3">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_height"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColorHint="@color/colorWhite"
+            android:textColor="@color/colorWhite"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1.2">
+            android:layout_weight="1.1">
 
             <EditText
                 android:id="@+id/edt_height"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Height"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/txt_value_sleep"
                 android:inputType="number"
                 android:lines="1" />
         </android.support.design.widget.TextInputLayout>
@@ -97,8 +108,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:visibility="visible"
-            android:layout_weight="1.2">
+            android:visibility="gone"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+
+            android:layout_weight="1.1">
 
             <EditText
                 android:id="@+id/edt_height_cm"
@@ -106,8 +120,11 @@
                 android:layout_height="match_parent"
                 android:hint=" "
                 android:inputType="number"
+                android:textColor="@color/colorWhite"
                 android:lines="1"
-                android:maxLines="1" />
+                android:textSize="@dimen/txt_value_sleep"
+                android:maxLines="1"
+               />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -115,10 +132,8 @@
             android:id="@+id/rbg_main_height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            android:layout_weight="0.6"
+            android:layout_weight="1.3"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -142,7 +157,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="feet"
+                android:text="feet  "
                 android:textColor="@drawable/rbtn_height_color" />
         </RadioGroup>
 
@@ -165,7 +180,10 @@
             android:id="@+id/input_weight"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2">
+            android:layout_marginEnd="8dp"
+            android:textColorHint="@color/colorWhite"
+
+            android:layout_weight="2.2">
 
             <EditText
                 android:id="@+id/edt_weight"
@@ -174,7 +192,9 @@
                 android:layout_toEndOf="@+id/rbg_main_weight"
                 android:hint=" "
                 android:inputType="number"
+                android:textColor="@color/colorWhite"
                 android:lines="1"
+                android:textSize="@dimen/txt_value_sleep"
                 android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
@@ -185,7 +205,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
             android:orientation="horizontal">
 
             <RadioButton
@@ -197,7 +218,7 @@
                 android:checked="true"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="  kg   "
+                android:text="kg"
                 android:textColor="@drawable/rbtn_height_color" />
 
             <RadioButton
@@ -214,12 +235,92 @@
 
     </LinearLayout>
 
+<LinearLayout
+    android:layout_below="@+id/layout_weight"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/ll_age"
+    android:layout_marginTop="40dp"
+    android:weightSum="3">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_day"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="@color/colorWhite"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/edt_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/rbg_main_weight"
+            android:hint="Day "
+            android:gravity="center"
+            android:focusable="true"
+
+            android:textSize="@dimen/txt_value_sleep"
+            android:textColor="@color/colorWhite"
+            android:lines="1"
+            android:maxLines="1" />
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_month"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="@color/colorWhite"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/edt_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/rbg_main_weight"
+            android:hint="Month "
+            android:gravity="center"
+            android:focusable="false"
+            android:textSize="@dimen/txt_value_sleep"
+            android:textColor="@color/colorWhite"
+            android:lines="1"
+            android:maxLines="1" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_year"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="@color/colorWhite"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/edt_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/rbg_main_weight"
+            android:gravity="center"
+            android:hint="Year"
+            android:textSize="@dimen/txt_value_sleep"
+            android:focusable="false"
+
+            android:lines="1"
+            android:maxLines="1"
+            android:textColor="@color/colorWhite" />
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>
+
     <Button
         android:id="@+id/button"
-        android:layout_below="@+id/layout_weight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
         android:text="Save"
         android:textColor="@color/colorWhite" />

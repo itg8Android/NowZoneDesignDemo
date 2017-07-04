@@ -55,9 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                      .setContentIntent(pendingIntent)
                      .setCustomContentView(remoteView).build();
 
-
-
-              notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+             notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
              // hide the notification after its selected
 
              notificationManager.notify(ALARM_ID, noti);

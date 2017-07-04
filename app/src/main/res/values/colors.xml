@@ -33,6 +33,8 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
     <color name="transparent">#00000000</color>
+    <color name="btn_selected">#bc0a263d</color>
+    <color name="btn_normal">#bc2196f3</color>
 
 
     <!--<color name="color_endColor">#21103C</color>-->
