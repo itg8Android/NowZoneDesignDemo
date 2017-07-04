@@ -55,6 +55,7 @@ import itg8.com.nowzonedesigndemo.profile.ProfileActivity;
 import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.setting.AlarmSettingActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
+import itg8.com.nowzonedesigndemo.steps.StepGoalActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
@@ -351,6 +352,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(getApplicationContext(), AlarmActivity.class));
                 break;
             case R.id.action_step_goal:
+                startActivity(new Intent(getApplicationContext(), StepGoalActivity.class));
                 break;
             case R.id.action_about:
                 break;

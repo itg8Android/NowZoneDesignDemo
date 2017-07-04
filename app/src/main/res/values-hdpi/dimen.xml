@@ -45,6 +45,8 @@
 
     <dimen name="margin_alarm_bottom">10sp</dimen>
     <dimen name="txt_edit_text_size">12sp</dimen>
+    <dimen name="txt_step_goal">16sp</dimen>
+
 
 
 

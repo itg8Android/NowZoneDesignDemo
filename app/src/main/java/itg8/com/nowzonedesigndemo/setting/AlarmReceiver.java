@@ -55,9 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                      .setContentIntent(pendingIntent)
                      .setCustomContentView(remoteView).build();
 
-
-
-              notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+             notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
              // hide the notification after its selected
              SharePrefrancClass.getInstance(context).savePref(CommonMethod.SLEEP_STARTED,"ss");
              notificationManager.notify(ALARM_ID, noti);
