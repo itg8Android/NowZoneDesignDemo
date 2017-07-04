@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import butterknife.BindView;

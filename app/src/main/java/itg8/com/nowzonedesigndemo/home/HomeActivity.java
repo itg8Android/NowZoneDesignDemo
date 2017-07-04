@@ -80,8 +80,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public static final String COLOR_FOCUSED_M = "#240C00B7";
     private static final String COLOR_FOCUSED_S = "#FF4027FB";
     private static final int LAST_333 = 333;
-    public static final double CONST_1 = -10.02d;
-    public static final double CONST_2 = 10.02d;
+    public static final double CONST_1 = -8.02d;
+    public static final double CONST_2 = 8.02d;
     private static final double PI_MIN = -8.02d;
     private static final double PI_MAX = 8.02d;
     private static final double MIN_PRESSURE=800;
@@ -184,7 +184,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final double smoothing=50;
     Rolling rolling;
     private double dLast;
-    private float a=0.2f;
+    private float a=0.8f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +199,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-        rolling=new Rolling(33);
+        rolling=new Rolling(8);
         if(!getIntent().hasExtra(CommonMethod.FROMWEEk)) {
             startService(new Intent(this,BleService.class));
 
@@ -526,12 +526,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
 //        double d=(double) Math.round((CONST_1+(CONST_2*((pressure-(lastMin))/(lastMax-lastMin)))) * 1000000000000000000d) / 1000000000000000000d;
 //        s(i)=a*y(i)+(1-a)*s(i-1)
-        double d=a*pressure+((1-a)*dLast);
-//        double d=pressure;
-        dLast=d;
+
+
+
+//        double d=a*pressure+((1-a)*dLast);
+        double d=pressure;
+        rolling.add(pressure);
+        d=rolling.getaverage();
+//        dLast=d;
        // Log.d(TAG,"ds:"+d);
 //        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
-        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
+
+        return  (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
 
     @Override

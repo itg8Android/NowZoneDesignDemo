@@ -111,10 +111,10 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
                     }
 
                     processForStepCounting(model);
-                    dataStorageRaw.add(copy(model));
+                 //   dataStorageRaw.add(copy(model));
                     processModelData(model, context);
                 }
-            }).observeOn(Schedulers.computation())
+            }).subscribeOn(Schedulers.computation())
                     .subscribe(new Observer<String>() {
                 @Override
                 public void onSubscribe(Disposable d) {
@@ -197,28 +197,28 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         tempHolder.clear();
         tempHolder.addAll(dataStorage);
 
-        tempHolderRaw.clear();
-        tempHolderRaw.addAll(this.dataStorageRaw);
+//        tempHolderRaw.clear();
+//        tempHolderRaw.addAll(this.dataStorageRaw);
 
         resetDataStorage(this.dataStorage);
-        resetDataStorage(this.dataStorageRaw);
+//        resetDataStorage(this.dataStorageRaw);
 
         //We will do that after SAAS TODO SAAS
-        passForFIleStorage(tempHolderRaw, context);
+//        passForFIleStorage(tempHolderRaw, context);
 
         passForCalculation(tempHolder);
     }
 
     private void passForFIleStorage(List<DataModel> dataStorage, Context context) {
-        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+      //  dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
 
         /**
          * Currently we are haulting this TODO uncomment after complete implementaion of breath count
          * v2: we are again starting it for storing data into local storage visible to user. After implementation of this data we will
          * change STORAGE PATH ONLY
          */
-        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH));
-        async.execute(this.tempHolderRaw);
+//        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH));
+//        async.execute(this.tempHolderRaw);
 
 //        Bundle bundle=new Bundle();
 //        bundle.putString(CommonMethod.FINISHED_DATA, new Gson().toJson(dataStorage));
@@ -280,6 +280,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     @Override
     public void onSleepInterrupted(long timestamp) {
+
         listener.onSleepInterrupted(timestamp);
     }
 

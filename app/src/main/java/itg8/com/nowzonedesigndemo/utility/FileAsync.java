@@ -22,6 +22,7 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
     private static final String TAG = ServiceOnCheck.class.getSimpleName();
     private static String COMPLETE_FILE_PATH;
     private String[] fileList;
+    private String content;
 
     public FileAsync(String path) {
         COMPLETE_FILE_PATH = path;
@@ -79,7 +80,7 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
          */
 //        String content = new Gson().toJson(models);
 
-        String content = createDataStructureFromModel(models);
+         content = createDataStructureFromModel(models);
         String[] allFileListByDt = getFileList();
         if (allFileListByDt.length > 0) {
 //            Arrays.sort(allFileListByDt);
