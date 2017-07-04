@@ -24,9 +24,10 @@ public class StepModuleImp implements StepMVP.StepModule{
     private WeakReference<StepMVP.StepPresenterListener> listener;
     private Dao<TblStepCount, Integer> stepDao;
     private int woy;
-    private String lastWeekLabel="";
+    private String lastWeekLabel;
     private float[] dataToCollect;
     private int i=0;
+    private List<TblStepCount> stepList;
 
     @Override
     public void onListenerReady(StepMVP.StepPresenterListener listener) {
@@ -83,7 +84,7 @@ public class StepModuleImp implements StepMVP.StepModule{
 //                System.out.println(date);
 //            }
             Calendar calender=Calendar.getInstance();
-
+            int lastItemCount=counts.size();
             for (TblStepCount stepDate:counts
                  ) {
                 calender.setTime(stepDate.getDate());
@@ -91,25 +92,31 @@ public class StepModuleImp implements StepMVP.StepModule{
                 String weekLabel=calender.get(Calendar.DAY_OF_MONTH)+" "+calender.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.UK);
                 calender.add(Calendar.DAY_OF_YEAR,6);
                 weekLabel+="-"+calender.get(Calendar.DAY_OF_MONTH)+" "+calender.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.UK);
+                if(lastWeekLabel==null){
+                    lastWeekLabel=weekLabel;
+                    model=new WeekStepModel();
+                    model.setWeekLabel(lastWeekLabel);
+                    stepList=new ArrayList<>();
+                    stepList.add(stepDate);
+                    model.setStepsCount(stepList);
+                    models.add(model);
+                    continue;
+                }
                 if(!lastWeekLabel.equalsIgnoreCase(weekLabel)){
                     lastWeekLabel=weekLabel;
                     model=new WeekStepModel();
                     model.setWeekLabel(lastWeekLabel);
-
-                    dataToCollect=new float[7];
-                    i=0;
-                    dataToCollect[i]=stepDate.getSteps();
-                    model.setStepsCount(dataToCollect);
+                    stepList=new ArrayList<>();
+                    stepList.add(stepDate);
+                    model.setStepsCount(stepList);
                     models.add(model);
-
-
                 }else {
-                    dataToCollect[i]=stepDate.getSteps();
-                    i++;
+                    stepList.add(stepDate);
                 }
             }
 
             listener.get().onWeekStep(models);
+            lastWeekLabel=null;
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -142,7 +149,7 @@ public class StepModuleImp implements StepMVP.StepModule{
             List<TblStepCount> counts=dao.query(dao.queryBuilder().where().eq(TblStepCount.FIELD_DATE, Calendar.getInstance().getTime()).prepare());
             if(counts.size()>0 && getListener())
             {
-                TblStepCount count=counts.get(0);
+                TblStepCount count=counts.get(counts.size()-1);
                 listener.get().onTodaysStepAvailable(count.getGoal(),count.getSteps(),getThisWeekTotal(dao),count.getCalBurn());
             }
         } catch (SQLException e) {

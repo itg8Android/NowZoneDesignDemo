@@ -20,7 +20,11 @@ import java.util.Observable;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static itg8.com.nowzonedesigndemo.home.HomeActivity.CONST_1;
 import static itg8.com.nowzonedesigndemo.home.HomeActivity.CONST_2;
@@ -51,6 +55,7 @@ public class BreathwaveView extends View {
     private int h;
     private int i2;
     private boolean render = false;
+    private long j2;
 
     public BreathwaveView(Context context) {
         super(context);
@@ -85,7 +90,7 @@ public class BreathwaveView extends View {
 
 
     private float getX(BreathSample breathSample, int width, long elapsedRealtime) {
-        long j2 = elapsedRealtime - BREATHVIEW_DURATION;
+         j2 = elapsedRealtime - BREATHVIEW_DURATION;
         return (float) (((breathSample.getTimestamp() - j2) * ((long) width)) / (elapsedRealtime - j2));
     }
 
@@ -103,8 +108,9 @@ public class BreathwaveView extends View {
         BreathSample breathSample = null;
         BreathSample breathSample2 = null;
         this.mWaveSamples.clear();
+        BreathSample breathSample32;
         for (BreathSample breathSample3 : this.mSamples) {
-            BreathSample breathSample32 = breathSample3;
+            breathSample32 = breathSample3;
             long timestamp = breathSample32.getTimestamp();
             if (timestamp >= j3) {
                 if (timestamp > j2) {
@@ -124,7 +130,7 @@ public class BreathwaveView extends View {
         }
 
         if (this.mWaveSamples.size() >= 2) {
-            BreathSample breathSample32 = this.mWaveSamples.get(0);
+            breathSample32 = this.mWaveSamples.get(0);
             if (breathSample != null && breathSample.getTimestamp() + DURATION >= breathSample32.getTimestamp()) {
                 this.mWaveSamples.add(0, breathSample.interpolate(breathSample32, j3));
             }
@@ -136,8 +142,8 @@ public class BreathwaveView extends View {
     }
 
     protected void onDraw(Canvas canvas) {
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        findWaveSamples(elapsedRealtime);
+//        long elapsedRealtime = SystemClock.elapsedRealtime();
+//        findWaveSamples(elapsedRealtime);
         if (this.mWaveSamples.size() >= 2) {
 //            int size = (this.mWaveSamples.size() - 1) * 4;
 //            if (this.mVert.length < size * 2) {
@@ -220,6 +226,35 @@ public class BreathwaveView extends View {
 
     public void addSample(long timeStamp, double value) {
 //        Log.d(TAG,"value : "+value+" , "+" timestamp: "+ CommonMethod.getTimeFromTMP(timeStamp));
+        createRenderer(timeStamp,value);
+//        io.reactivex.Observable.create((ObservableOnSubscribe<Integer>) e ->).subscribeOn(Schedulers.io())
+//                .subscribe(new Observer<Integer>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Integer i2) {
+//                        BreathwaveView.this.i2 = i2;
+//                        render = true;
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+
+
+    }
+
+    private void createRenderer(long timeStamp, double value) {
         render = false;
         mSamples.add(new BreathSample(timeStamp, value));
         long elapsedRealtime = SystemClock.elapsedRealtime();
@@ -237,19 +272,26 @@ public class BreathwaveView extends View {
             int i = 0;
             int i2 = size;
             int i3 = size;
+            int i5;
+            int i6;
+            int i7;
+            float x;
+            float y;
+            long timestamp;
+            int i4;
+
             for (BreathSample breathSample : mWaveSamples) {
-                int i4;
-                float x = getX(breathSample, w, elapsedRealtime);
+                x = getX(breathSample, w, elapsedRealtime);
 //                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
-                float y = getY(breathSample, h, CONST_1, CONST_2);
+                y = getY(breathSample, h, CONST_1, CONST_2);
 //                Log.d(TAG,"Y:"+y+" Breath: "+breathSample.getValue());
-                int i5 = i + 1;
+                 i5 = i + 1;
 //                this.mVert.add(i,x);
                 mVert[i] = x;
-                int i6 = i5 + 1;
+                i6 = i5 + 1;
 //                this.mVert.add(i5,y);
                 mVert[i5] = y;
-                int i7 = i3 + 1;
+                i7 = i3 + 1;
 //                this.mVert.add(i3,x);
                 mVert[i3] = x;
                 i3 = i7 + 1;
@@ -264,7 +306,7 @@ public class BreathwaveView extends View {
                     i4 = i6 - 4;
                     i7 = i2 - 4;
                 }
-                long timestamp = breathSample.getTimestamp();
+                timestamp = breathSample.getTimestamp();
                 if (!(i4 == 2 || i4 == i7)) {
                     int i8 = i4 + 1;
 //                    this.mVert.add(i4,x);
@@ -287,6 +329,5 @@ public class BreathwaveView extends View {
             this.i2 = i2;
             render = true;
         }
-
     }
 }

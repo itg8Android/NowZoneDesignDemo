@@ -114,7 +114,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (rgbStepsToday.isChecked()) {
             fragment = new TodayStepsFragment();
-            rgbStepsToday.setTextColor(Color.BLACK);
+            rgbStepsToday.setTextColor(Color.WHITE);
             rgbStepHistory.setTextColor(Color.WHITE);
             setFragmnet();
             //  setTabLayout();
@@ -139,7 +139,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
                 navigation.setVisibility(View.GONE);
                 progressSteps.setVisibility(View.VISIBLE);
                 fragment = new TodayStepsFragment();
-                rgbStepsToday.setTextColor(Color.BLACK);
+                rgbStepsToday.setTextColor(Color.WHITE);
                 rgbStepHistory.setTextColor(Color.WHITE);
                 break;
 
@@ -148,7 +148,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
                 progressSteps.setVisibility(View.GONE);
                 navigation.setVisibility(View.VISIBLE);
                 fragment = new TodayStepsFragment();
-                rgbStepHistory.setTextColor(Color.BLACK);
+                rgbStepHistory.setTextColor(Color.WHITE);
                 rgbStepsToday.setTextColor(Color.WHITE);
                 break;
         }
@@ -164,12 +164,12 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 
     private void setView(int steps) {
         progressSteps.setCurrentValues(steps);
-        progressSteps.setHintSize(30);
-        progressSteps.setIsNeedTitle(true);
         progressSteps.setTitle("Steps covered");
         progressSteps.setTextSize(30);
         progressSteps.setIsNeedUnit(true);
         progressSteps.setUnit("%");
+        progressSteps.setHintSize(30);
+        progressSteps.setIsNeedTitle(true);
     }
 
 

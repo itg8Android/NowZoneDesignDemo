@@ -28,15 +28,22 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.steps.mvp.WeekStepModel;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomMarkerView;
@@ -70,7 +77,7 @@ public class WeekFragment extends Fragment {
     LineChart chart;
     Unbinder unbinder;
 
-    private final String[] mLabels = {"Mon", "Thu", "Wed", "Thus", "Fri", "Sat", "Sun"};
+    private final String[] mLabels = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     private final float[] entryValues = {2000f, 1800f, 4500f, 7000f, 1200f, 1010f, 2305f};
 
 
@@ -88,7 +95,7 @@ public class WeekFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private float[] dataArray;
+    private List<TblStepCount> dataArray;
     private WeekStepModel model;
     // public Tooltip mTip;
 
@@ -262,11 +269,28 @@ public class WeekFragment extends Fragment {
         ArrayList<Entry> values = new ArrayList<Entry>();
         int i = 1;
         float totalSteps=0;
-        for (Float val : dataArray) {
-            values.add(new Entry(i, val));
-            i++;
-            totalSteps+=val;
+        HashMap<String,TblStepCount> stepWithDay=new HashMap<>();
+        for (TblStepCount count :
+                dataArray) {
+            totalSteps+=count.getSteps();
+            stepWithDay.put(getDay(count.getDate()),count);
         }
+
+
+        for (String mLabel : mLabels) {
+            if (stepWithDay.containsKey(mLabel.toLowerCase())) {
+                values.add(new Entry(i, stepWithDay.get(mLabel.toLowerCase()).getSteps()));
+            } else {
+                values.add(new Entry(i, 0));
+            }
+            i++;
+        }
+
+//        for (Float val : dataArray) {
+//            values.add(new Entry(i, val));
+//            i++;
+//            totalSteps+=val;
+//        }
         txtStepsValue.setText(new DecimalFormat("#,###,###").format(totalSteps));
         LineDataSet set1;
 
@@ -300,6 +324,12 @@ public class WeekFragment extends Fragment {
             chart.setData(data);
 
         }
+    }
+
+    private String getDay(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE", Locale.US);
+
+        return dateFormat.format(date).toLowerCase();
     }
 
 

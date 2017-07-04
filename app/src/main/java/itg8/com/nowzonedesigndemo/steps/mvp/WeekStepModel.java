@@ -3,6 +3,10 @@ package itg8.com.nowzonedesigndemo.steps.mvp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
+
 /**
  * Created by itg_Android on 7/1/2017.
  */
@@ -11,7 +15,7 @@ public class WeekStepModel implements Parcelable {
     String weekLabel;
     int stepCount;
     float calBurn;
-    float[] stepsCount=new float[7];
+    List<TblStepCount> stepsCount;
 
 
     public String getWeekLabel() {
@@ -38,13 +42,17 @@ public class WeekStepModel implements Parcelable {
         this.calBurn = calBurn;
     }
 
-    public float[] getStepsCount() {
+    public List<TblStepCount> getStepsCount() {
         return stepsCount;
     }
 
-    public void setStepsCount(float[] stepsCount) {
+    public void setStepsCount(List<TblStepCount> stepsCount) {
         this.stepsCount = stepsCount;
     }
+
+    public WeekStepModel() {
+    }
+
 
     @Override
     public int describeContents() {
@@ -56,20 +64,17 @@ public class WeekStepModel implements Parcelable {
         dest.writeString(this.weekLabel);
         dest.writeInt(this.stepCount);
         dest.writeFloat(this.calBurn);
-        dest.writeFloatArray(this.stepsCount);
-    }
-
-    public WeekStepModel() {
+        dest.writeTypedList(this.stepsCount);
     }
 
     protected WeekStepModel(Parcel in) {
         this.weekLabel = in.readString();
         this.stepCount = in.readInt();
         this.calBurn = in.readFloat();
-        this.stepsCount = in.createFloatArray();
+        this.stepsCount = in.createTypedArrayList(TblStepCount.CREATOR);
     }
 
-    public static final Parcelable.Creator<WeekStepModel> CREATOR = new Parcelable.Creator<WeekStepModel>() {
+    public static final Creator<WeekStepModel> CREATOR = new Creator<WeekStepModel>() {
         @Override
         public WeekStepModel createFromParcel(Parcel source) {
             return new WeekStepModel(source);
