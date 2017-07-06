@@ -2,15 +2,9 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="paddingHomeText">3dp</dimen>
     <dimen name="homeText">12dp</dimen>
-    <dimen name="marginHomeText">3dp</dimen>
-    <dimen name="paddingTextHome">03dp</dimen>
-    <dimen name="elevationHomeText">03dp</dimen>
     <dimen name="marginBottomHomeImage">30dp</dimen>
-    <dimen name="marginLeftHomeImage">10dp</dimen>
     <dimen name="marginRightHomeImage">10dp</dimen>
     <dimen name="txt_breath_value">20sp</dimen>
     <dimen name="txt_sleep_value">18sp</dimen>
@@ -27,9 +21,6 @@
     <dimen name="txt_value_sleep">14sp</dimen>
     <dimen name="txt_lbl_dash_bottom">10sp</dimen>
 
-
-
-    <dimen name="txt_active_value">35sp</dimen>
 
     <!---  Form Alarm Setting Page
   -->

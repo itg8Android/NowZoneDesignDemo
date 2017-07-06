@@ -106,17 +106,17 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         View expandView = createView(containerMeditation, R.layout.layout_smart_alarm);
         CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
         CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
-        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+        if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME)!= null)
         {
-            alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
+            alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
         }else
         {
             alarmTime.setText("Set alarm time..!!!");
         }
 
-        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+        if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS)!= null)
         {
-            alarmDay.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS));
+            alarmDay.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS));
         }else
         {
             alarmDay.setText("Set alarm Day...!!!");
@@ -133,17 +133,17 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         View expandView = createView(frmContainerSmartAlarm, R.layout.layout_smart_alarm);
         CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
         CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
-        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+        if(getApplicationContext()!= null && SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME)!= null)
         {
-            alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
+            alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
         }else
         {
             alarmTime.setText("Set alarm time..!!!");
         }
 
-        if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+        if( getApplicationContext()!= null &&  SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS)!= null)
         {
-            alarmDay.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS));
+            alarmDay.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS));
         }else
         {
             alarmDay.setText("Set alarm Day...!!!");
@@ -185,9 +185,9 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             });
             alarmTime.setOnClickListener(v -> openDateTimeDialogue(v));
 
-            if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME) != null)
+            if(getApplicationContext()!= null && SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME) != null)
             {
-                alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
+                alarmTime.setText( SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
             }
             frmContainerSmartAlarm.addView(expandView);
 
@@ -206,23 +206,23 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
             alarmDay.setText(textview);
-            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+            if(getApplicationContext()!= null && SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME)!= null)
             {
-                 alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
+                 alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
 
             }else
             {
                 alarmTime.setText("Set alarm time..!!!");
             }
-            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+            if(getApplicationContext()!= null && SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS)!= null)
                      {
-                    String oldDays = SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS);
+                    String oldDays = SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS);
                          alarmDay.setText(oldDays);
                      }else
                      {
                          alarmDay.setText(textview);
                      }
-                 SharePrefrancClass.getInstance(this).savePref(CommonMethod.SAVEDAYS, textview);
+                 SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEDAYS, textview);
             frmContainerSmartAlarm.addView(expandView);
         }
     }
@@ -353,7 +353,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             });
             alarmTime.setOnClickListener(v -> openDateTimeDialogue(v));
 
-            if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME) != null)
+            if(getApplicationContext()!= null &&  SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME) != null)
             {
                 alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
             }
@@ -374,23 +374,23 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
             alarmDay.setText(textview);
-            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME)!= null)
+            if(getApplicationContext()!= null && SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME)!= null)
             {
-                alarmTime.setText(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEALARMTIME));
+                alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
 
             }else
             {
                 alarmTime.setText("Set alarm time..!!!");
             }
-            if(SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS)!= null)
+            if( getApplicationContext()!= null && SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS)!= null)
             {
-                String oldDays = SharePrefrancClass.getInstance(this).getPref(CommonMethod.SAVEDAYS);
+                String oldDays = SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEDAYS);
                 alarmDay.setText(oldDays);
             }else
             {
                 alarmDay.setText(textview);
             }
-            SharePrefrancClass.getInstance(this).savePref(CommonMethod.SAVEDAYS, textview);
+            SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEDAYS, textview);
             frameLayoutMeditation.addView(expandView);
         }
 

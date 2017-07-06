@@ -19,10 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +33,7 @@ import itg8.com.nowzonedesigndemo.common.ProfileModel;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.Helper;
 
-public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener, View.OnFocusChangeListener {
+public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -72,6 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
     RadioButton rgbWeightPounds;
     @BindView(R.id.edt_name)
     EditText edtName;
+
     @BindView(R.id.input_weight)
     TextInputLayout inputWeight;
     @BindView(R.id.button)
@@ -99,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
     TextInputLayout inputYear;
     @BindView(R.id.ll_age)
     LinearLayout llAge;
+    @BindView(R.id.lbl_birth)
+    TextView lblBirth;
     private ProfileModel model;
     private float heightInFeet;
     private float weightInKg;
@@ -119,9 +123,10 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
         rbgMainWeight.setOnCheckedChangeListener(this);
         rbgMainHeight.setOnCheckedChangeListener(this);
         button.setOnClickListener(this);
-        edtDay.setOnFocusChangeListener (this);
-        edtMonth.setOnFocusChangeListener (this);
-        edtYear.setOnFocusChangeListener (this);
+        lblBirth.setOnClickListener(this);
+        edtDay.setOnClickListener(this);
+        edtMonth.setOnClickListener(this);
+        edtYear.setOnClickListener(this);
         model = new ProfileModel();
 
         // checkAlreadyFilled();
@@ -139,37 +144,34 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
                 break;
             case R.id.rgb_height_feet:
                 inputHeightCm.setVisibility(View.VISIBLE);
+                inputHeight.setVisibility(View.VISIBLE);
                 edtHeightCm.setHintTextColor(Color.WHITE);
                 edtHeight.setHintTextColor(Color.WHITE);
-                edtHeightCm.setHint("Height[feet]");
-                edtHeight.setHint("Height[inch]");
+                edtHeightCm.setHint("Height[inch]");
+                edtHeight.setHint("Height[feet]");
                 break;
             case R.id.fab:
-
                 break;
             case R.id.rgb_weight_kg:
                 edtWeight.setHintTextColor(Color.WHITE);
                 edtWeight.setHint("Weight[kg]");
-
                 break;
             case R.id.rgb_weight_pounds:
                 edtWeight.setHintTextColor(Color.WHITE);
                 edtWeight.setHint("Weight[pounds]");
                 break;
-
-
         }
 
     }
 
-    private void openDateTimeDialogue(EditText inputDay) {
+    private void openDateTimeDialogue() {
         // Get Current Time
-        Calendar mcurrentDate=Calendar.getInstance();
-        int mYear=mcurrentDate.get(Calendar.YEAR);
-        int  mMonth=mcurrentDate.get(Calendar.MONTH);
-        int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+        Calendar mcurrentDate = Calendar.getInstance();
+        int mYear = mcurrentDate.get(Calendar.YEAR);
+        int mMonth = mcurrentDate.get(Calendar.MONTH);
+        int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog mDatePicker=new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog mDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                 // TODO Auto-generated method stub
 
@@ -180,35 +182,57 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
                 String[] entireDate = sdf.format(mcurrentDate.getTime()).split("/");
-                String day= entireDate[0];
-                String month= entireDate[1];
-                String year= entireDate[2];
+                String day = entireDate[0];
+                String month = entireDate[1];
+                String year = entireDate[2];
                 edtDay.setText(day);
                 edtMonth.setText(month);
                 edtYear.setText(year);
-                Log.d(getClass().getSimpleName(),"DatePicker:"+mcurrentDate.getTime());
+                Log.d(getClass().getSimpleName(), "DatePicker:" + mcurrentDate.getTime());
 
 
             }
-        },mYear, mMonth, mDay);
+        }, mYear, mMonth, mDay);
         mDatePicker.setTitle("Select date");
         mDatePicker.show();
     }
 
 
-
-
-
-
     @Override
     public void onClick(View view) {
-        if (validate()) {
-            model.setName(edtName.getText().toString());
-            model.setHeight(calculateHeightInFeet());
-            model.setWeight(calculateWeightInKg());
-            ((AppApplication) getApplication()).setProfileModel(model);
-            onBackPressed();
+        switch (view.getId())
+        {
+            case R.id.button:
+                if (validate()) {
+                    model.setName(edtName.getText().toString());
+                    model.setHeight(calculateHeightInFeet());
+                    model.setWeight(calculateWeightInKg());
+                    ((AppApplication) getApplication()).setProfileModel(model);
+                    onBackPressed();
+                }
+                break;
+
+            case R.id.lbl_birth:
+              //  openDateTimeDialogue();
+                break;
+
+            case R.id.edt_day:
+                openDateTimeDialogue();
+                break;
+            case R.id.edt_month:
+                openDateTimeDialogue();
+                break;
+            case R.id.edt_year:
+                openDateTimeDialogue();
+                break;
+
+
         }
+
+
+
+
+
     }
 
     @Override
@@ -259,27 +283,5 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
     }
 
 
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
 
-             if(hasFocus) {
-                 if (v.getId() == R.id.edt_day) {
-                     openDateTimeDialogue(edtDay);
-
-                 }
-                 else if(v.getId()== R.id.edt_month)
-                 {
-                     openDateTimeDialogue(edtDay);
-
-                 }else if(v.getId()== R.id.edt_year)
-                 {
-                     openDateTimeDialogue(edtDay);
-
-                 }
-
-
-             }
-
-
-    }
 }

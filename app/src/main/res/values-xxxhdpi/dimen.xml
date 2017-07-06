@@ -2,12 +2,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <!--For Home Page -->
-    <dimen name="paddingHomeText">4dp</dimen>
     <dimen name="homeText">14dp</dimen>
-    <dimen name="marginHomeText">5dp</dimen>
-    <dimen name="elevationHomeText">03dp</dimen>
     <dimen name="marginBottomHomeImage">30dp</dimen>
-    <dimen name="marginLeftHomeImage">10dp</dimen>
     <dimen name="marginRightHomeImage">10dp</dimen>
     <dimen name="txt_breath_value">30sp</dimen>
     <dimen name="txt_sleep_value">2sp</dimen>
@@ -26,12 +22,10 @@
 
 
     <dimen name="txt_value_sleep">16sp</dimen>
-    <dimen name="txt_active_value">40sp</dimen>
 
     <!---  Form Alarm Setting Page
     -->
     <dimen name="marginAlarm">10sp</dimen>
-    <dimen name="marginTime">10sp</dimen>
     <dimen name="paddingAlarm">5sp</dimen>
     <dimen name="lbl_alarm_time">16sp</dimen>
     <dimen name="lbl_time_front">20sp</dimen>
@@ -41,7 +35,6 @@
     <dimen name="margin_alarm_top">10sp</dimen>
 
     <!-- For Profile Actvity-->
-    <dimen name="marginProfile">15sp</dimen>
     <dimen name="marginLeftProfile">10sp</dimen>
     <dimen name="marginRightProfile">10sp</dimen>
     <dimen name="txt_edit_text_size">14sp</dimen>

@@ -2,12 +2,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <!--For Home Page -->
-    <dimen name="paddingHomeText">3dp</dimen>
     <dimen name="homeText">12dp</dimen>
-    <dimen name="marginHomeText">3dp</dimen>
-    <dimen name="elevationHomeText">03dp</dimen>
     <dimen name="marginBottomHomeImage">10dp</dimen>
-    <dimen name="marginLeftHomeImage">10dp</dimen>
     <dimen name="marginRightHomeImage">10dp</dimen>
     <dimen name="txt_breath_value">20sp</dimen>
     <dimen name="txt_sleep_value">20sp</dimen>
@@ -25,8 +21,6 @@
     <dimen name="txt_hr">12sp</dimen>
     <dimen name="txt_lbl_dash_bottom">10sp</dimen>
 
-
-    <dimen name="txt_active_value">35sp</dimen>
 
     <!---  Form Alarm Setting Page
   -->

@@ -7,7 +7,6 @@
     <string name="action_step_goal">Step Goal</string>
     <string name="action_logout">Logout</string>
     <string name="action_about">About Us</string>
-    <string name="title_activity_base">Base</string>
 
 
     <!-- For Home Page Strings Values -->
@@ -61,9 +60,8 @@
     <string name="title_activity_alarm">Alarm</string>
     <string name="title_activity_profile">Profile</string>
 
-    <string name="title_activity_alarm_setting">AlarmSettingActivity</string>
+    <string name="title_activity_alarm_setting">Alarm </string>
 
-    <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_step_goal">Step Goal</string>
     <string name="title_activity_alarm_notification">AlarmNotification</string>
 
