@@ -308,15 +308,17 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         if (mLastOneCount <= 0 && mSecondLastCount <= 0) {
             return;
         }
-        int newCalmCheck = avgCount - 2;
-        int newStressCheck = avgCount + 2;
+        int newCalmCheck = avgCount - 4;
+        int newStressCheck = avgCount + 4;
 
         if (mLastOneCount <= newCalmCheck && mSecondLastCount <= newCalmCheck && count <= newCalmCheck) {
             sendBroadcastState(BreathState.CALM,count,timestamp);
         } else if (mLastOneCount >= newStressCheck && mSecondLastCount >= newStressCheck && count >= newStressCheck) {
             sendBroadcastState(BreathState.STRESS, count, timestamp);
-        } else if(mLastOneCount == count && mSecondLastCount == count){
-            sendBroadcastState(BreathState.FOCUSED, count, timestamp);
+        } else{
+            if(mLastOneCount == count && mSecondLastCount == count) {
+                sendBroadcastState(BreathState.FOCUSED, count, timestamp);
+            }
         }
     }
 

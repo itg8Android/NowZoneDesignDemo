@@ -213,8 +213,9 @@ public class BleConnectionManager implements ConnectionManager {
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+            mBluetoothGatt.disconnect();
             if (mBluetoothGatt.connect()) {
+                Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
                 return true;
             } else {
                 return false;

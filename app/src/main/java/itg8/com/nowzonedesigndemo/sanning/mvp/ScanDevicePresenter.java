@@ -122,6 +122,8 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
         }
     }
 
+
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onScanResult(int callbackType, ScanResult result) {
@@ -176,7 +178,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
 
     @Override
     public void onDestroy() {
-
+        model.onDestroy();
     }
 
 

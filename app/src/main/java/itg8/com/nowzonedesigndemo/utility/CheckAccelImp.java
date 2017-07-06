@@ -30,6 +30,7 @@ class CheckAccelImp {
     private static final int Y = 1;
     private static final int Z = 2;
     private static final int TOTAL_SIZE_OF_DATA_COLLECTION = 33;
+    private static final double G = 0.244;
     private static int nStepCount = 0;
     private AccelVerifyListener listener;
     private Observer observer;
@@ -73,6 +74,7 @@ class CheckAccelImp {
     private double sleep_threshold = 0;
     private boolean isSleepThresholdCalculated = false;
     private long alarmStartTime;
+    private int stepListener=0;
 
     /**
      * We will pass the listener and latest step count received before service destroyed.
@@ -124,19 +126,23 @@ class CheckAccelImp {
     private Observable<Integer> checkMovement(DataModel model) {
         Log.d(TAG, "RawXYZ:" + "X: " + model.getX() + " Y: " + model.getY() + " Z: " + model.getZ());
         return Observable.create(e -> {
-            double xG = (model.getX() * 0.224) / 1000;
-            double yG = (model.getY() * 0.224) / 1000;
-            double zG = (model.getZ() * 0.224) / 1000;
-            roll = Math.sqrt((xG * xG) + (yG * yG) + (zG * zG));
 
-//            log="X "+formatter.format( (model.getX() * 0.224)/1000)+ " Y "+formatter.format((model.getY() * 0.224)/1000)+" Z "+formatter.format((model.getZ() * 0.224)/1000);
-            //  Logs.d(String.valueOf(roll));
-            Observable.create(new ObservableOnSubscribe<String>() {
-                @Override
-                public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
-                    createFile(log);
-                }
-            }).subscribeOn(Schedulers.computation())
+            double xG = (model.getX()>32768)?model.getX():model.getX()-65536;
+            double yG = (model.getY() >32768) ?model.getY():model.getY()-65536;
+            double zG = (model.getZ() >32768) ?model.getZ():model.getZ()-65536;
+            xG = (xG * G) / 1000;
+            yG = (yG * G) / 1000;
+            zG = (zG * G) / 1000;
+            roll = Math.sqrt((xG * xG) + (yG * yG) + (zG * zG));
+            Log.d("gdata:","X:"+xG+" Y:"+yG+" Z:"+zG);
+              Log.d("Rollng avg:",String.valueOf(roll));
+
+//            log="X:"+formatter.format( (model.getX() * 0.224)/1000)+ " Y:"+formatter.format((model.getY() * 0.224)/1000)+" Z:"+formatter.format((model.getZ() * 0.224)/1000);
+            log="X:"+formatter.format( (model.getX() * 0.224)/1000)+ " Y:"+formatter.format((model.getY() * 0.224)/1000)+" Z:"+formatter.format((model.getZ() * 0.224)/1000);
+//              Log.d("gdata:",String.valueOf(log));
+            Observable.create((ObservableOnSubscribe<String>) e1 -> {
+                createFile(String.valueOf(roll));
+            }).subscribeOn(Schedulers.io())
                     .subscribe(new Observer<String>() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -171,21 +177,27 @@ class CheckAccelImp {
              * <TESTED
              */
 
-//            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
-//                modelCounter=0;
-//                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
-//                Logs.d("COUNT STEP:"+count);
-//                e.onNext(count);
-//                models[modelCounter]=model;
-//            }else {
-//                models[modelCounter]=model;
-//                modelCounter++;
-//            }
+            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
+                modelCounter=0;
+                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
+                Logs.d("COUNT STEP:"+count);
+                e.onNext(count);
+                models[modelCounter]=model;
+            }else {
+                models[modelCounter]=model;
+                modelCounter++;
+            }
 
             /**
              * This is old method providing value on tilt in sitting position  12/06/2017
              */
-            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
+//            e.onNext(updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ(), model.getTimestamp()));
+
+
+            /**
+             * My old method from step calculation in AbcApp
+             */
+//            e.onNext(checkForSteps(roll));
 
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
             lastStepVal = pedi_step_counter;
@@ -401,7 +413,7 @@ class CheckAccelImp {
 
         //PeakDetector peakDetect = new PeakDetector(nY);
         PeakDetector peakDetect = new PeakDetector(n3D);
-        int[] res = peakDetect.process(3, 1.5f);
+        int[] res = peakDetect.process(33, 1.5f);
 
         float fStepTime = 0.f;
         float fStepVelocity = 0.f;
@@ -619,6 +631,67 @@ class CheckAccelImp {
         //ar.mCalorie = Analyzer.calculateCalorie(ar.mShakeActionCount);	// Calculate calorie!!
 
         return nStepCount;
+    }
+
+
+    private float mLastValues[] = new float[3 * 2];
+    private float mScale[] = new float[2];
+    //    private void checkAccelerometerDataV2(AccelerometerModel model){
+//        String steps =checkForSteps(model);
+//    }
+    private float mYOffset;
+    private float mLastDirections[] = new float[3 * 2];
+    private float mLastExtremes[][] = {new float[3 * 2], new float[3 * 2]};
+    private float mLastDiff[] = new float[3 * 2];
+    private float mLimit = 0.02f;
+    private int mLastMatch = -1;
+
+
+    private int checkForSteps(double v) {
+
+        //public void onSensorChanged(int sensor, float[] values) {
+        Log.d(TAG, "Steps " + v);
+        synchronized (this) {
+
+            int j = 1;
+//                    double[] event={model.getX(),model.getY(),model.getZ()};
+            //                        float vSum = 0;
+//                        for (int i=0 ; i<3 ; i++) {
+//                            final float v = (float) (mYOffset + event[i] * mScale[j]);
+//                            vSum += v;
+//                        }
+            int k = 0;
+//                        float v = vSum / 3;
+
+            float direction = (v > mLastValues[k] ? 1 : (v < mLastValues[k] ? -1 : 0));
+            if (direction == -mLastDirections[k]) {
+                // Direction changed
+                int extType = (direction > 0 ? 0 : 1); // minumum or maximum?
+                mLastExtremes[extType][k] = mLastValues[k];
+                float diff = Math.abs(mLastExtremes[extType][k] - mLastExtremes[1 - extType][k]);
+
+                if (diff > mLimit) {
+
+                    boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k] * 2 / 3);
+                    boolean isPreviousLargeEnough = mLastDiff[k] > (diff / 3);
+                    boolean isNotContra = (mLastMatch != 1 - extType);
+
+                    if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough && isNotContra) {
+                        Log.i(TAG, "step");
+                        stepListener++;
+                        mLastMatch = extType;
+                    } else {
+                        mLastMatch = -1;
+                    }
+                }
+                mLastDiff[k] = diff;
+            }
+            mLastDirections[k] = direction;
+            mLastValues[k] = (float) v;
+
+        }
+
+        return stepListener;
     }
 
 
