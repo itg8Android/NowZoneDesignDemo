@@ -41,6 +41,7 @@ public class CommonMethod {
     public static final String ACTION_ALARM_NOTIFICATION = "ACTION_ALARM_NOTIFICATION";
     public static final String SLEEP_STARTED = "sleepStarted";
     public static final String STEP_GOAL = "stepGoal";
+    public static final String ALARM_AP = "ALARM_AP";
 
 
     private static Typeface typeface;

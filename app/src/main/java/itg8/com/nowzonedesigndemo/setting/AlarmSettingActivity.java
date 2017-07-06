@@ -4,9 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.design.widget.FloatingActionButton;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,11 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
 import android.widget.RelativeLayout;
-
 import android.widget.TimePicker;
-
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,14 +39,12 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     Button btnAlarmSetting;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-
     @BindView(R.id.txtAmPm)
     CustomFontTextView txtAmPm;
     @BindView(R.id.releative)
     RelativeLayout releative;
     @BindView(R.id.fab)
     FloatingActionButton fab;
-
     @BindView(R.id.txt_alarm_status)
     CustomFontTextView txtAlarmStatus;
     @BindView(R.id.txt_am)
@@ -60,8 +53,11 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     Button btnAlarmCalibarating;
     @BindView(R.id.btn_alarmStarted)
     Button btnAlarmStarted;
+    @BindView(R.id.btn_alarmFinished)
+    Button btnAlarmFinished;
     private Animation zoomIn, zoomOut;
-    boolean isFinished;
+    private Thread thread;
+    boolean isThreadRunning = false;
 
 
     @Override
@@ -101,17 +97,12 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         if (v.getId() == R.id.btn_alarmSetting) {
             startAnimation();
         }
-         if(v.getId() == R.id.txt_alarm_time)
-         {
-             OpenTimePickerDia();
-         }
-          if(v.getId() == R.id.btn_alarmStarted)
-          {
-
-
+        if (v.getId() == R.id.txt_alarm_time) {
+            OpenTimePickerDia();
+        }
+        if (v.getId() == R.id.btn_alarmStarted) {
             startAnimation();
-
-          }
+        }
 
 
     }
@@ -121,32 +112,30 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         final Calendar c = Calendar.getInstance();
         int mHour = c.get(Calendar.HOUR_OF_DAY);
         int mMinute = c.get(Calendar.MINUTE);
-
-
-
-
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        c.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         c.set(Calendar.MINUTE, minute);
-
+                        Log.d(getClass().getSimpleName(), "Start Alarm Time:" + c.getTime());
                         SharePrefrancClass.getInstance(getApplicationContext()).setLPref(CommonMethod.START_ALARM_TIME, c.getTimeInMillis());
                         c.add(Calendar.MINUTE, 30);
+                        Log.d(getClass().getSimpleName(), "End Alarm Time:" + c.getTime());
                         SharePrefrancClass.getInstance(getApplicationContext()).setLPref(CommonMethod.END_ALARM_TIME, c.getTimeInMillis());
                         SimpleDateFormat formatDate = new SimpleDateFormat("hh:mm");
                         SimpleDateFormat formatDate2 = new SimpleDateFormat("a");
-                        String time = (hourOfDay+":"+minute);
-                        c.add(Calendar.MINUTE,-30);
+                        String time = (hourOfDay + ":" + minute);
+                        c.add(Calendar.MINUTE, -30);
+                        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.ALARM_AP, formatDate2.format(c.getTime()));
                         txtAm.setText(formatDate2.format(c.getTime()));
                         time = formatDate.format(c.getTime());
                         txtAlarmTime.setText(time);
 
-                        Log.d(getClass().getSimpleName(),"Time:"+time);
-                        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEALARMTIME,time);
-                        sendBroadCast(true);
+                        Log.d(getClass().getSimpleName(), "Time:" + time);
+                        SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEALARMTIME, time);
+                        sendBroadCast(false);
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
@@ -155,7 +144,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
 
     private void sendBroadCast(boolean b) {
         Intent intent = new Intent(CommonMethod.ACTION_ALARM_NOTIFICATION);
-        intent.putExtra(CommonMethod.ALARM_FROMTIMEPICKER,b );
+        intent.putExtra(CommonMethod.ALARM_FROMTIMEPICKER, b);
         sendBroadcast(intent);
     }
 
@@ -163,27 +152,29 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         if (btnAlarmSetting.getText().equals("Calibarating")) {
             btnAlarmSetting.startAnimation(zoomOut);
             btnAlarmSetting.startAnimation(zoomIn);
-            btnAlarmSetting.setText("Finished");
 
         } else {
-            new Thread(new Runnable() {
+            thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+
                     runOnUiThread(new Runnable() {
+
                         @Override
                         public void run() {
                             progressBar.setVisibility(View.VISIBLE);
                             progressBar.setProgress(0);
                             txtAlarmStatus.setVisibility(View.VISIBLE);
-                            txtAlarmStatus.setText("Calibrating Alarm");
+                            txtAlarmStatus.setText("Calibrating Device");
                             btnAlarmSetting.setVisibility(View.GONE);
+                            btnAlarmStarted.setVisibility(View.GONE);
                             btnAlarmCalibarating.setVisibility(View.VISIBLE);
                             btnAlarmCalibarating.startAnimation(zoomOut);
                             btnAlarmCalibarating.startAnimation(zoomIn);
-
-
                         }
+
                     });
+
                     Calendar calendar = Calendar.getInstance();
                     calendar.add(Calendar.MINUTE, 1);
                     long timerEnd = calendar.getTimeInMillis();
@@ -193,34 +184,42 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                         progressBar.setProgress(progress);
                     }
 
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                 
-
                             btnAlarmSetting.setVisibility(View.GONE);
                             btnAlarmCalibarating.setVisibility(View.GONE);
                             btnAlarmStarted.setVisibility(View.VISIBLE);
-                            btnAlarmSetting.startAnimation(zoomOut);
-                            btnAlarmSetting.startAnimation(zoomIn);
+                            btnAlarmStarted.startAnimation(zoomOut);
+                            btnAlarmStarted.startAnimation(zoomIn);
                             txtAlarmStatus.setVisibility(View.VISIBLE);
                             txtAlarmStatus.setText(" Alarm Started");
                             ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
                             objectAnimator.start();
-                            sendBroadCast(false);
-
-
+                            sendBroadCast(true);
                         }
+
+
                     });
+
                 }
-            }).start();
+
+
+            });
+            thread.start();
 
 
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isThreadRunning = false;
+        thread.interrupt();
+    }
 }
 
 
