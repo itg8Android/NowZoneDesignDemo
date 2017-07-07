@@ -53,7 +53,7 @@ public class AlarmReceiver extends BroadcastReceiver {
              remoteView.setTextViewText(R.id.txt_app_name,"NowZone");
              remoteView.setTextViewText(R.id.txt_times,time +" "+ amPm);
              remoteView.setTextViewText(R.id.txt_hours_diff,"Hours");
-              remoteView.setInt(R.id.relative,"setBackgroundResource",R.drawable.sun);
+//              remoteView.setInt(R.id.relative,"setBackgroundResource",R.drawable.sun);
              Calendar c = Calendar.getInstance();
              long seconds = c.getTimeInMillis();
 

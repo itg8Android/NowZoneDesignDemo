@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import io.reactivex.Observable;
@@ -75,6 +76,8 @@ class CheckAccelImp {
     private boolean isSleepThresholdCalculated = false;
     private long alarmStartTime;
     private int stepListener=0;
+    private File completeFileStructure;
+    private FileWriter fWriter;
 
     /**
      * We will pass the listener and latest step count received before service destroyed.
@@ -177,16 +180,16 @@ class CheckAccelImp {
              * <TESTED
              */
 
-            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
-                modelCounter=0;
-                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
-                Logs.d("COUNT STEP:"+count);
-                e.onNext(count);
-                models[modelCounter]=model;
-            }else {
-                models[modelCounter]=model;
-                modelCounter++;
-            }
+//            if(modelCounter==TOTAL_SIZE_OF_DATA_COLLECTION) {
+//                modelCounter=0;
+//                int count=analyzeAccel(models, TOTAL_SIZE_OF_DATA_COLLECTION,1000);
+//                Logs.d("COUNT STEP:"+count);
+//                e.onNext(count);
+//                models[modelCounter]=model;
+//            }else {
+//                models[modelCounter]=model;
+//                modelCounter++;
+//            }
 
             /**
              * This is old method providing value on tilt in sitting position  12/06/2017
@@ -197,7 +200,7 @@ class CheckAccelImp {
             /**
              * My old method from step calculation in AbcApp
              */
-//            e.onNext(checkForSteps(roll));
+            e.onNext(checkForSteps(roll));
 
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
             lastStepVal = pedi_step_counter;
@@ -205,9 +208,8 @@ class CheckAccelImp {
     }
 
     private void createFile(String log) {
-        File completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "StepDataWithGImp.txt");
+        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "StepDataWithGImp.txt");
         try {
-            FileWriter fWriter;
             if (completeFileStructure.exists()) {
                 fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.append(log).append("\n");
@@ -410,10 +412,11 @@ class CheckAccelImp {
             n3D[i] = (float) Math.sqrt(nX[i] * nX[i] + nY[i] * nY[i] + nZ[i] * nZ[i]);
 //            Log.d("###","#"+n3D[i]);
         }
+        Log.d(TAG,"n3D "+ Arrays.toString(n3D));
 
         //PeakDetector peakDetect = new PeakDetector(nY);
         PeakDetector peakDetect = new PeakDetector(n3D);
-        int[] res = peakDetect.process(33, 1.5f);
+        int[] res = peakDetect.process(3, 1.5f);
 
         float fStepTime = 0.f;
         float fStepVelocity = 0.f;
@@ -423,7 +426,7 @@ class CheckAccelImp {
         if (res.length <= 0) {
             //ar.mCalorie = 0;
             //return ar;
-            return 0;
+            return nStepCount;
         }
 
         fStepTime = (res[0] + (nTotalSamplingData - nLastDetectedTime)) * 0.05f;
@@ -755,9 +758,8 @@ class CheckAccelImp {
     }
 
     private void createFileSleep(long timeInMillis) {
-        File completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "sleepInterrupt.txt");
+        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "sleepInterrupt.txt");
         try {
-            FileWriter fWriter;
             if (completeFileStructure.exists()) {
                 fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.append(String.valueOf(timeInMillis)).append("\n");

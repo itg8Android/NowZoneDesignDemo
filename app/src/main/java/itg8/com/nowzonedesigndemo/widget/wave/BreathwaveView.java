@@ -142,127 +142,13 @@ public class BreathwaveView extends View {
     }
 
     protected void onDraw(Canvas canvas) {
-//        long elapsedRealtime = SystemClock.elapsedRealtime();
-//        findWaveSamples(elapsedRealtime);
-        if (this.mWaveSamples.size() >= 2) {
-//            int size = (this.mWaveSamples.size() - 1) * 4;
-//            if (this.mVert.length < size * 2) {
-//                this.mVert = new float[((size * 2) + 64)];
-////                Arrays.fill(mVert, 0);
-//            }
-////            if (this.mVert.size()< size * 2) {
-////                this.mVert.clear();
-////            }
-//            long j = 0;
-//            int i = 0;
-//            int i2 = size;
-//            int i3 = size;
-//            for (BreathSample breathSample : this.mWaveSamples) {
-//                int i4;
-//                float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
-////                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
-//                float y = getY(breathSample, canvas.getHeight(), CONST_1, CONST_2);
-////                Log.d(TAG,"Y:"+y+" Breath: "+breathSample.getValue());
-//                int i5 = i + 1;
-////                this.mVert.add(i,x);
-//                this.mVert[i] = x;
-//                int i6 = i5 + 1;
-////                this.mVert.add(i5,y);
-//                this.mVert[i5] = y;
-//                int i7 = i3 + 1;
-////                this.mVert.add(i3,x);
-//                this.mVert[i3] = x;
-//                i3 = i7 + 1;
-////                this.mVert.add(i7,(BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y);
-//                this.mVert[i7] = (BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y;
-//                if (j == 0 || 200 + j >= breathSample.getTimestamp()) {
-//                    i5 = i3;
-//                    i4 = i6;
-//                    i7 = i2;
-//                } else {
-//                    i5 = i3 - 4;
-//                    i4 = i6 - 4;
-//                    i7 = i2 - 4;
-//                }
-//                long timestamp = breathSample.getTimestamp();
-//                if (!(i4 == 2 || i4 == i7)) {
-//                    int i8 = i4 + 1;
-////                    this.mVert.add(i4,x);
-//                    this.mVert[i4] = x;
-//                    i4 = i8 + 1;
-////                    this.mVert.add(i8,y);
-//                    this.mVert[i8] = y;
-//                    i8 = i5 + 1;
-////                    this.mVert.add(i5,x);
-//                    this.mVert[i5] = x;
-//                    i5 = i8 + 1;
-//                    this.mVert[i8] = y + (BREATHVIEW_SHADOW_SHIFT * this.mDensity);
-//                }
-//                j = timestamp;
-//                i = i4;
-//                i2 = i7;
-//                i3 = i5;
-//            }
-            if (render) {
-                canvas.drawLines(this.mVert, i2, i2, this.mWaveShadowPaint);
-                canvas.drawLines(this.mVert, 0, i2, this.mWavePaint);
-            }
-        }
-        invalidate();
-
-
-    }
-
-    public void reset() {
-        this.mSamples.clear();
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        this.w = w;
-        this.h = h;
-        super.onSizeChanged(w, h, oldw, oldh);
-    }
-
-    public void addSample(long timeStamp, double value) {
-//        Log.d(TAG,"value : "+value+" , "+" timestamp: "+ CommonMethod.getTimeFromTMP(timeStamp));
-        createRenderer(timeStamp,value);
-//        io.reactivex.Observable.create((ObservableOnSubscribe<Integer>) e ->).subscribeOn(Schedulers.io())
-//                .subscribe(new Observer<Integer>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Integer i2) {
-//                        BreathwaveView.this.i2 = i2;
-//                        render = true;
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-
-
-    }
-
-    private void createRenderer(long timeStamp, double value) {
-        render = false;
-        mSamples.add(new BreathSample(timeStamp, value));
         long elapsedRealtime = SystemClock.elapsedRealtime();
         findWaveSamples(elapsedRealtime);
-        if (mWaveSamples.size() >= 2) {
-            int size = (mWaveSamples.size() - 1) * 4;
-            if (mVert.length < size * 2) {
-                mVert = new float[((size * 2) + 64)];
+        if (this.mWaveSamples.size() >= 2) {
+            int size = (this.mWaveSamples.size() - 1) * 4;
+            //   Log.d(TAG, "Size of mWaveSamples:" + size);
+            if (this.mVert.length < size * 2) {
+                this.mVert = new float[((size * 2) + 64)];
 //                Arrays.fill(mVert, 0);
             }
 //            if (this.mVert.size()< size * 2) {
@@ -272,31 +158,23 @@ public class BreathwaveView extends View {
             int i = 0;
             int i2 = size;
             int i3 = size;
-            int i5;
-            int i6;
-            int i7;
-            float x;
-            float y;
-            long timestamp;
-            int i4;
-
-            for (BreathSample breathSample : mWaveSamples) {
-                x = getX(breathSample, w, elapsedRealtime);
+            for (BreathSample breathSample : this.mWaveSamples) {
+                int i4;
+                float x = getX(breathSample, canvas.getWidth(), elapsedRealtime);
 //                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
-                y = getY(breathSample, h, CONST_1, CONST_2);
-//                Log.d(TAG,"Y:"+y+" Breath: "+breathSample.getValue());
-                 i5 = i + 1;
+                float y = getY(breathSample, canvas.getHeight(), CONST_1, CONST_2);
+                int i5 = i + 1;
 //                this.mVert.add(i,x);
-                mVert[i] = x;
-                i6 = i5 + 1;
+                this.mVert[i] = x;
+                int i6 = i5 + 1;
 //                this.mVert.add(i5,y);
-                mVert[i5] = y;
-                i7 = i3 + 1;
+                this.mVert[i5] = y;
+                int i7 = i3 + 1;
 //                this.mVert.add(i3,x);
-                mVert[i3] = x;
+                this.mVert[i3] = x;
                 i3 = i7 + 1;
 //                this.mVert.add(i7,(BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y);
-                mVert[i7] = (BREATHVIEW_SHADOW_SHIFT * mDensity) + y;
+                this.mVert[i7] = (BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y;
                 if (j == 0 || 200 + j >= breathSample.getTimestamp()) {
                     i5 = i3;
                     i4 = i6;
@@ -306,28 +184,116 @@ public class BreathwaveView extends View {
                     i4 = i6 - 4;
                     i7 = i2 - 4;
                 }
-                timestamp = breathSample.getTimestamp();
+                long timestamp = breathSample.getTimestamp();
                 if (!(i4 == 2 || i4 == i7)) {
                     int i8 = i4 + 1;
 //                    this.mVert.add(i4,x);
-                    mVert[i4] = x;
+                    this.mVert[i4] = x;
                     i4 = i8 + 1;
 //                    this.mVert.add(i8,y);
-                    mVert[i8] = y;
+                    this.mVert[i8] = y;
                     i8 = i5 + 1;
 //                    this.mVert.add(i5,x);
-                    mVert[i5] = x;
+                    this.mVert[i5] = x;
                     i5 = i8 + 1;
-                    mVert[i8] = y + (BREATHVIEW_SHADOW_SHIFT * mDensity);
+                    this.mVert[i8] = y + (BREATHVIEW_SHADOW_SHIFT * this.mDensity);
                 }
                 j = timestamp;
                 i = i4;
                 i2 = i7;
                 i3 = i5;
             }
-
-            this.i2 = i2;
-            render = true;
+            canvas.drawLines(this.mVert, i2, i2, this.mWaveShadowPaint);
+            canvas.drawLines(this.mVert, 0, i2, this.mWavePaint);
         }
+        invalidate();
+
     }
+
+    public void reset() {
+        this.mSamples.clear();
+    }
+
+    public void addSample(long timeStamp, double value) {
+        this.mSamples.add(new BreathSample(timeStamp, value));
+        Log.d(TAG,"sample:"+value);
+
+    }
+
+//    private void createRenderer(long timeStamp, double value) {
+//        render = false;
+//        mSamples.add(new BreathSample(timeStamp, value));
+//        long elapsedRealtime = SystemClock.elapsedRealtime();
+//        findWaveSamples(elapsedRealtime);
+//        if (mWaveSamples.size() >= 2) {
+//            int size = (mWaveSamples.size() - 1) * 4;
+//            if (mVert.length < size * 2) {
+//                mVert = new float[((size * 2) + 64)];
+////                Arrays.fill(mVert, 0);
+//            }
+////            if (this.mVert.size()< size * 2) {
+////                this.mVert.clear();
+////            }
+//            long j = 0;
+//            int i = 0;
+//            int i2 = size;
+//            int i3 = size;
+//            int i5;
+//            int i6;
+//            int i7;
+//            float x;
+//            float y;
+//            long timestamp;
+//            int i4;
+//
+//            for (BreathSample breathSample : mWaveSamples) {
+//                x = getX(breathSample, w, elapsedRealtime);
+////                float y = getY(breathSample, canvas.getHeight(), 3000, 6000);
+//                y = getY(breathSample, h, CONST_1, CONST_2);
+////                Log.d(TAG,"Y:"+y+" Breath: "+breathSample.getValue());
+//                 i5 = i + 1;
+////                this.mVert.add(i,x);
+//                mVert[i] = x;
+//                i6 = i5 + 1;
+////                this.mVert.add(i5,y);
+//                mVert[i5] = y;
+//                i7 = i3 + 1;
+////                this.mVert.add(i3,x);
+//                mVert[i3] = x;
+//                i3 = i7 + 1;
+////                this.mVert.add(i7,(BREATHVIEW_SHADOW_SHIFT * this.mDensity) + y);
+//                mVert[i7] = (BREATHVIEW_SHADOW_SHIFT * mDensity) + y;
+//                if (j == 0 || 200 + j >= breathSample.getTimestamp()) {
+//                    i5 = i3;
+//                    i4 = i6;
+//                    i7 = i2;
+//                } else {
+//                    i5 = i3 - 4;
+//                    i4 = i6 - 4;
+//                    i7 = i2 - 4;
+//                }
+//                timestamp = breathSample.getTimestamp();
+//                if (!(i4 == 2 || i4 == i7)) {
+//                    int i8 = i4 + 1;
+////                    this.mVert.add(i4,x);
+//                    mVert[i4] = x;
+//                    i4 = i8 + 1;
+////                    this.mVert.add(i8,y);
+//                    mVert[i8] = y;
+//                    i8 = i5 + 1;
+////                    this.mVert.add(i5,x);
+//                    mVert[i5] = x;
+//                    i5 = i8 + 1;
+//                    mVert[i8] = y + (BREATHVIEW_SHADOW_SHIFT * mDensity);
+//                }
+//                j = timestamp;
+//                i = i4;
+//                i2 = i7;
+//                i3 = i5;
+//            }
+//
+//            this.i2 = i2;
+//            render = true;
+//        }
+//    }
 }
