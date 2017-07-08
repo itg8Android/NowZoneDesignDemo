@@ -347,6 +347,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 break;
             case R.id.action_device:
+                startActivity(new Intent(getApplicationContext(),AudioActivity.class));
                 break;
             case R.id.action_alram:
                 startActivity(new Intent(getApplicationContext(), AlarmActivity.class));

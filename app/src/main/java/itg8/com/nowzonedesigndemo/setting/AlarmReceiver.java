@@ -6,14 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
@@ -80,9 +76,7 @@ public class AlarmReceiver extends BroadcastReceiver {
          }else if (intent.hasExtra(CommonMethod.END_ALARM_TIME))
          {
              notificationManager.cancel(ALARM_ID);
-
-
-
+              SharePrefrancClass.getInstance(context).clearPref(CommonMethod.SLEEP_STARTED);
          }
 
     }
