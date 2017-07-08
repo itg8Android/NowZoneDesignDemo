@@ -28,7 +28,6 @@
             android:layout_margin="@dimen/fab_margin"
             app:elevation="08dp"
             app:fabSize="mini"
-
             app:srcCompat="@android:drawable/ic_dialog_email" />
 
         <android.support.design.widget.FloatingActionButton
@@ -38,7 +37,6 @@
             android:layout_margin="@dimen/fab_margin"
             app:elevation="08dp"
             app:fabSize="mini"
-
             app:srcCompat="@android:drawable/ic_dialog_email" />
     </LinearLayout>
 
@@ -55,7 +53,6 @@
             android:layout_margin="@dimen/fab_margin"
             app:elevation="08dp"
             app:fabSize="mini"
-
             app:srcCompat="@android:drawable/ic_dialog_email" />
 
         <android.support.design.widget.FloatingActionButton
@@ -109,7 +106,6 @@
             android:layout_margin="@dimen/fab_margin"
             app:elevation="08dp"
             app:fabSize="mini"
-
             app:srcCompat="@android:drawable/ic_dialog_email" />
     </LinearLayout>
 
@@ -121,7 +117,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:borderWidth="0dp"
         app:elevation="5dp"
-
         app:fabSize="normal"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 

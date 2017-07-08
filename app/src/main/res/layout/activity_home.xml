@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
+        android:background="@drawable/wallpaper_back"
         tools:context="itg8.com.nowzonedesigndemo.home.HomeActivity">
 
         <android.support.design.widget.AppBarLayout
