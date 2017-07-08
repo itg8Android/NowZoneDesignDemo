@@ -39,7 +39,8 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
     private boolean stopped = true;
 
     private BleService mBluetoothService;
-//    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+    private boolean connected;
+    //    private final ServiceConnection mServiceConnection = new ServiceConnection() {
 //
 //        @Override
 //        public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -63,7 +64,10 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG,"broadcast received:");
             if (intent.getAction().equals(BleService.ACTION_DEVICE_CONNECTED)) {
-                setDeviceConnected();
+                if(!connected)
+                    setDeviceConnected();
+
+                connected=true;
             }
         }
     };
@@ -158,13 +162,11 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
     public void onResume() {
         if (view != null) {
             view.checkBleAvailability();
-
         }
     }
 
     @Override
     public void onPause() {
-        handler.removeCallbacks(r);
 
     }
 
@@ -179,6 +181,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
     @Override
     public void onDestroy() {
         model.onDestroy();
+        handler.removeCallbacks(r);
     }
 
 

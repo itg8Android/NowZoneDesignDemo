@@ -77,7 +77,6 @@ class CheckAccelImp {
     private long alarmStartTime;
     private int stepListener=0;
     private File completeFileStructure;
-    private FileWriter fWriter;
 
     /**
      * We will pass the listener and latest step count received before service destroyed.
@@ -210,6 +209,7 @@ class CheckAccelImp {
     private void createFile(String log) {
         completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "StepDataWithGImp.txt");
         try {
+            FileWriter fWriter;
             if (completeFileStructure.exists()) {
                 fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.append(log).append("\n");
@@ -699,11 +699,14 @@ class CheckAccelImp {
 
 
     public void onSleepdataAvail(DataModel model, long alarmStartTime, long alarmEndsTime) {
+
         Observable.create(new ObservableOnSubscribe<Object>() {
             Calendar calendar;
 
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
+                String info = "Timestamp: "+ model.getTimestamp() + " X: " + model.getX() + " Y: " + model.getY() + " Z: " + model.getZ();
+
                 calendar = Calendar.getInstance();
                 if (!calibarated) {
                     if (!isSleepThresholdCalculated) {
@@ -714,15 +717,16 @@ class CheckAccelImp {
                             sleep_threshold = rolling.getaverage();
                             isSleepThresholdCalculated = true;
                             calibarated = true;
-                            createFileSleep(calendar.getTimeInMillis());
+                            createFileSleep(info);
                         }
                         return;
                     }
                 }
-
-                if (calculateVector(model) + 1000 < sleep_threshold || calculateVector(model) - 1000 > sleep_threshold) {
+                createFileSleep(info);
+                Log.d(TAG,"sleep started");
+                double vector=calculateVector(model);
+                if (vector + 1000 < sleep_threshold || vector - 1000 > sleep_threshold) {
                     sleepInterrupted(model.getTimestamp());
-                    createFileSleep(model.getTimestamp());
                     if (checkTime(model.getTimestamp()) > checkTime(alarmStartTime) && checkTime(model.getTimestamp()) < checkTime(alarmEndsTime)) {
                         startWakeupService();
                         isSleepThresholdCalculated = false;
@@ -757,14 +761,14 @@ class CheckAccelImp {
 
     }
 
-    private void createFileSleep(long timeInMillis) {
-        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "sleepInterrupt.txt");
+    private void createFileSleep(String timeInMillis) {
+        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", Helper.getCurrentDate()+".txt");
         try {
+            FileWriter fWriter;
+            fWriter = new FileWriter(completeFileStructure, true);
             if (completeFileStructure.exists()) {
-                fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.append(String.valueOf(timeInMillis)).append("\n");
             } else {
-                fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.write(String.valueOf(timeInMillis));
             }
             fWriter.flush();

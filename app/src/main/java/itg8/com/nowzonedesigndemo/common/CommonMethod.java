@@ -42,6 +42,7 @@ public class CommonMethod {
     public static final String SLEEP_STARTED = "sleepStarted";
     public static final String STEP_GOAL = "stepGoal";
     public static final String ALARM_AP = "ALARM_AP";
+    public static final String ENABLE_TO_CONNECT_IN_TIME = "ENABLE_TO_CONNECT_IN_TIME";
 
 
     private static Typeface typeface;
@@ -74,6 +75,7 @@ public class CommonMethod {
     public static final String STORAGE_PERM = "storage_perm";
     public static final String STORAGE_PATH = "storage_path";
     public static final String ALARM_END_TIME = "AlarmEndTime";
+    private static List<Double> data;
 
 
     public static Typeface setFontOpenSansSemiBold(Context context) {
@@ -133,8 +135,8 @@ public class CommonMethod {
         return Integer.parseInt(s,16);
     }
 
-    public static List<Map<Integer, Double>> countBPM(List<DataModel> models, double delta){
-        List<Double> data=new ArrayList<>();
+    public static List<Map<Integer, Double>> countBPM(DataModel[] models, double delta){
+        data=new ArrayList<>();
         for (DataModel model :
                 models) {
             data.add(model.getPressure());

@@ -23,4 +23,5 @@ public interface BreathView {
 
     void onRemoveSnackbar();
 
+    void onDeviceDisconnectedInTime();
 }

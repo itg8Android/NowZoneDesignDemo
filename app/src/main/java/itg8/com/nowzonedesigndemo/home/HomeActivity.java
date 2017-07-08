@@ -556,6 +556,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
+    public void onDeviceDisconnectedInTime() {
+        Log.d(TAG, "Device disconnected");
+        Intent intent = new Intent("ACTION_NW_DEVICE_DISCONNECT");
+        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT_IN_TIME,true);
+        sendBroadcast(intent);
+    }
+
+    @Override
     public void onBreathCountAvailable(int intExtra) {
         Log.d(TAG, "Breath count: " + intExtra);
         new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)),30);
@@ -661,5 +669,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
 
+    }
+
+
+    @Override
+    public void onSnackbarOkClicked() {
+        onDeviceDisconnected();
+        SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.CONNECTED);
+        SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.DEVICE_ADDRESS);
+        startActivity(new Intent(getBaseContext(), ScanDeviceActivity.class));
+        finish();
     }
 }

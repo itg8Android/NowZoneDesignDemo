@@ -80,7 +80,7 @@ public class AlarmReceiver extends BroadcastReceiver {
          }else if (intent.hasExtra(CommonMethod.END_ALARM_TIME))
          {
              notificationManager.cancel(ALARM_ID);
-
+            SharePrefrancClass.getInstance(context).clearPref(CommonMethod.SLEEP_STARTED);
 
 
          }

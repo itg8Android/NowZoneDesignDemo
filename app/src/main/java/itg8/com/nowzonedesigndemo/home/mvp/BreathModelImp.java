@@ -35,6 +35,8 @@ import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STEP_COUNT
 public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel {
 
     private static final long TIME_LIMIT_OF_CONNECT = 30000;
+    private final Handler handler;
+    private final Runnable r;
     private BreathPresenter.BreathFragmentModelListener listener;
 
     Dao<TblState,Integer> stateDao=null;
@@ -42,40 +44,21 @@ public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel
     private boolean dbInited;
     private boolean isReceivingStarted=false;
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                if(intent.hasExtra(CommonMethod.ACTION_DATA_AVAILABLE)){
-                    double model = intent.getDoubleExtra(CommonMethod.ACTION_DATA_AVAILABLE,0);
-                    isReceivingStarted=true;
-                    listener.onPressureReceived(model);
-                }
-                if(intent.hasExtra(CommonMethod.BPM_COUNT)){
-                    listener.onCountReceived(intent.getIntExtra(CommonMethod.BPM_COUNT,0));
-                }if(intent.hasExtra(ACTION_STEP_COUNT)){
-                    listener.onStepReceived(intent.getIntExtra(ACTION_STEP_COUNT,0));
-                }if(intent.hasExtra(ACTION_STATE_ARRIVED)){
-                    listener.onStateReceived((BreathState) intent.getSerializableExtra(ACTION_STATE_ARRIVED));
-                }if(intent.hasExtra(CommonMethod.ACTION_GATT_DISCONNECTED)){
-                    listener.startShowingDevicesList();
-                }
-            }
-        }
-    };
 
     BreathModelImp(BreathPresenter.BreathFragmentModelListener listener) {
         this.listener = listener;
-        new Handler().postDelayed(new Runnable() {
+        handler = new Handler();
+        r=new Runnable() {
             @Override
             public void run() {
-                if(!isReceivingStarted){
+                if (!isReceivingStarted) {
                     listener.onDeviceNotConnectedInTime();
-                }else {
+                } else {
                     listener.onDataReceivingStarted();
                 }
             }
-        },TIME_LIMIT_OF_CONNECT);
+        };
+        handler.postDelayed(r, TIME_LIMIT_OF_CONNECT);
     }
 
     @Override
@@ -97,7 +80,17 @@ public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel
                 dbHelper = null;
             }
         }
+        if(handler!=null)
+            handler.removeCallbacks(r);
+        listener=null;
     }
+
+    @Override
+    public void dataStarted(boolean b) {
+        isReceivingStarted=b;
+
+    }
+
 
     @Override
     public void checkBLEConnected(Context context) {
@@ -118,7 +111,7 @@ public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel
         Observable.create((ObservableOnSubscribe<StateTimeModel>) e ->{
             e.onNext(getStateModelClass());
         })
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(stateTimeModel -> listener.onStateTimeReceived(stateTimeModel),
                         Throwable::printStackTrace,
@@ -195,10 +188,7 @@ public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel
 
 
 
-    @Override
-    public BroadcastReceiver getReceiver() {
-        return receiver;
-    }
+
 
 
 

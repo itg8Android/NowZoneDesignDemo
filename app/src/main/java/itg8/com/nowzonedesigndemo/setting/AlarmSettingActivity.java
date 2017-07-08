@@ -57,7 +57,6 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     Button btnAlarmFinished;
     private Animation zoomIn, zoomOut;
     private Thread thread;
-    boolean isThreadRunning = false;
 
 
     @Override
@@ -217,8 +216,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        isThreadRunning = false;
-        thread.interrupt();
+        if(thread!=null)
+            thread.interrupt();
     }
 }
 
