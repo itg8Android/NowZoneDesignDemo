@@ -11,4 +11,6 @@ public interface ScanDeviceModel {
     void onStopScanning(BluetoothLeScanner scanner);
 
     void cancelScanning();
+
+    void onDestroy();
 }

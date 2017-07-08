@@ -33,7 +33,7 @@ public class SharePrefrancClass {
         if (preference != null) {
             editor = preference.edit();
             editor.putString(key, val);
-            editor.apply();
+            editor.commit();
         }
     }
 
@@ -42,7 +42,7 @@ public class SharePrefrancClass {
         if(preference!=null){
             editor=preference.edit();
             editor.putLong(key,val);
-            editor.apply();
+            editor.commit();
         }
     }
 
@@ -56,7 +56,7 @@ public class SharePrefrancClass {
         if (preference != null) {
             editor = preference.edit();
             editor.putBoolean(key, b);
-            editor.apply();
+            editor.commit();
         }
     }
 
@@ -70,7 +70,7 @@ public class SharePrefrancClass {
             try {
                 editor = preference.edit();
                 editor.remove(key);
-                editor.apply();
+                editor.commit();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -100,7 +100,7 @@ public class SharePrefrancClass {
         if(preference!=null) {
             editor = preference.edit();
             editor.putLong(key, value);
-            editor.apply();
+            editor.commit();
         }
     }
 
@@ -137,7 +137,7 @@ public class SharePrefrancClass {
         if(preference!=null) {
             editor = preference.edit();
             editor.putInt(key, value);
-            editor.apply();
+            editor.commit();
         }
     }
 

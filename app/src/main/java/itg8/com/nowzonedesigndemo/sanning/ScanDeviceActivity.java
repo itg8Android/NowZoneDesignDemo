@@ -297,6 +297,11 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     }
 
     @Override
+    public void onSnackbarOkClicked() {
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();

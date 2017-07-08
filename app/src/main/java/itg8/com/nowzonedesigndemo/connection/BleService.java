@@ -76,7 +76,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             String action = intent.getAction();
             if (action.equals(getResources().getString(R.string.action_device_disconnect))) {
                 if (manager != null) {
-                    manager.disconnect();
+                    if(intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT))
+                        manager.disconnect();
                     SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
                     Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
@@ -247,7 +248,6 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onDestroy() {
         super.onDestroy();
-        manager.disconnect();
         unregisterReceiver(receiver);
         manager.disconnect();
         startService(new Intent(this, BleService.class));
@@ -256,8 +256,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
-        manager.disconnect();
-        manager.setBluetoothGatt(device.connectGatt(this, true, callback));
+//        manager.disconnect();
+        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), true, callback));
 
     }
 
@@ -308,15 +308,17 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         if (mLastOneCount <= 0 && mSecondLastCount <= 0) {
             return;
         }
-        int newCalmCheck = avgCount - 2;
-        int newStressCheck = avgCount + 2;
+        int newCalmCheck = avgCount - 4;
+        int newStressCheck = avgCount + 4;
 
         if (mLastOneCount <= newCalmCheck && mSecondLastCount <= newCalmCheck && count <= newCalmCheck) {
             sendBroadcastState(BreathState.CALM,count,timestamp);
         } else if (mLastOneCount >= newStressCheck && mSecondLastCount >= newStressCheck && count >= newStressCheck) {
             sendBroadcastState(BreathState.STRESS, count, timestamp);
-        } else if(mLastOneCount == count && mSecondLastCount == count){
-            sendBroadcastState(BreathState.FOCUSED, count, timestamp);
+        } else{
+            if(mLastOneCount == count && mSecondLastCount == count) {
+                sendBroadcastState(BreathState.FOCUSED, count, timestamp);
+            }
         }
     }
 

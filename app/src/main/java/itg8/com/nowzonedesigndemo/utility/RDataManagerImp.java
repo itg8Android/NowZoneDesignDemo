@@ -49,7 +49,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private static final String TAG = RDataManagerImp.class.getSimpleName();
     private final RDataManagerListener listener;
     private final Observer<DataModel> observer;
-    private List<DataModel> dataStorage;
+    private DataModel[] dataStorage;
     Job dataToFileJob;
     CheckAccelImp accelImp;
     /**
@@ -58,16 +58,22 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     FirebaseJobDispatcher dispatcher;
     private Rolling rolling, rolling2,rolling3;
     private Observable<String> observable;
-    private List<DataModel> dataStorageRaw;
+//    private List<DataModel> dataStorageRaw;
     private DataModel modelTemp;
+    private int indexDataStorage;
+    private DataModel[] tempHolder;
+    private AlgoAsync async;
+//    private List<DataModel> tempHolderRaw=new ArrayList<>();
 
     public RDataManagerImp(RDataManagerListener listener,Context mContext) {
         this.listener = listener;
         rolling = new Rolling(ROLLING_AVG_SIZE);
         rolling2 = new Rolling(ROLLING_AVG_SIZE);
         rolling3 = new Rolling(ROLLING_AVG_SIZE);
-        dataStorage = new ArrayList<>(PACKET_READY_TO_IMP+4);
-        dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
+        dataStorage = new DataModel[PACKET_READY_TO_IMP];
+        tempHolder = new DataModel[PACKET_READY_TO_IMP];
+        indexDataStorage=0;
+//        dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
         accelImp=new CheckAccelImp(this,SharePrefrancClass.getInstance(mContext).getIPreference(CommonMethod.STEP_COUNT));
         observer= new Observer<DataModel>() {
             @Override
@@ -106,7 +112,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
                     if(SharePrefrancClass.getInstance(context).hasSPreference(CommonMethod.SLEEP_STARTED)){
-                        pushToSleep(model,context);
+                        pushToSleep(model,SharePrefrancClass.getInstance(context).getLPref(CommonMethod.START_ALARM_TIME),
+                                SharePrefrancClass.getInstance(context).getLPref(CommonMethod.END_ALARM_TIME));
                         return;
                     }
 
@@ -145,9 +152,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         }
     }
 
-    private void pushToSleep(DataModel model,Context context) {
-            accelImp.onSleepdataAvail(model,SharePrefrancClass.getInstance(context).getLPref(CommonMethod.START_ALARM_TIME),
-                    SharePrefrancClass.getInstance(context).getLPref(CommonMethod.END_ALARM_TIME));
+    private void pushToSleep(DataModel model, long startTime, long endTime) {
+            accelImp.onSleepdataAvail(model, startTime,endTime);
     }
 
     private DataModel copy(DataModel model) {
@@ -182,25 +188,27 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     }
 
     private synchronized void checkIfDataGatheringCompleted(DataModel model, Context context) {
-        dataStorage.add(model);
+        dataStorage[indexDataStorage]=model;
        // Log.d(TAG,"Size of dataStorage "+dataStorage.size());
-        if (dataStorage.size() == PACKET_READY_TO_IMP) {
+        if (indexDataStorage == PACKET_READY_TO_IMP-1) {
             Log.d(TAG,"datas  is greater");
             implementStorageProcess(context, dataStorage);
+            indexDataStorage=0;
+        }else {
+            indexDataStorage++;
         }
     }
 
-    private List<DataModel> tempHolder=new ArrayList<>();
-    private List<DataModel> tempHolderRaw=new ArrayList<>();
 
-    private void implementStorageProcess(Context context, List<DataModel> dataStorage) {
-        tempHolder.clear();
-        tempHolder.addAll(dataStorage);
+
+    private void implementStorageProcess(Context context, DataModel[] dataStorage) {
+        tempHolder=new DataModel[ROLLING_AVG_SIZE];
+        tempHolder=dataStorage.clone();
 
 //        tempHolderRaw.clear();
 //        tempHolderRaw.addAll(this.dataStorageRaw);
 
-        resetDataStorage(this.dataStorage);
+//        resetDataStorage(this.dataStorage);
 //        resetDataStorage(this.dataStorageRaw);
 
         //We will do that after SAAS TODO SAAS
@@ -241,9 +249,9 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         return new String[0];
     }
 
-    private void passForCalculation(List<DataModel> dataStorage) {
+    private void passForCalculation(DataModel[] dataStorage) {
         Log.d(TAG,"came for calculation");
-        AlgoAsync async = new AlgoAsync(this);
+        async = new AlgoAsync(this);
         async.execute(dataStorage);
     }
 

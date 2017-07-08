@@ -8,7 +8,6 @@ import android.content.Context;
  */
 
 public interface BreathFragmentModel {
-    BroadcastReceiver getReceiver();
     void checkBLEConnected(Context context);
 
     void onInitStateTime();
@@ -16,4 +15,6 @@ public interface BreathFragmentModel {
     void initDB(Context context);
 
     void onDestroy();
+
+    void dataStarted(boolean b);
 }
