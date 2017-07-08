@@ -86,10 +86,8 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
         snackbar.setAction("OK", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.CONNECTED);
-                SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.DEVICE_ADDRESS);
-                startActivity(new Intent(getBaseContext(), ScanDeviceActivity.class));
-                finish();
+                onSnackbarOkClicked();
+
             }
         });
         snackbar.show();
@@ -100,6 +98,8 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
             snackbar.dismiss();
         }
     }
+
+    public abstract void onSnackbarOkClicked();
 
 //    public String getClassName(){
 //        return T.getSimpleName();

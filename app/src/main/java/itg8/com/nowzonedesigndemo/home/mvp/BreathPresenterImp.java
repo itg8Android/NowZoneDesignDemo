@@ -1,12 +1,18 @@
 package itg8.com.nowzonedesigndemo.home.mvp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import java.util.Random;
 
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
+
+import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STATE_ARRIVED;
+import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STEP_COUNT;
 
 
 public class BreathPresenterImp implements BreathPresenter, BreathPresenter.BreathFragmentModelListener {
@@ -19,6 +25,29 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
 //    private Handler mHandler;
     private double graph2LastXValue = 5d;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                if(view==null)
+                    return;
+                if(intent.hasExtra(CommonMethod.ACTION_DATA_AVAILABLE)){
+                    double model = intent.getDoubleExtra(CommonMethod.ACTION_DATA_AVAILABLE,0);
+                    BreathPresenterImp.this.model.dataStarted(true);
+                    onPressureReceived(model);
+                }
+                if(intent.hasExtra(CommonMethod.BPM_COUNT)){
+                    onCountReceived(intent.getIntExtra(CommonMethod.BPM_COUNT,0));
+                }if(intent.hasExtra(ACTION_STEP_COUNT)){
+                    onStepReceived(intent.getIntExtra(ACTION_STEP_COUNT,0));
+                }if(intent.hasExtra(ACTION_STATE_ARRIVED)){
+                    onStateReceived((BreathState) intent.getSerializableExtra(ACTION_STATE_ARRIVED));
+                }if(intent.hasExtra(CommonMethod.ACTION_GATT_DISCONNECTED)){
+                    startShowingDevicesList();
+                }
+            }
+        }
+    };
 
     public BreathPresenterImp(BreathView view) {
         this.view = view;
@@ -29,7 +58,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     @Override
     public void onDeviceNotConnectedInTime() {
         if(checkNotNull()){
-            view.onDeviceDisconnected();
+            view.onDeviceDisconnectedInTime();
         }
     }
 
@@ -58,11 +87,10 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
             view.onStateTimeHistoryReceived(stateTimeModel);
     }
 
+
     @Override
     public void onCreate() {
-        if(model.getReceiver()!=null && context!=null){
-            context.registerReceiver(model.getReceiver(),new IntentFilter(context.getResources().getString(R.string.action_data_avail)));
-        }
+            context.registerReceiver(receiver,new IntentFilter(context.getResources().getString(R.string.action_data_avail)));
         model.onInitStateTime();
 //        mTimer2 = new Runnable() {
 //            @Override
@@ -98,9 +126,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
 
     @Override
     public void onDetach() {
-        if(model.getReceiver()!=null && context!=null){
-            context.unregisterReceiver(model.getReceiver());
-        }
+            context.unregisterReceiver(receiver);
         model.onDestroy();
         context=null;
         view=null;

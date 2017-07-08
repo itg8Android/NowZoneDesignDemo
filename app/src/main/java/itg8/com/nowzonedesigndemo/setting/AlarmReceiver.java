@@ -49,7 +49,7 @@ public class AlarmReceiver extends BroadcastReceiver {
              remoteView.setTextViewText(R.id.txt_app_name,"NowZone");
              remoteView.setTextViewText(R.id.txt_times,time +" "+ amPm);
              remoteView.setTextViewText(R.id.txt_hours_diff,"Hours");
-              remoteView.setInt(R.id.relative,"setBackgroundResource",R.drawable.sun);
+//              remoteView.setInt(R.id.relative,"setBackgroundResource",R.drawable.sun);
              Calendar c = Calendar.getInstance();
              long seconds = c.getTimeInMillis();
 
@@ -76,7 +76,8 @@ public class AlarmReceiver extends BroadcastReceiver {
          }else if (intent.hasExtra(CommonMethod.END_ALARM_TIME))
          {
              notificationManager.cancel(ALARM_ID);
-              SharePrefrancClass.getInstance(context).clearPref(CommonMethod.SLEEP_STARTED);
+            SharePrefrancClass.getInstance(context).clearPref(CommonMethod.SLEEP_STARTED);
+
          }
 
     }

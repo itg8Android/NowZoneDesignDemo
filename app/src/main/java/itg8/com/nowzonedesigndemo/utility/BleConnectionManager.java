@@ -51,9 +51,12 @@ public class BleConnectionManager implements ConnectionManager {
                 listener.onDeviceConnected(address);
                 listener.currentState(DeviceState.CONNECTED);
                 Log.d(TAG, "Connected to GATT Server");
-                Log.i(TAG, "Attempting to start service discovery:" + newState);
+                Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
                 if (discoverServices()) {
                     listener.currentState(DeviceState.DISCOVERING);
+                }else
+                {
+                    Log.d(TAG,"Fail to descover service: Error "+status );
                 }
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 listener.currentState(DeviceState.DISCONNECTED);
@@ -66,12 +69,12 @@ public class BleConnectionManager implements ConnectionManager {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.w(TAG, "onServicesDiscovered");
                 listener.currentState(DeviceState.DISCOVERED);
-                if (configureServices()) {
+                if (configureServices(gatt)) {
                     Log.d(TAG, "write successful");
                 }
             } else {
                 failWithReason(DeviceState.DISCOVER_FAIL, status);
-                Log.w(TAG, "onServicesDiscovered received: " + status);
+                Log.w(TAG, "onServicesDiscovered fail received: " + status);
             }
         }
 
@@ -110,6 +113,7 @@ public class BleConnectionManager implements ConnectionManager {
         }
     };
     private Queue<BluetoothGattCharacteristic> characteristicReadQueue = new LinkedList<BluetoothGattCharacteristic>();
+    private int retryDescover=1;
 
     public BleConnectionManager(ConnectionStateListener listener) {
         if (listener == null) {
@@ -182,6 +186,7 @@ public class BleConnectionManager implements ConnectionManager {
         if(mBluetoothGatt!=null){
             mBluetoothGatt.disconnect();
             mBluetoothGatt.close();
+            mBluetoothGatt=null;
         }
     }
 
@@ -213,8 +218,10 @@ public class BleConnectionManager implements ConnectionManager {
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+//            mBluetoothGatt.disconnect();
+//            mBluetoothGatt.close();
             if (mBluetoothGatt.connect()) {
+                Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
                 return true;
             } else {
                 return false;
@@ -241,12 +248,20 @@ public class BleConnectionManager implements ConnectionManager {
      *
      * @return true if discovers all the services offered by the DAQ and
      * configuration is successful
+     * @param gatt
      */
-    public boolean configureServices() {
+    public boolean configureServices(BluetoothGatt gatt) {
         List<BluetoothGattService> gattServices = getSupportedGattServices();
         if (gattServices.isEmpty()) {
+            Log.d(TAG,"service empty");
+            if(retryDescover<4){
+                discoverServices();
+                retryDescover++;
+            }
             return false;
         }
+
+        retryDescover=1;
         // We have a list of services
         // Iterate through the list of services
         for (BluetoothGattService gattService : gattServices) {
@@ -256,20 +271,20 @@ public class BleConnectionManager implements ConnectionManager {
             List<BluetoothGattCharacteristic> gattCharacteristics =
                     gattService.getCharacteristics();
             // Loops through available Characteristics.
-            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
+            //   Log.d(TAG, "Service " + gattService.getUuid().toString() + " , Characteristics " + gattCharacteristic.getUuid().toString());
+// One more characteristic UUID to check
+// Characteristic found requires notification
+// Characteristic Supports Notify
+// Enable Notification on this characteristic
+            gattCharacteristics.stream().filter(gattCharacteristic -> DATA_ENABLE.toString().contentEquals(gattCharacteristic.getUuid().toString())).forEach(gattCharacteristic -> {
+                // Characteristic found requires notification
+                int charaProp = gattCharacteristic.getProperties();
+                if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+                    // Characteristic Supports Notify
 
-             //   Log.d(TAG, "Service " + gattService.getUuid().toString() + " , Characteristics " + gattCharacteristic.getUuid().toString());
-                // One more characteristic UUID to check
-                if (DATA_ENABLE.toString().contentEquals(gattCharacteristic.getUuid().toString())) {
-                    // Characteristic found requires notification
-                    int charaProp = gattCharacteristic.getProperties();
-                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                        // Characteristic Supports Notify
-
-                        setCharacteristicNotification(gattCharacteristic, true); // Enable Notification on this characteristic
-                    }
+                    setCharacteristicNotification(gattCharacteristic, true); // Enable Notification on this characteristic
                 }
-            }
+            });
         }
         return true;
     }
@@ -282,7 +297,10 @@ public class BleConnectionManager implements ConnectionManager {
      * @return A {@code List} of supported services.
      */
     public List<BluetoothGattService> getSupportedGattServices() {
-        if (mBluetoothGatt == null) return null;
+        if (mBluetoothGatt == null) {
+            Log.d(TAG,"BluetoothGatt is null");
+            return null;
+        }
 
         return mBluetoothGatt.getServices();
     }

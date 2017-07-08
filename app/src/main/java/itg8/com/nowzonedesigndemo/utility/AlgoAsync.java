@@ -10,7 +10,7 @@ import itg8.com.nowzonedesigndemo.common.DataModel;
 
 
 
-class AlgoAsync extends AsyncTask<List<DataModel>,Void,Integer> {
+class AlgoAsync extends AsyncTask<DataModel[],Void,Integer> {
 
 
     private static final double DELTA = 2.0;
@@ -25,23 +25,22 @@ class AlgoAsync extends AsyncTask<List<DataModel>,Void,Integer> {
 
     @SafeVarargs
     @Override
-    protected final Integer doInBackground(List<DataModel>... lists) {
+    protected final Integer doInBackground(DataModel[]... lists) {
         List<Map<Integer, Double>> data = CommonMethod.countBPM(lists[0], DELTA);
      //   Log.d(TAG,"size : "+data.size());
         if(data.size()>0) {
             int count= Math.max(data.get(0).size(),data.get(1).size());
-            List<DataModel> listModel = lists[0];
-            if (listModel.size() > 0) {
-                long timeTaken = listModel.get(listModel.size() - 1).getTimestamp() - listModel.get(0).getTimestamp();
-                if (timeTaken > 1000) {
-                    bpmInMinute = (int) ((ONE_MINUTE * count) / timeTaken);
+            DataModel[] listModel = lists[0];
+            if (listModel.length > 0) {
+//                long timeTaken = listModel.get(listModel.size() - 1).getTimestamp() - listModel.get(0).getTimestamp();
+//                if (timeTaken > 1000) {
+//                    bpmInMinute = (int) ((ONE_MINUTE * count) / timeTaken);
 //                    callback.onCountResultAvailable(bpmInMinute, listModel.get(listModel.size() - 1).getTimestamp());
                     /**
                      * as we cakculated that a count in one minute is 2000. so we will directly send count
                      */
-                    callback.onCountResultAvailable(count, listModel.get(listModel.size() - 1).getTimestamp());
+                    callback.onCountResultAvailable(count, listModel[listModel.length-1].getTimestamp());
 //                    callback.onCountResultAvailable(count, listModel.get(listModel.size() - 1).getTimestamp());
-                }
             }
         }
         return null;

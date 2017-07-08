@@ -30,21 +30,24 @@ public class ScanDeviceModelImp implements ScanDeviceModel {
         public void onScanResult(final int callbackType, final ScanResult result) {
 //                super.onScanResult(callbackType, result);
             Log.d(TAG, "Scan result got " + result);
-            listener.onScanResult(callbackType, result);
+            if(listener!=null)
+                listener.onScanResult(callbackType, result);
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
 //                super.onBatchScanResults(results);
             Log.d(TAG, "BatchScanResult got " + results);
-            listener.onBatchScanResults(results);
+            if(listener!=null)
+                listener.onBatchScanResults(results);
         }
 
         @Override
         public void onScanFailed(int errorCode) {
 //                super.onScanFailed(errorCode);
             Log.d(TAG, "Scan failed  " + errorCode);
-            listener.onScanFailed(errorCode);
+            if(listener!=null)
+                listener.onScanFailed(errorCode);
         }
     };
 
@@ -62,7 +65,8 @@ public class ScanDeviceModelImp implements ScanDeviceModel {
     private void initStartScanningText() {
         if(scanningCompleted){
             splashTime=7000;
-            listener.showButton();
+            if(listener!=null)
+                listener.showButton();
             return;
         }
         listener.showLoading();
@@ -106,7 +110,13 @@ public class ScanDeviceModelImp implements ScanDeviceModel {
         initStartScanningText();
     }
 
+    @Override
+    public void onDestroy() {
+        listener=null;
+    }
+
     private void setText(final CharSequence text) {
+        if(listener!=null)
                 listener.setLoadingText(text);
     }
 
