@@ -1,13 +1,17 @@
 package itg8.com.nowzonedesigndemo.audio;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
+import android.text.style.RelativeSizeSpan;
 
 
 import itg8.com.nowzonedesigndemo.R;
@@ -21,6 +25,7 @@ public class ViewPagerMeditationAdapter extends FragmentPagerAdapter {
 
 
     private Context mContext;
+    private int position;
 
     public ViewPagerMeditationAdapter(FragmentManager fm, Context mContext) {
         super(fm);
@@ -46,12 +51,28 @@ public class ViewPagerMeditationAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        SpannableStringBuilder sb = new SpannableStringBuilder(" page "+(position+1) ); // space added before text for convenience
-        Drawable drawable = mContext.getResources().getDrawable( R.drawable.ic_play_arrow_black_24dp );
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        ImageSpan span = new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
-        sb.setSpan(span, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableStringBuilder sb = new SpannableStringBuilder(" "+position+1 ); // space added before text for convenience
+        Drawable drawables;
+        if(this.position == position) {
+           drawables = mContext.getResources().getDrawable(R.drawable.ic_av_timer_black_24dp);
+        }else
+        {
+            drawables = mContext.getResources().getDrawable( R.drawable.ic_play_arrow_black_24dp );
+
+        }
+        drawables.setBounds(4, 0, drawables.getIntrinsicWidth(), drawables.getIntrinsicHeight());
+        ImageSpan span = new ImageSpan(drawables, 0);
+       sb.setSpan(new ForegroundColorSpan(Color.WHITE),0,sb.length(), 0);
+        sb.setSpan(new RelativeSizeSpan(1.5f),0, sb.length(), 0);
+        sb.setSpan(span, sb.length()-1, sb.length(), 0);
         return sb ;
     }
+
+
+    public void setSelectedItem(int selectedPosition) {
+        position = selectedPosition;
+    }
+
+
 
 }
