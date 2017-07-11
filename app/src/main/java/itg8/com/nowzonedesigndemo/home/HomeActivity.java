@@ -85,7 +85,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public static final double CONST_2 = 8.02d;
     private static final double PI_MIN = -8.02d;
     private static final double PI_MAX = 8.02d;
-    private static final double MIN_PRESSURE=800;
+    private static final double MIN_PRESSURE=1100;
     private static final double MAX_PRESSURE=8100;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
@@ -185,7 +185,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final double smoothing=50;
     Rolling rolling;
     private double dLast;
-    private float a=0.8f;
+    private float a=0.96f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -532,16 +532,33 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
 
 
-//        double d=a*pressure+((1-a)*dLast);
-        double d=pressure;
-        rolling.add(pressure);
-        d=rolling.getaverage();
-//        dLast=d;
+        double d=a*pressure+((1-a)*dLast);
+//        double d=pressure;
+//        rolling.add(pressure);
+//        d=rolling.getaverage();
+        dLast=d;
        // Log.d(TAG,"ds:"+d);
 //        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
 
+        update(pressure);
+        Log.d(TAG, String.valueOf(var()));
+
         return  (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
+
+
+    long n = 0;
+    double mu = 0.0;
+    double sq = 0.0;
+
+    void update(double x) {
+        ++n;
+        double muNew = mu + (x - mu)/n;
+        sq += (x - mu) * (x - muNew);
+        mu = muNew;
+    }
+    double mean() { return mu; }
+    double var() { return n > 1 ? sq/n : 0.0; }
 
     @Override
     public void onDeviceConnected() {

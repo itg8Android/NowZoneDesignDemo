@@ -138,7 +138,7 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
     private void writeInFile(String content, String newFileName) {
 //        File completeFileStructure = new File(newFileName);
         Log.d(TAG,"FileName:"+newFileName);
-        File completeFileStructure = new File(COMPLETE_FILE_PATH,newFileName);
+        File completeFileStructure = new File(COMPLETE_FILE_PATH,Helper.getCurrentDate()+".txt");
         try {
             FileWriter fWriter;
             if(completeFileStructure.exists()) {

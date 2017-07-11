@@ -42,7 +42,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     /**
      * this will check if packet receiving is completed.
      */
-    private static final int PACKET_READY_TO_IMP = 2000;
+    private static final int PACKET_READY_TO_IMP = 1200;
     private static final String REMINDER_JOB_TAG = RDataManagerImp.class.getCanonicalName();
     private static final int REMINDER_INTERVAL_SECONDS = 1000;
     private static final int SYNC_FLEXTIME_SECONDS = 3000;
@@ -58,12 +58,12 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     FirebaseJobDispatcher dispatcher;
     private Rolling rolling, rolling2,rolling3;
     private Observable<String> observable;
-//    private List<DataModel> dataStorageRaw;
+    private List<DataModel> dataStorageRaw;
     private DataModel modelTemp;
     private int indexDataStorage;
     private DataModel[] tempHolder;
     private AlgoAsync async;
-//    private List<DataModel> tempHolderRaw=new ArrayList<>();
+    private List<DataModel> tempHolderRaw=new ArrayList<>();
 
     public RDataManagerImp(RDataManagerListener listener,Context mContext) {
         this.listener = listener;
@@ -73,7 +73,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         dataStorage = new DataModel[PACKET_READY_TO_IMP];
         tempHolder = new DataModel[PACKET_READY_TO_IMP];
         indexDataStorage=0;
-//        dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
+        dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
         accelImp=new CheckAccelImp(this,SharePrefrancClass.getInstance(mContext).getIPreference(CommonMethod.STEP_COUNT));
         observer= new Observer<DataModel>() {
             @Override
@@ -118,7 +118,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
                     }
 
                     processForStepCounting(model);
-                 //   dataStorageRaw.add(copy(model));
+                    dataStorageRaw.add(copy(model));
                     processModelData(model, context);
                 }
             }).subscribeOn(Schedulers.computation())
@@ -205,14 +205,14 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         tempHolder=new DataModel[ROLLING_AVG_SIZE];
         tempHolder=dataStorage.clone();
 
-//        tempHolderRaw.clear();
-//        tempHolderRaw.addAll(this.dataStorageRaw);
+        tempHolderRaw.clear();
+        tempHolderRaw.addAll(this.dataStorageRaw);
 
 //        resetDataStorage(this.dataStorage);
 //        resetDataStorage(this.dataStorageRaw);
 
         //We will do that after SAAS TODO SAAS
-//        passForFIleStorage(tempHolderRaw, context);
+        passForFIleStorage(tempHolderRaw, context);
 
         passForCalculation(tempHolder);
     }
@@ -225,8 +225,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
          * v2: we are again starting it for storing data into local storage visible to user. After implementation of this data we will
          * change STORAGE PATH ONLY
          */
-//        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH));
-//        async.execute(this.tempHolderRaw);
+        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH));
+        async.execute(this.tempHolderRaw);
 
 //        Bundle bundle=new Bundle();
 //        bundle.putString(CommonMethod.FINISHED_DATA, new Gson().toJson(dataStorage));

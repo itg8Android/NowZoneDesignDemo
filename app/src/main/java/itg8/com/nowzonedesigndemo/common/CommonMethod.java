@@ -76,6 +76,7 @@ public class CommonMethod {
     public static final String STORAGE_PATH = "storage_path";
     public static final String ALARM_END_TIME = "AlarmEndTime";
     private static List<Double> data;
+    private static long currentMillies=0;
 
 
     public static Typeface setFontOpenSansSemiBold(Context context) {
@@ -113,7 +114,12 @@ public class CommonMethod {
                 model.setY(bytesToHex(new byte[]{yHValue,yLValue}));
                 model.setZ(bytesToHex(new byte[]{zHValue,zLValue}));
                 model.setBattery(bytesToHex(new byte[]{valueBattery1,valueBattery2}));
-                model.setTimestamp(Calendar.getInstance(Locale.getDefault()).getTimeInMillis());
+                if(currentMillies<=0)
+                    currentMillies=System.currentTimeMillis();
+                else
+                    currentMillies+=50;
+
+                model.setTimestamp(currentMillies);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
