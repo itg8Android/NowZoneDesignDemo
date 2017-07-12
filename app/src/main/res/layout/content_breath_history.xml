@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,11 +8,110 @@
     tools:context="itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity"
     tools:showIn="@layout/activity_breath_history">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/recyclerview"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:listitem="@layout/item_rv_breath_state" />-->
+
+
+    <!--<noman.weekcalendar.WeekCalendar-->
+        <!--android:id="@+id/weekCalendar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--app:numOfPages="150"-->
+        <!--app:dayNameLength="threeLetters"-->
+        <!--app:todaysDateBgColor="#ffffff"-->
+        <!--app:daysTextSize="12sp"-->
+        <!--app:daysTextColor="@color/colorWhite"-->
+        <!--app:daysBackgroundColor="@android:color/transparent"-->
+        <!--app:weekBackgroundColor="@android:color/transparent" />-->
+
+  <!--<FrameLayout-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="match_parent"-->
+      <!--android:id="@+id/frameLayout"-->
+     <!--/>-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/img_left"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_margin="20dp"-->
+        <!--app:srcCompat="@drawable/ic_left_arrow"/>-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/img_right"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_margin="20dp"-->
+        <!--app:srcCompat="@drawable/ic_right_arrow"/>-->
+
+    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="20dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:id="@+id/lbl_date"-->
+        <!--android:textColor="@color/colorWhite"-->
+        <!--android:textSize="@dimen/lbl_alarm_time"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:text="Date" />-->
+
+    <itg8.com.nowzonedesigndemo.breath.timeline.TimelineChartView
+        xmlns:tlc="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/graph"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_margin="10dp"
+        tlc:tlcGraphBackground="@color/colorOrangeCenter"
+        tlc:tlcFooterBackground="@android:color/transparent"
+        tlc:tlcShowFooter="true"
+        tlc:tlcGraphMode="tlcBarsStack"/>
+
+
+    <com.ismaeltoe.FlowLayout
+        xmlns:f="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/item_series"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        f:horizontalPadding="8dp"
+        f:verticalPadding="8dp"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/graph"
+        android:layout_margin="20dp"
+        android:id="@+id/seekbar_r"/>
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekbar_r"
+        android:layout_margin="20dp"
+
+        android:id="@+id/seekbar_g"/>
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekbar_g"
+        android:layout_margin="20dp"
+        android:id="@+id/seekbar_b"/>
+
+
+
+    <android.support.v4.view.ViewPager
+        android:layout_below="@+id/item_series"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_rv_breath_state"
-        />
+        android:id="@+id/viewPager"/>
 
-</android.support.constraint.ConstraintLayout>
+
+
+
+</RelativeLayout>

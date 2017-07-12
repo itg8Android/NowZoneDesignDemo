@@ -46,6 +46,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:percent:25.3.0'
+
     compile 'com.android.support:percent:25.3.0'
     compile 'me.alexrs:wave-drawable:1.0.0'
     compile 'com.android.support:appcompat-v7:25.3.0'
@@ -66,6 +67,9 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'com.firebase:firebase-jobdispatcher:0.5.2'
     compile 'com.jakewharton.timber:timber:4.5.1'
+
+    compile 'com.github.ismaeltoe:flowlayout:1.0'
+
     testCompile 'junit:junit:4.12'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

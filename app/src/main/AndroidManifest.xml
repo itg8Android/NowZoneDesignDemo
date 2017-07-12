@@ -93,15 +93,19 @@
         <receiver
             android:name=".setting.AlarmReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="ACTION_ALARM_NOTIFICATION" />
             </intent-filter>
-            </receiver>
+        </receiver>
 
         <activity
             android:name=".setting.notification.AlarmNotification"
             android:label="@string/title_activity_alarm_notification"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".home.StepMovingActivity"
+            android:label="@string/title_activity_step_moving"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

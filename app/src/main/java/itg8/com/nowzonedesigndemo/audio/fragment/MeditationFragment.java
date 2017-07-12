@@ -3,6 +3,8 @@ package itg8.com.nowzonedesigndemo.audio.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
@@ -18,7 +20,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
-import itg8.com.nowzonedesigndemo.widget.maditation.SpinKitView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,30 +31,30 @@ public class MeditationFragment extends Fragment implements View.OnClickListener
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    @BindView(R.id.lbl_meditation)
-    CustomFontTextView lblMeditation;
-    @BindView(R.id.lbl_meditation_count)
-    CustomFontTextView lblMeditationCount;
+//    @BindView(R.id.lbl_meditation)
+//    CustomFontTextView lblMeditation;
+//    @BindView(R.id.lbl_meditation_count)
+//    CustomFontTextView lblMeditationCount;
 //    @BindView(R.id.SpinView)
 //    SpinKitView SpinView;
     @BindView(R.id.img_play)
     ImageView imgPlay;
-    @BindView(R.id.img_pause)
-    ImageView imgPause;
-    @BindView(R.id.img_complete)
-    ImageView imgComplete;
-    @BindView(R.id.frameLayout)
-    FrameLayout frameLayout;
+//    @BindView(R.id.img_pause)
+//    ImageView imgPause;
+//    @BindView(R.id.img_complete)
+//    ImageView imgComplete;
+//    @BindView(R.id.frameLayout)
+//    FrameLayout frameLayout;
     @BindView(R.id.txt_time)
     CustomFontTextView txtTime;
-    @BindView(R.id.img_time)
-    ImageView imgTime;
-    @BindView(R.id.img_)
-    ImageView img;
-    @BindView(R.id.img_reply)
-    ImageView imgReply;
-    @BindView(R.id.img_like)
-    ImageView imgLike;
+//    @BindView(R.id.img_time)
+//    ImageView imgTime;
+//    @BindView(R.id.img_)
+//    ImageView img;
+//    @BindView(R.id.img_reply)
+//    ImageView imgReply;
+//    @BindView(R.id.img_like)
+//    ImageView imgLike;
     Unbinder unbinder;
 
     // TODO: Rename and change types of parameters
@@ -62,6 +63,7 @@ public class MeditationFragment extends Fragment implements View.OnClickListener
     private MeditationFragment meditationFragment;
     private Animation animFadeOut;
     private Animation animFadeIn;
+    private MeditationSingleFragment meditationSingleFragment;
 
 
     public MeditationFragment() {
@@ -111,8 +113,21 @@ public class MeditationFragment extends Fragment implements View.OnClickListener
     private void setInit() {
         setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
         imgPlay.setOnClickListener(this);
-        imgPause.setOnClickListener(this);
-        imgComplete.setOnClickListener(this);
+
+        Transition changeTransform = TransitionInflater.from(getActivity()).
+                inflateTransition(R.transition.meditation_imge_transition);
+        Transition explodeTransform = TransitionInflater.from(getActivity()).
+                inflateTransition(android.R.transition.explode);
+        // this Fragment
+        meditationFragment = new MeditationFragment();
+        meditationFragment.setSharedElementReturnTransition(changeTransform);
+        meditationFragment.setExitTransition(explodeTransform);
+        // nextFragment
+        meditationSingleFragment = new MeditationSingleFragment();
+
+        meditationSingleFragment.setSharedElementEnterTransition(changeTransform);
+        meditationSingleFragment.setEnterTransition(explodeTransform);
+
     }
 
     @Override
@@ -125,21 +140,14 @@ public class MeditationFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
          switch (v.getId())
          {
-             case R.id.img_pause:
-                 imgPlay.setVisibility(View.VISIBLE);
-                 imgPause.setVisibility(View.GONE);
-                 final Animation myAnims = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_down);
-                 imgPlay.startAnimation(myAnims);
-                 break;
              case R.id.img_play:
-                 imgPlay.setVisibility(View.GONE);
-                 imgPause.setVisibility(View.VISIBLE);
-                 final Animation myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_up);
-                 imgPause.startAnimation(myAnim);
-                 break;
-             case R.id.img_reply:
-                 break;
-             case R.id.img_complete:
+                 ViewCompat.setTransitionName(v.findViewById(R.id.img_play), "1");
+                 FragmentTransaction ft = getFragmentManager().beginTransaction()
+                         .replace(R.id.frameLayout, meditationSingleFragment)
+                         .addToBackStack(getClass().getSimpleName())
+                         .addSharedElement(v.findViewById(R.id.img_play), "1");
+                 // Apply the transaction
+                 ft.commit();
                  break;
          }
 

@@ -8,6 +8,8 @@
     <dimen name="txt_breath_value">20sp</dimen>
     <dimen name="txt_sleep_value">20sp</dimen>
     <dimen name="text_sleep_normal">13sp</dimen>
+    <dimen name="lbl_breath_value">19dp</dimen>
+
 
 
     <dimen name="txt_value">12sp</dimen>

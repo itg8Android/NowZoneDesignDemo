@@ -1,15 +1,12 @@
 package itg8.com.nowzonedesigndemo.audio.fragment;
 
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,32 +113,15 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
 
     private void setInit() {
 
-        btnStart.setOnClickListener(this);
-//        imgPlay.setOnClickListener(this);
-//        imgPause.setOnClickListener(this);
         setupViewpager();
 
-
+        btnStart.setOnClickListener(this);
         animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
                 R.anim.fade_in);
         animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
                 R.anim.fade_out);
 
-        Transition changeTransform = TransitionInflater.from(getActivity()).
-                inflateTransition(R.transition.meditation_imge_transition);
-        Transition explodeTransform = TransitionInflater.from(getActivity()).
-                inflateTransition(R.transition.meditation_imge_single);
-        //android.R.transition.explode
 
-        // Setup exit transition on first fragment
-        meditationAllFragment = new MeditationAllFragment();
-
-        meditationAllFragment.setSharedElementReturnTransition(changeTransform);
-        meditationAllFragment.setExitTransition(explodeTransform);
-        meditationFragment = new MeditationFragment();
-
-        meditationFragment.setSharedElementEnterTransition(changeTransform);
-        meditationFragment.setEnterTransition(explodeTransform);
     }
 
     private void setupViewpager() {
@@ -171,18 +151,17 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
                         .replace(R.id.frameLayout, meditationFragment)
                         .addToBackStack("transaction")
                         .addSharedElement(v.findViewById(R.id.img_play), "1");
-                // Apply the transaction
                 ft.commit();
                 break;
-            case R.id.img_pause:
-                ViewCompat.setTransitionName(v.findViewById(R.id.img_pause), "2");
-                FragmentTransaction fts = getFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, meditationFragment)
-                        .addToBackStack("transaction")
-                        .addSharedElement(v.findViewById(R.id.img_pause), "2");
-                // Apply the transaction
-                fts.commit();
-                break;
+//            case R.id.img_pause:
+//                ViewCompat.setTransitionName(v.findViewById(R.id.img_pause), "2");
+//                FragmentTransaction fts = getFragmentManager().beginTransaction()
+//                        .replace(R.id.frameLayout, meditationFragment)
+//                        .addToBackStack("transaction")
+//                        .addSharedElement(v.findViewById(R.id.img_pause), "2");
+//                // Apply the transaction
+//                fts.commit();
+            //break;
 
 
             default:

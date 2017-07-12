@@ -9,6 +9,7 @@
     <dimen name="txt_sleep_value">2sp</dimen>
     <dimen name="text_sleep_normal">19sp</dimen>
     <dimen name="fabSize">56dp</dimen>
+    <dimen name="lbl_breath_value">22dp</dimen>
 
 
     <dimen name="txt_value">14sp</dimen>

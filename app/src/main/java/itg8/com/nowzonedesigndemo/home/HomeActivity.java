@@ -295,7 +295,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void setType() {
-//        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.SQUARE);
+//        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
 //        waveLoadingView.setAmplitudeRatio(20);
 //        waveLoadingView.setProgressValue(50);
     }
@@ -347,6 +347,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 break;
             case R.id.action_device:
+                //startActivity(new Intent(getApplicationContext(),AudioActivity.class));
+                break;
+            case R.id.action_meditation:
                 startActivity(new Intent(getApplicationContext(),AudioActivity.class));
                 break;
             case R.id.action_alram:
@@ -356,12 +359,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(getApplicationContext(), StepGoalActivity.class));
                 break;
             case R.id.action_about:
+                startActivity(new Intent(getApplicationContext(),StepMovingActivity.class));
                 break;
           case R.id.action_logout:
                 onDeviceDisconnected();
                 break;
-
-
         }
 
         return super.onOptionsItemSelected(item);

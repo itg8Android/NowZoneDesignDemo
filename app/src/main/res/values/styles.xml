@@ -11,6 +11,7 @@
         <item name="actionMenuTextColor">@color/colorWhite</item>
         <item name="android:textColorSecondary">@color/colorWhite</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
@@ -19,7 +20,9 @@
         <item name="android:editTextStyle">@style/App_EditTextStyle</item>
         <item name="android:actionMenuTextColor">@color/colorBlack</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="home_textView">
@@ -51,7 +54,7 @@
         <item name="colorSwitchThumbNormal">@color/colorOrange</item>
 
         <!-- inactive track color (30% transparency) -->
-        <item name= "trackTint">@color/colorWhite</item>
+        <item name="trackTint">@color/colorWhite</item>
         <!--<item name="android:colorForeground">@color/colorWhite</item>-->
     </style>
 
@@ -59,6 +62,7 @@
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">@dimen/txt_edit_text_size</item>
     </style>
+
     <style name="BorderlessButton" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight">@color/color_red</item>
     </style>

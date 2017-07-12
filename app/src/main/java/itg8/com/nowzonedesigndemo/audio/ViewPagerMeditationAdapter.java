@@ -6,9 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
@@ -44,7 +43,7 @@ public class ViewPagerMeditationAdapter extends FragmentPagerAdapter {
 //        Bundle args = new Bundle();
 //        args.putInt("page_position", position + 1);
 //
-//        fragment.setArguments(args);
+//     fragment.setArguments(args);
 
         return fragment;
     }
@@ -54,17 +53,18 @@ public class ViewPagerMeditationAdapter extends FragmentPagerAdapter {
         SpannableStringBuilder sb = new SpannableStringBuilder(" "+position+1 ); // space added before text for convenience
         Drawable drawables;
         if(this.position == position) {
-           drawables = mContext.getResources().getDrawable(R.drawable.ic_av_timer_black_24dp);
+           drawables = mContext.getResources().getDrawable(R.drawable.ic_play_dp);
         }else
         {
             drawables = mContext.getResources().getDrawable( R.drawable.ic_play_arrow_black_24dp );
 
         }
         drawables.setBounds(4, 0, drawables.getIntrinsicWidth(), drawables.getIntrinsicHeight());
-        ImageSpan span = new ImageSpan(drawables, 0);
+        ImageSpan span = new ImageSpan(drawables);
        sb.setSpan(new ForegroundColorSpan(Color.WHITE),0,sb.length(), 0);
-        sb.setSpan(new RelativeSizeSpan(1.5f),0, sb.length(), 0);
+        sb.setSpan(new RelativeSizeSpan(2f),0, sb.length(), 0);
         sb.setSpan(span, sb.length()-1, sb.length(), 0);
+
         return sb ;
     }
 
