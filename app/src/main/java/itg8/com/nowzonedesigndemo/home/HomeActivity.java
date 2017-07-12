@@ -27,8 +27,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,8 +58,8 @@ import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.utility.Rolling;
+import itg8.com.nowzonedesigndemo.widget.CircleWave;
 import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
-import itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -85,8 +83,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public static final double CONST_2 = 8.02d;
     private static final double PI_MIN = -8.02d;
     private static final double PI_MAX = 8.02d;
-    private static final double MIN_PRESSURE=1100;
-    private static final double MAX_PRESSURE=8100;
+    private static final double MIN_PRESSURE = 1100;
+    private static final double MAX_PRESSURE = 8100;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -151,10 +149,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     FloatingActionButton fab;
     @BindView(R.id.nav_view)
     NavigationView navView;
-//    @BindView(R.id.waveLoadingView)
+    //    @BindView(R.id.waveLoadingView)
 //    WaveLoadingView waveLoadingView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
     @BindView(R.id.breathview)
     BreathwaveView breathview;
     @BindView(R.id.txt_focus)
@@ -173,19 +169,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     RelativeLayout rlMainTop;
     @BindView(R.id.ll_breath_avg)
     LinearLayout llBreathAvg;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
 
     private ActionBarDrawerToggle toggle;
-    private double lastMax=10;
-    private int count=1;
-    private double lastMin=-10;
-    private int lastCount=1;
-    private long lastUpdate=0;
-    private double smoothed=0;
-    private static final double smoothing=50;
+    private double lastMax = 10;
+    private int count = 1;
+    private double lastMin = -10;
+    private int lastCount = 1;
+    private long lastUpdate = 0;
+    private double smoothed = 0;
+    private static final double smoothing = 50;
     Rolling rolling;
     private double dLast;
-    private float a=0.96f;
+    private float a = 0.96f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,14 +198,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         ButterKnife.bind(this);
         Timber.tag(TAG);
 
-        rolling=new Rolling(8);
-        if(!getIntent().hasExtra(CommonMethod.FROMWEEk)) {
-            startService(new Intent(this,BleService.class));
+        rolling = new Rolling(8);
+        if (!getIntent().hasExtra(CommonMethod.FROMWEEk)) {
+            startService(new Intent(this, BleService.class));
 
-         //   checkDeviceConnection(rlWave);
+            //   checkDeviceConnection(rlWave);
         }
-
-
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -241,7 +237,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
 //        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
-        SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.GOAL,6000);
+        SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.GOAL, 6000);
 
     }
 
@@ -338,8 +334,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public boolean onOptionsItemSelected(MenuItem item) {
 
         //noinspection SimplifiableIfStatement
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 startActivity(new Intent(getApplicationContext(), AlarmSettingActivity.class));
                 break;
@@ -347,7 +342,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 break;
             case R.id.action_device:
-                startActivity(new Intent(getApplicationContext(),AudioActivity.class));
+                startActivity(new Intent(getApplicationContext(), AudioActivity.class));
                 break;
             case R.id.action_alram:
                 startActivity(new Intent(getApplicationContext(), AlarmActivity.class));
@@ -357,7 +352,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.action_about:
                 break;
-          case R.id.action_logout:
+            case R.id.action_logout:
                 onDeviceDisconnected();
                 break;
 
@@ -432,7 +427,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
 //                firstPreference(pressure);
-                e.onNext(calculateProportion(pressure));
+//                e.onNext(calculateProportion(pressure));
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -448,8 +443,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
 //            secondPref(pressure);
 //            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
-                            breathview.addSample(SystemClock.elapsedRealtime(),aDouble);
-                        }else {
+                            breathview.addSample(SystemClock.elapsedRealtime(), aDouble);
+                        } else {
                             count++;
                         }
                     }
@@ -468,30 +463,30 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 //        breathview.addSample(SystemClock.elapsedRealtime(), calculateProportion(pressure));
 
-    double smoothedValue( double pressure ){
+    double smoothedValue(double pressure) {
 //        long now = Calendar.getInstance().getTimeInMillis();
 //        long elapsedTime = now - lastUpdate;
-        smoothed += 33 * (( pressure - smoothed ) / smoothing);
+        smoothed += 33 * ((pressure - smoothed) / smoothing);
 //        lastUpdate = now;
         return smoothed;
     }
 
-    private void secondPref(double pressure){
+    private void secondPref(double pressure) {
         rolling.add(pressure);
-        lastMax=((int)rolling.getaverage()+500)+1;
-        lastMin=(int)rolling.getaverage()-500;
+        lastMax = ((int) rolling.getaverage() + 500) + 1;
+        lastMin = (int) rolling.getaverage() - 500;
     }
 
     private void firstPreference(double pressure) {
 //        if(lastMax<pressure || lastMax-2000>pressure) {
-        if(lastMax<pressure) {
+        if (lastMax < pressure) {
             lastMax = pressure;
-        }else {
-            lastMax=lastMax-1;
+        } else {
+            lastMax = lastMax - 1;
         }
-        if(count>30) {
-            if(lastMin == 0)
-                lastMin=pressure;
+        if (count > 30) {
+            if (lastMin == 0)
+                lastMin = pressure;
 
 
 //            if(lastMin-pressure>lastMax-1000)
@@ -510,15 +505,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            }
 //            else
 //                lastMax=lastMin+2000;
-            if(lastMin>pressure)
-                lastMin=pressure;
+            if (lastMin > pressure)
+                lastMin = pressure;
             else
-                lastMin=lastMin+1;
+                lastMin = lastMin + 1;
 //
 ////            if (lastMin > pressure || lastMin == 0){
 ////                lastMin = pressure;
 ////        }
-        }else {
+        } else {
             count++;
         }
 
@@ -531,19 +526,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        s(i)=a*y(i)+(1-a)*s(i-1)
 
 
-
-        double d=a*pressure+((1-a)*dLast);
+        double d = a * pressure + ((1 - a) * dLast);
 //        double d=pressure;
 //        rolling.add(pressure);
 //        d=rolling.getaverage();
-        dLast=d;
-       // Log.d(TAG,"ds:"+d);
+        dLast = d;
+        // Log.d(TAG,"ds:"+d);
 //        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
 
         update(pressure);
         Log.d(TAG, String.valueOf(var()));
 
-        return  (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
+        return (PI_MIN + ((PI_MAX - PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
 
 
@@ -553,12 +547,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     void update(double x) {
         ++n;
-        double muNew = mu + (x - mu)/n;
+        double muNew = mu + (x - mu) / n;
         sq += (x - mu) * (x - muNew);
         mu = muNew;
     }
-    double mean() { return mu; }
-    double var() { return n > 1 ? sq/n : 0.0; }
+
+    double mean() {
+        return mu;
+    }
+
+    double var() {
+        return n > 1 ? sq / n : 0.0;
+    }
 
     @Override
     public void onDeviceConnected() {
@@ -569,7 +569,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onDeviceDisconnected() {
         Log.d(TAG, "Device disconnected");
         Intent intent = new Intent("ACTION_NW_DEVICE_DISCONNECT");
-        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT,true);
+        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT, true);
         sendBroadcast(intent);
     }
 
@@ -577,14 +577,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onDeviceDisconnectedInTime() {
         Log.d(TAG, "Device disconnected");
         Intent intent = new Intent("ACTION_NW_DEVICE_DISCONNECT");
-        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT_IN_TIME,true);
+        intent.putExtra(CommonMethod.ENABLE_TO_CONNECT_IN_TIME, true);
         sendBroadcast(intent);
     }
 
     @Override
     public void onBreathCountAvailable(int intExtra) {
         Log.d(TAG, "Breath count: " + intExtra);
-        new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)),30);
+        new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)), 30);
     }
 
     @Override
@@ -606,7 +606,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        finish();
         checkDeviceConnection(rlWave);
     }
-
 
 
     @Override
@@ -633,29 +632,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void setStateRelatedDetails(BreathState state) {
         switch (state) {
             case CALM:
-                        reactCalmState();
+                reactCalmState();
                 break;
             case FOCUSED:
-                        reactFocusedState();
+                reactFocusedState();
                 break;
             case STRESS:
-                        reactStressState();
+                reactStressState();
                 break;
         }
     }
 
     private void reactStressState() {
-      setState(BreathState.STRESS.name(),Color.parseColor(COLOR_STRESS_M),Color.parseColor(COLOR_STRESS_S));
+        setState(BreathState.STRESS.name(), Color.parseColor(COLOR_STRESS_M), Color.parseColor(COLOR_STRESS_S));
     }
 
     private void setState(String name, int m, int s) {
         txtStatusValue.postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 txtStatusValue.setText(name);
             }
-        },60);
+        }, 60);
 //        waveLoadingView.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -671,11 +669,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void reactFocusedState() {
-               setState(BreathState.FOCUSED.name(),Color.parseColor(COLOR_FOCUSED_M),Color.parseColor(COLOR_FOCUSED_S));
+        setState(BreathState.FOCUSED.name(), Color.parseColor(COLOR_FOCUSED_M), Color.parseColor(COLOR_FOCUSED_S));
     }
 
     private void reactCalmState() {
-        setState(BreathState.CALM.name(),Color.parseColor(COLOR_CALM_M),Color.parseColor(COLOR_CALM_S));
+        setState(BreathState.CALM.name(), Color.parseColor(COLOR_CALM_M), Color.parseColor(COLOR_CALM_S));
     }
 
 

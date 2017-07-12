@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,7 +64,8 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
     @SafeVarargs
     @Override
     protected final Boolean doInBackground(List<DataModel>... lists) {
-        List<DataModel> dataModels = lists[0];
+        List<DataModel> dataModels = new ArrayList<>();
+        dataModels.addAll(lists[0]);
         storeToFile(dataModels);
         return true;
     }
