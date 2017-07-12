@@ -124,9 +124,11 @@ class CheckAccelImp {
 
     private DecimalFormat formatter = new DecimalFormat("#0.00");
     String log;
-
+    StringBuilder sb;
     private Observable<Integer> checkMovement(DataModel model) {
-        Log.d(TAG, "RawXYZ:" + "X: " + model.getX() + " Y: " + model.getY() + " Z: " + model.getZ());
+        sb=new StringBuilder();
+        sb.append("RawXYZ: X: ").append(model.getX()).append(" Y: ").append(model.getY()).append(" Z: ").append(model.getZ());
+        Log.d(TAG, sb.toString());
         return Observable.create(e -> {
 
             double xG = (model.getX()>32768)?model.getX():model.getX()-65536;
@@ -136,15 +138,15 @@ class CheckAccelImp {
             yG = (yG * G) / 1000;
             zG = (zG * G) / 1000;
             roll = Math.sqrt((xG * xG) + (yG * yG) + (zG * zG));
-            Log.d("gdata:","X:"+xG+" Y:"+yG+" Z:"+zG);
-              Log.d("Rollng avg:",String.valueOf(roll));
+//            Log.d("gdata:","X:"+xG+" Y:"+yG+" Z:"+zG);
+//              Log.d("Rollng avg:",String.valueOf(roll));
 
 //            log="X:"+formatter.format( (model.getX() * 0.224)/1000)+ " Y:"+formatter.format((model.getY() * 0.224)/1000)+" Z:"+formatter.format((model.getZ() * 0.224)/1000);
-            log="X:"+formatter.format( (model.getX() * 0.224)/1000)+ " Y:"+formatter.format((model.getY() * 0.224)/1000)+" Z:"+formatter.format((model.getZ() * 0.224)/1000);
+//            log="X:"+formatter.format( (model.getX() * 0.224)/1000)+ " Y:"+formatter.format((model.getY() * 0.224)/1000)+" Z:"+formatter.format((model.getZ() * 0.224)/1000);
 //              Log.d("gdata:",String.valueOf(log));
             Observable.create((ObservableOnSubscribe<String>) e1 -> {
-                createFile(String.valueOf(roll));
-            }).subscribeOn(Schedulers.io())
+                //createFile(String.valueOf(roll));
+            }).subscribeOn(Schedulers.computation())
                     .subscribe(new Observer<String>() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -235,7 +237,7 @@ class CheckAccelImp {
 //    }
 
     void onModelAvail(DataModel model) {
-        checkMovement(model).subscribeOn(Schedulers.io())
+        checkMovement(model).subscribeOn(Schedulers.computation())
 //                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
@@ -653,7 +655,7 @@ class CheckAccelImp {
     private int checkForSteps(double v) {
 
         //public void onSensorChanged(int sensor, float[] values) {
-        Log.d(TAG, "Steps " + v);
+        Log.d(TAG, String.valueOf(v));
         synchronized (this) {
 
             int j = 1;

@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+
 import java.util.Random;
 
 import itg8.com.nowzonedesigndemo.R;
@@ -90,7 +92,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
 
     @Override
     public void onCreate() {
-            context.registerReceiver(receiver,new IntentFilter(context.getResources().getString(R.string.action_data_avail)));
+            LocalBroadcastManager.getInstance(context).registerReceiver(receiver,new IntentFilter(context.getResources().getString(R.string.action_data_avail)));
         model.onInitStateTime();
 //        mTimer2 = new Runnable() {
 //            @Override
@@ -126,7 +128,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
 
     @Override
     public void onDetach() {
-            context.unregisterReceiver(receiver);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
         model.onDestroy();
         context=null;
         view=null;

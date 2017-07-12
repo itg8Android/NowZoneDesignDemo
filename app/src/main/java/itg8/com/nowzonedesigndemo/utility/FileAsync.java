@@ -16,7 +16,7 @@ import itg8.com.nowzonedesigndemo.common.DataModel;
 import timber.log.Timber;
 
 
-public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
+public class FileAsync extends AsyncTask<DataModel[], Void, Boolean> {
 
     public static final Object[] DATA_LOCK = new Object[0];
     private static final int ACTUAL_NUMBER_OF_COUNT_IN_FILE = 30;
@@ -61,11 +61,9 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
         return result;
     }
 
-    @SafeVarargs
     @Override
-    protected final Boolean doInBackground(List<DataModel>... lists) {
-        List<DataModel> dataModels = new ArrayList<>();
-        dataModels.addAll(lists[0]);
+    protected final Boolean doInBackground(DataModel[]... lists) {
+        DataModel[] dataModels =lists[0].clone();
         storeToFile(dataModels);
         return true;
     }
@@ -75,7 +73,7 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
      *
      * @param models
      */
-    private synchronized void storeToFile(List<DataModel> models) {
+    private synchronized void storeToFile(DataModel[] models) {
         /**
          * We are first storing json in file. But now we will create simple text file
          * TODO uncomment after SAAS
@@ -89,18 +87,19 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
 //            writeContentToFile(content, allFileListByDt[allFileListByDt.length - 1]);
             writeInFile(content, allFileListByDt[allFileListByDt.length - 1]);
         } else {
-            createFile(content, getIntFromTSMP(models.get(0).getTimestamp()) + ".txt", "0");
+            createFile(content, getIntFromTSMP(models[0].getTimestamp()) + ".txt", "0");
         }
 
     }
 
-    private String createDataStructureFromModel(List<DataModel> models) {
-        String data = "";
+    private String createDataStructureFromModel(DataModel[] models) {
+        StringBuilder sb=new StringBuilder();
         for (DataModel model :
                 models) {
-            data = data + model.getTimestamp() + " " + model.getPressure() + " " + model.getX() + " " + model.getY() + " " + model.getZ() + " " + model.getBattery() + " " + model.getTemprature() + "\n";
+            sb.append(model.getTimestamp()).append(" ").append(model.getPressure()).append(" ").append(model.getX()).append(" ").append(model.getY()).append(" ").append(model.getZ()).append(" ").append(model.getBattery()).append(" ").append(model.getTemprature());
+            sb.append("\n");
         }
-        return data;
+        return sb.toString();
     }
 
     //Timestamp is in full format. we dont want that much big . so eliminate millisecond

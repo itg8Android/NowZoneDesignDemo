@@ -58,12 +58,12 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     FirebaseJobDispatcher dispatcher;
     private Rolling rolling, rolling2,rolling3;
     private Observable<String> observable;
-    private List<DataModel> dataStorageRaw;
+    private DataModel[] dataStorageRaw;
     private DataModel modelTemp;
     private int indexDataStorage;
     private DataModel[] tempHolder;
     private AlgoAsync async;
-    private List<DataModel> tempHolderRaw=new ArrayList<>();
+    private DataModel[] tempHolderRaw;
 
     public RDataManagerImp(RDataManagerListener listener,Context mContext) {
         this.listener = listener;
@@ -73,7 +73,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         dataStorage = new DataModel[PACKET_READY_TO_IMP];
         tempHolder = new DataModel[PACKET_READY_TO_IMP];
         indexDataStorage=0;
-        dataStorageRaw=new ArrayList<>(PACKET_READY_TO_IMP+4);
+        dataStorageRaw=new DataModel[PACKET_READY_TO_IMP];
+        tempHolderRaw=new DataModel[PACKET_READY_TO_IMP];
         accelImp=new CheckAccelImp(this,SharePrefrancClass.getInstance(mContext).getIPreference(CommonMethod.STEP_COUNT));
         observer= new Observer<DataModel>() {
             @Override
@@ -118,7 +119,6 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
                     }
 
                     processForStepCounting(model);
-                    dataStorageRaw.add(copy(model));
                     processModelData(model, context);
                 }
             }).subscribeOn(Schedulers.computation())
@@ -176,19 +176,21 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     DataModel dataModel;
 
     private void processModelData(DataModel model, Context context) {
+        dataModel=model;
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
         listener.onDataProcessed(model);
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
-        checkIfDataGatheringCompleted(model, context);
+        checkIfDataGatheringCompleted(model, context,dataModel);
 //        rolling3.add(rolling2.getaverage());
 //        dataModel=new DataModel();
 //        dataModel.setPressure(rolling3.getaverage());
     }
 
-    private synchronized void checkIfDataGatheringCompleted(DataModel model, Context context) {
+    private synchronized void checkIfDataGatheringCompleted(DataModel model, Context context, DataModel rawData) {
         dataStorage[indexDataStorage]=model;
+        dataStorageRaw[indexDataStorage]=rawData;
        // Log.d(TAG,"Size of dataStorage "+dataStorage.size());
         if (indexDataStorage == PACKET_READY_TO_IMP-1) {
             Log.d(TAG,"datas  is greater");
@@ -205,8 +207,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         tempHolder=new DataModel[ROLLING_AVG_SIZE];
         tempHolder=dataStorage.clone();
 
-        tempHolderRaw.clear();
-        tempHolderRaw.addAll(this.dataStorageRaw);
+        tempHolderRaw=new DataModel[ROLLING_AVG_SIZE];
+        tempHolderRaw=this.dataStorageRaw.clone();
 
 //        resetDataStorage(this.dataStorage);
 //        resetDataStorage(this.dataStorageRaw);
@@ -217,7 +219,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         passForCalculation(tempHolder);
     }
 
-    private void passForFIleStorage(List<DataModel> dataStorage, Context context) {
+    private void passForFIleStorage(DataModel[] dataStorage, Context context) {
       //  dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
 
         /**

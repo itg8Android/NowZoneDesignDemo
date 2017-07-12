@@ -20,6 +20,7 @@ public class Helper {
     public static SimpleDateFormat dateFormat = new SimpleDateFormat(CommonMethod.DATE_FORMAT, Locale.getDefault());
     public static SimpleDateFormat dateFormatWithTime = new SimpleDateFormat(CommonMethod.DATE_FORMAT_WITH_TIME, Locale.getDefault());
     static NumberFormat formatter = new DecimalFormat("#0.00");
+    private static Calendar calendar;
 
 //    static double distance;
 
@@ -49,7 +50,7 @@ public class Helper {
     }
 
     public static String getDateTimeFromMillies(long timestampEnd) {
-        Calendar calendar = Calendar.getInstance();
+        calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestampEnd);
         String date = "";
         try {

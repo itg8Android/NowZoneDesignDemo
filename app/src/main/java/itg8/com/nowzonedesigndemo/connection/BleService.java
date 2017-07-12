@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -68,7 +69,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private Dao<TblState, Integer> stateDao = null;
     private Dao<TblStepCount, Integer> stepDao = null;
     private BleConnectionManager manager;
-
+    private Calendar calendar;
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -81,7 +82,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                     SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
                     Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
-                    sendBroadcast(i);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
                 }
             }
         }
@@ -103,12 +104,12 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         super.onCreate();
         Log.d(TAG, "BLE Service started");
         dataManager = new RDataManagerImp(this,getApplicationContext());
-        registerReceiver(receiver, new IntentFilter(getResources().getString(R.string.action_device_disconnect)));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, new IntentFilter(getResources().getString(R.string.action_device_disconnect)));
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        calendar=Calendar.getInstance();
         profileModel=((AppApplication)getApplication()).getProfileModel();
         if(intent!=null && intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
             if(manager!=null){
@@ -173,7 +174,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private void sendBroadcast(String action) {
         Log.d(TAG, "SendBroadcast");
         Intent intent = new Intent(action);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     /**
@@ -189,7 +190,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         else if (data instanceof Integer) {
             intent.putExtra(key, (int) data);
         }
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     @Override
@@ -248,7 +249,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         manager.disconnect();
         startService(new Intent(this, BleService.class));
         Log.d(TAG, "On destroy  called");
@@ -325,7 +326,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private void sendBroadcastState(BreathState state, int count, long timestamp) {
         Intent intent = new Intent(getResources().getString(R.string.action_data_avail));
         intent.putExtra(ACTION_STATE_ARRIVED, state);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         saveStateToDb(state,count,timestamp);
     }
 
@@ -388,8 +389,9 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         if(profileModel==null){
             profileModel=((AppApplication)getApplication()).getProfileModel();
         }
-        Observable.create((ObservableOnSubscribe<Long>) e->{
-            List<TblStepCount> countList=stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE,Calendar.getInstance().getTime()).query();
+        Observable.create((ObservableOnSubscribe<Void>) e->{
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            List<TblStepCount> countList=stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE,calendar.getTime()).query();
             TblStepCount count;
             boolean fi=false;
             if(countList.size()>0) {
@@ -397,8 +399,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                 fi=true;
             }else
                 count=new TblStepCount();
-
-            count.setDate(Calendar.getInstance().getTime());
+            count.setDate(calendar.getTime());
             count.setSteps(step);
             count.setCalBurn(Helper.calculateCalBurnByStepCount(step,profileModel));
             count.setGoal(SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.GOAL));
@@ -408,14 +409,14 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                 stepDao.update(count);
 
         }).subscribeOn(Schedulers.io())
-        .subscribe(new Observer<Long>() {
+        .subscribe(new Observer<Void>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(Long aLong) {
+            public void onNext(Void aLong) {
 
             }
 
