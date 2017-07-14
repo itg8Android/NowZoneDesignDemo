@@ -2142,20 +2142,22 @@ public class TimelineChartView extends View {
                 seriesBgPaint[i].setColor(currentPalette[i]);
                 highlightSeriesBgPaint[i] = new Paint(seriesBgPaint[i]);
                 highlightSeriesBgPaint[i].setColor(
-                        MaterialPaletteHelper.getComplementaryColor(currentPalette[i]));
+                        MaterialPaletteHelper.getContrastColor(currentPalette[i]));
             }
         }
 
         // Generate bar items palette based on background color
         int needed = mSeries - userPaletteCount;
-        int[] palette = MaterialPaletteHelper.createMaterialSpectrumPalette(color, needed);
+
+
+        int[] palette = MaterialPaletteHelper.createMaterialSpectrumPalette(color,needed);
         for (int i = userPaletteCount; i < mSeries; i++) {
             seriesBgPaint[i] = new Paint();
             currentPalette[i] = palette[i - userPaletteCount];
             seriesBgPaint[i].setColor(currentPalette[i]);
             highlightSeriesBgPaint[i] = new Paint(seriesBgPaint[i]);
             highlightSeriesBgPaint[i].setColor(
-                    MaterialPaletteHelper.getComplementaryColor(currentPalette[i]));
+                    MaterialPaletteHelper.getContrastColor(currentPalette[i]));
         }
 
         final boolean changed = !(Arrays.equals(currentPalette, mCurrentPalette));
@@ -2388,7 +2390,7 @@ public class TimelineChartView extends View {
         int[] palette1 = MaterialPaletteHelper.createMaterialSpectrumPalette(
                 mGraphAreaBgPaint.getColor(), 2);
         int[] palette2 = MaterialPaletteHelper.createMaterialSpectrumPalette(
-                MaterialPaletteHelper.getComplementaryColor(mGraphAreaBgPaint.getColor()), 2);
+                MaterialPaletteHelper.getContrastColor(mGraphAreaBgPaint.getColor()), 2);
 
         mSeriesBgPaint = new Paint[2];
         mSeriesBgPaint[0] = new Paint();

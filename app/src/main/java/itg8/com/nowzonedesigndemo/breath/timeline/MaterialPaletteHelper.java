@@ -35,6 +35,10 @@ public class MaterialPaletteHelper {
             final float[] opacity = isDarkColor
                     ? new float[]{.75f, .50f, .25f, .10f, .85f, .75f, .50f, .25f}
                     : new float[]{.85f, .75f, .50f, .25f, .75f, .50f, .25f, .10f};
+
+//            final float[] opacity = isDarkColor
+//                    ? new float[]{.50f, .25f, .10f, .5f, .65f, .75f, .50f, .25f}
+//                    : new float[]{.75f, .65f, .50f, .25f, .75f, .50f, .25f, .10f};
             for (int i = 0; i < count; i++) {
                 final int op = i % opacity.length;
                 int mask = (isDarkColor && op < 4) || (!isDarkColor && op >= 4)
@@ -53,6 +57,10 @@ public class MaterialPaletteHelper {
         double base = 0.299 * Color.red(color)
                 + 0.587 * Color.green(color)
                 + 0.114 * Color.blue(color);
+
+// double base = 0.100 * Color.red(color)
+//                + 0.200 * Color.green(color)
+//                + 0.100 * Color.blue(color);
         return (1 - base / 255) > 0.5;
     }
 
@@ -74,11 +82,14 @@ public class MaterialPaletteHelper {
         float[] hsv = new float[3];
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
         if (hsv[2] < 0.5) {
-            hsv[2] = 0.7f;
+          //  hsv[2] = 0.7f;
+            hsv[2] = 0.6f;
         } else {
-            hsv[2] = 0.3f;
+            hsv[2] = 0.6f;
+          //  hsv[2] = 0.3f;
         }
-        hsv[1] = hsv[1] * 0.2f;
+         hsv[1] = hsv[1] * 1f;
+      //  hsv[1] = hsv[1] * 0.2f;
         return Color.HSVToColor(hsv);
     }
 
@@ -86,6 +97,7 @@ public class MaterialPaletteHelper {
         float[] hsv = new float[3];
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
         hsv[0] = (hsv[0] + 180) % 360;
+//        hsv[0] = (hsv[0]+800) % 360;
         return Color.HSVToColor(hsv);
     }
 }

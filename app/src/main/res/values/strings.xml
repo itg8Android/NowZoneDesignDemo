@@ -68,6 +68,7 @@
     <string name="title_activity_step_moving">Step Moving</string>
     <string name="item_timestamp">Timestamp:&#160;&#160;</string>
     <string name="item_name"><xliff:g id="name">%1$s</xliff:g>:&#160;&#160;</string>
+    <string name="title_activity_breath_history_list">BreathHistoryList</string>
 
 
 </resources>

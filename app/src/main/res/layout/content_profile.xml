@@ -13,32 +13,7 @@
     tools:showIn="@layout/activity_profile">
 
 
-    <RelativeLayout
-        android:id="@+id/rl_profileImg"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/border_photo">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/fab_margin"
-                android:visibility="visible"
-                app:backgroundTint="@color/colorPrimary"
-                app:fabSize="normal"
-                app:rippleColor="@color/colorPrimary"
-                app:srcCompat="@drawable/ic_photo_camera_black_24dp" />
-
-        </FrameLayout>
-
-
-    </RelativeLayout>
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:layout_width="wrap_content"
@@ -72,172 +47,247 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_height"
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll_height"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+    <!---->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:weightSum="2">-->
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/input_name"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:weightSum="3">
+        android:id="@+id/frame_height">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_height"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="@color/colorWhite"
             android:textColor="@color/colorWhite"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1.1">
+            android:visibility="visible">
 
             <EditText
                 android:id="@+id/edt_height"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Height"
+                android:clickable="true"
+                android:focusable="false"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/txt_value_sleep"
                 android:inputType="number"
                 android:lines="1" />
         </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_height_cm"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:weightSum="2"
             android:visibility="gone"
-            android:textColor="@color/colorWhite"
-            android:textColorHint="@color/colorWhite"
-            android:layout_weight="1.1">
+            android:orientation="horizontal"
+            android:id="@+id/ll_height_feet">
 
-            <EditText
-                android:id="@+id/edt_height_cm"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint=" "
-                android:inputType="number"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_height_feet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:visibility="visible"
+                android:layout_weight="1"
                 android:textColor="@color/colorWhite"
-                android:lines="1"
-                android:textSize="@dimen/txt_value_sleep"
-                android:maxLines="1"
-               />
+                android:textColorHint="@color/colorWhite">
 
-        </android.support.design.widget.TextInputLayout>
+                <EditText
+                    android:id="@+id/edt_height_feet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="height feet"
+                    android:inputType="number"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textColor="@color/colorWhite"
+                    android:lines="1"
+                    android:textSize="@dimen/txt_value_sleep"
+                    android:maxLines="1" />
 
-        <RadioGroup
-            android:id="@+id/rbg_main_height"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1.3"
-            android:gravity="center"
-            android:orientation="horizontal">
+            </android.support.design.widget.TextInputLayout>
 
-            <RadioButton
-                android:id="@+id/rgb_height_cm"
-                android:layout_width="wrap_content"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_height_inch"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rbtn_height_select"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Cm"
-                android:textColor="@drawable/rbtn_height_color" />
+                android:layout_marginEnd="8dp"
+                android:visibility="visible"
+                android:layout_weight="1"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite">
 
-            <RadioButton
-                android:id="@+id/rgb_height_feet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rbtn_height_select"
-                android:button="@null"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="feet  "
-                android:textColor="@drawable/rbtn_height_color" />
-        </RadioGroup>
+                <EditText
+                    android:id="@+id/edt_height_inch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="height inch"
+                    android:inputType="number"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textColor="@color/colorWhite"
+                    android:lines="1"
+                    android:textSize="@dimen/txt_value_sleep"
+                    android:maxLines="1" />
 
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+    </FrameLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_weight"
+    <android.support.design.widget.TextInputLayout
+        android:layout_below="@+id/frame_height"
+        android:id="@+id/input_weight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_height"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:orientation="horizontal"
-        android:weightSum="3">
+        android:textColorHint="@color/colorWhite">
 
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_weight"
-            android:layout_width="0dp"
+        <EditText
+            android:id="@+id/edt_weight"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:textColorHint="@color/colorWhite"
+            android:layout_toEndOf="@+id/rbg_main_weight"
+            android:hint="Weight"
+            android:clickable="true"
+            android:inputType="number"
+            android:focusable="false"
+            android:textColor="@color/colorWhite"
+            android:lines="1"
+            android:textSize="@dimen/txt_value_sleep"
+            android:maxLines="1" />
+    </android.support.design.widget.TextInputLayout>
 
-            android:layout_weight="2.2">
+        <!--<RadioGroup-->
+            <!--android:id="@+id/rbg_main_height"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_weight="1.3"-->
+            <!--android:gravity="center"-->
+            <!--android:visibility="gone"-->
+            <!--android:orientation="horizontal">-->
 
-            <EditText
-                android:id="@+id/edt_weight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/rbg_main_weight"
-                android:hint=" "
-                android:inputType="number"
-                android:textColor="@color/colorWhite"
-                android:lines="1"
-                android:textSize="@dimen/txt_value_sleep"
-                android:maxLines="1" />
+            <!--<RadioButton-->
+                <!--android:id="@+id/rgb_height_cm"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/rbtn_height_select"-->
+                <!--android:button="@null"-->
+                <!--android:checked="true"-->
+                <!--android:gravity="center"-->
+                <!--android:padding="10dp"-->
+                <!--android:text="Cm"-->
+                <!--android:textColor="@drawable/rbtn_height_color" />-->
 
-        </android.support.design.widget.TextInputLayout>
+            <!--<RadioButton-->
+                <!--android:id="@+id/rgb_height_feet"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/rbtn_height_select"-->
+                <!--android:button="@null"-->
+                <!--android:gravity="center"-->
+                <!--android:padding="10dp"-->
+                <!--android:text="feet  "-->
+                <!--android:textColor="@drawable/rbtn_height_color" />-->
+        <!--</RadioGroup>-->
 
 
-        <RadioGroup
-            android:id="@+id/rbg_main_weight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+    <!--</LinearLayout>-->
 
-            <RadioButton
-                android:id="@+id/rgb_weight_kg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rbtn_height_select"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="kg"
-                android:textColor="@drawable/rbtn_height_color" />
+    <!--<LinearLayout-->
+        <!--android:id="@+id/layout_weight"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/ll_height"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:weightSum="3">-->
 
-            <RadioButton
-                android:id="@+id/rgb_weight_pounds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rbtn_height_select"
-                android:button="@null"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="pounds"
-                android:textColor="@drawable/rbtn_height_color" />
-        </RadioGroup>
 
-    </LinearLayout>
 
-    <TextView
+
+
+        <!--<RadioGroup-->
+            <!--android:id="@+id/rbg_main_weight"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<RadioButton-->
+                <!--android:id="@+id/rgb_weight_kg"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/rbtn_height_select"-->
+                <!--android:button="@null"-->
+                <!--android:checked="true"-->
+                <!--android:gravity="center"-->
+                <!--android:padding="10dp"-->
+                <!--android:text="kg"-->
+                <!--android:textColor="@drawable/rbtn_height_color" />-->
+
+            <!--<RadioButton-->
+                <!--android:id="@+id/rgb_weight_pounds"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/rbtn_height_select"-->
+                <!--android:button="@null"-->
+                <!--android:gravity="center"-->
+                <!--android:padding="10dp"-->
+                <!--android:text="pounds"-->
+                <!--android:textColor="@drawable/rbtn_height_color" />-->
+        <!--</RadioGroup>-->
+
+    <!--</LinearLayout>-->
+
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible"
+        android:textColor="@color/colorWhite"
+        android:textColorHint="@color/colorWhite"
+        android:layout_below="@+id/input_weight">
+
+        <EditText
+            android:id="@+id/edt_gender"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Gender"
+            android:inputType="text"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textColor="@color/colorWhite"
+            android:lines="1"
+            android:textSize="@dimen/txt_value_sleep"
+            android:maxLines="1" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+
+    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_weight"
+        android:layout_below="@+id/input_gender"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/txt_value"
         android:layout_marginTop="20dp"
@@ -294,7 +344,6 @@
             android:gravity="center"
             android:focusable="false"
             android:focusableInTouchMode="false"
-
             android:textSize="@dimen/txt_value_sleep"
             android:textColor="@color/colorWhite"
             android:lines="1"
@@ -320,12 +369,13 @@
             android:textSize="@dimen/txt_value_sleep"
             android:focusable="false"
             android:focusableInTouchMode="false"
-
             android:lines="1"
             android:maxLines="1"
             android:textColor="@color/colorWhite" />
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>
+
+
 
     <Button
         android:id="@+id/button"
@@ -337,6 +387,13 @@
         android:background="@color/colorPrimary"
         android:text="Save"
         android:textColor="@color/colorWhite" />
+
+    <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/profileFrameLayout">-->
+
+    <!--</FrameLayout>-->
 
 
 </RelativeLayout>

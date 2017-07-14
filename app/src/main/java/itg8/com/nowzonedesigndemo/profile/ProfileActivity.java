@@ -1,25 +1,27 @@
 package itg8.com.nowzonedesigndemo.profile;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -33,60 +35,32 @@ import itg8.com.nowzonedesigndemo.common.ProfileModel;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.Helper;
 
-public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+    // RadioGroup.OnCheckedChangeListener,
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    //    @BindView(R.id.image)
-//    ImageView image;
 
+
+    @BindView(R.id.basic_detail)
+    CustomFontTextView basicDetail;
+    @BindView(R.id.edt_name)
+    EditText edtName;
+    @BindView(R.id.input_name)
+    TextInputLayout inputName;
     @BindView(R.id.edt_height)
     EditText edtHeight;
     @BindView(R.id.input_height)
     TextInputLayout inputHeight;
-    @BindView(R.id.edt_height_cm)
-    EditText edtHeightCm;
-    @BindView(R.id.rgb_height_cm)
-    RadioButton rgbHeightCm;
-    @BindView(R.id.rgb_height_feet)
-    RadioButton rgbHeightFeet;
-    @BindView(R.id.rbg_main_height)
-    RadioGroup rbgMainHeight;
-    //    @BindView(R.id.ll_height)
-//    LinearLayout llHeight;
-//    @BindView(R.id.edt_weight)
-//    EditText edtWeight;
 
-    @BindView(R.id.rbg_main_weight)
-    RadioGroup rbgMainWeight;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-    @BindView(R.id.rl_profileImg)
-    RelativeLayout rlProfileImg;
     @BindView(R.id.edt_weight)
     EditText edtWeight;
-    @BindView(R.id.input_height_cm)
-    TextInputLayout inputHeightCm;
-    @BindView(R.id.rgb_weight_kg)
-    RadioButton rgbWeightKg;
-    @BindView(R.id.rgb_weight_pounds)
-    RadioButton rgbWeightPounds;
-    @BindView(R.id.edt_name)
-    EditText edtName;
-
     @BindView(R.id.input_weight)
     TextInputLayout inputWeight;
-    @BindView(R.id.button)
-    Button button;
-    @BindView(R.id.basic_detail)
-    CustomFontTextView basicDetail;
 
-    @BindView(R.id.input_name)
-    TextInputLayout inputName;
-    @BindView(R.id.ll_height)
-    LinearLayout llHeight;
-    @BindView(R.id.layout_weight)
-    LinearLayout layoutWeight;
+
+    @BindView(R.id.lbl_birth)
+    TextView lblBirth;
     @BindView(R.id.edt_day)
     EditText edtDay;
     @BindView(R.id.input_day)
@@ -101,11 +75,33 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
     TextInputLayout inputYear;
     @BindView(R.id.ll_age)
     LinearLayout llAge;
-    @BindView(R.id.lbl_birth)
-    TextView lblBirth;
+    @BindView(R.id.button)
+    Button button;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.edt_gender)
+    EditText edtGender;
+    @BindView(R.id.input_gender)
+    TextInputLayout inputGender;
+    @BindView(R.id.edt_height_feet)
+    EditText edtHeightFeet;
+    @BindView(R.id.input_height_feet)
+    TextInputLayout inputHeightFeet;
+    @BindView(R.id.edt_height_inch)
+    EditText edtHeightInch;
+    @BindView(R.id.input_height_inch)
+    TextInputLayout inputHeightInch;
+    @BindView(R.id.ll_height_feet)
+    LinearLayout llHeightFeet;
+    @BindView(R.id.frame_height)
+    FrameLayout frameHeight;
+
     private ProfileModel model;
     private float heightInFeet;
     private float weightInKg;
+    private boolean isFromCm;
+    private boolean isFromKG;
+
 
     private static double poundsToKilos(double pounds) {
         return pounds * 0.454;
@@ -117,54 +113,66 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
         setContentView(R.layout.activity_profile);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         ButterKnife.bind(this);
+        init();
+
+        //checkAlreadyFilled();
+
+    }
+
+    private void init() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        rbgMainWeight.setOnCheckedChangeListener(this);
-        rbgMainHeight.setOnCheckedChangeListener(this);
+        model = new ProfileModel();
         button.setOnClickListener(this);
         lblBirth.setOnClickListener(this);
         edtDay.setOnClickListener(this);
         edtMonth.setOnClickListener(this);
         edtYear.setOnClickListener(this);
-        model = new ProfileModel();
+        edtGender.setOnClickListener(this);
+        edtHeight.setOnClickListener(this);
+        edtWeight.setOnClickListener(this);
 
-        // checkAlreadyFilled();
 
-    }
+//        FragmentManager fm = getSupportFragmentManager();
+//        fm.beginTransaction().replace(R.id.profileFrameLayout, new BasicProfileFragment(), getClass().getSimpleName()).addToBackStack(getClass().getSimpleName()).commit();
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-        switch (checkedId) {
-            case R.id.rgb_height_cm:
-                inputHeightCm.setVisibility(View.VISIBLE);
-                inputHeight.setVisibility(View.GONE);
-                edtHeightCm.setHintTextColor(Color.WHITE);
-                edtHeightCm.setHint("Height[cm]");
-                break;
-            case R.id.rgb_height_feet:
-                inputHeightCm.setVisibility(View.VISIBLE);
-                inputHeight.setVisibility(View.VISIBLE);
-                edtHeightCm.setHintTextColor(Color.WHITE);
-                edtHeight.setHintTextColor(Color.WHITE);
-                edtHeightCm.setHint("Height[inch]");
-                edtHeight.setHint("Height[feet]");
-                break;
-            case R.id.fab:
-                break;
-            case R.id.rgb_weight_kg:
-                edtWeight.setHintTextColor(Color.WHITE);
-                edtWeight.setHint("Weight[kg]");
-                break;
-            case R.id.rgb_weight_pounds:
-                edtWeight.setHintTextColor(Color.WHITE);
-                edtWeight.setHint("Weight[pounds]");
-                break;
-        }
 
     }
+
+//    @Override
+//    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+//        switch (checkedId) {
+//            case R.id.rgb_height_cm:
+//                inputHeightCm.setVisibility(View.VISIBLE);
+//                inputHeight.setVisibility(View.GONE);
+//                edtHeightCm.setHintTextColor(Color.WHITE);
+//                edtHeightCm.setHint("Height[cm]");
+//                break;
+//            case R.id.rgb_height_feet:
+//                inputHeightCm.setVisibility(View.VISIBLE);
+//                inputHeight.setVisibility(View.VISIBLE);
+//                edtHeightCm.setHintTextColor(Color.WHITE);
+//                edtHeight.setHintTextColor(Color.WHITE);
+//                edtHeightCm.setHint("Height[inch]");
+//                edtHeight.setHint("Height[feet]");
+//                break;
+//            case R.id.fab:
+//                break;
+//            case R.id.rgb_weight_kg:
+//                edtWeight.setHintTextColor(Color.WHITE);
+//                edtWeight.setHint("Weight[kg]");
+//                break;
+//            case R.id.rgb_weight_pounds:
+//                edtWeight.setHintTextColor(Color.WHITE);
+//                edtWeight.setHint("Weight[pounds]");
+//                break;
+//        }
+//
+//    }
 
     private void openDateTimeDialogue() {
+
         // Get Current Time
         Calendar mcurrentDate = Calendar.getInstance();
         int mYear = mcurrentDate.get(Calendar.YEAR);
@@ -200,20 +208,18 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.button:
                 if (validate()) {
-                    model.setName(edtName.getText().toString());
+                     model.setName(edtName.getText().toString());
                     model.setHeight(calculateHeightInFeet());
                     model.setWeight(calculateWeightInKg());
                     ((AppApplication) getApplication()).setProfileModel(model);
                     onBackPressed();
                 }
                 break;
-
             case R.id.lbl_birth:
-              //  openDateTimeDialogue();
+                //  openDateTimeDialogue();
                 break;
 
             case R.id.edt_day:
@@ -226,13 +232,216 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
                 openDateTimeDialogue();
                 break;
 
+            case R.id.edt_gender:
+                if (TextUtils.isEmpty(edtGender.getText())) {
+                    openBottomSheetDialogueForGender();
+                } else {
+                    edtGender.setText(" ");
+                    openBottomSheetDialogueForGender();
+                }
+                break;
+            case R.id.edt_height:
+                if (TextUtils.isEmpty(edtHeight.getText())) {
+                    openBottomSheetDialogueForHeight();
+                }else
+                {
+                    edtHeight.setText(" ");
+                    edtHeight.setFocusableInTouchMode(false);
+
+                }
+            case R.id.edt_height_feet:
+                if (TextUtils.isEmpty(edtHeightFeet.getText())) {
+                    openBottomSheetDialogueForHeight();
+                }else
+                {
+                    edtHeightFeet.setText(" ");
+                    edtHeightFeet.setFocusableInTouchMode(false);
+                    openBottomSheetDialogueForHeight();
+                }
+
+                break;
+            case R.id.edt_height_inch:
+                if (TextUtils.isEmpty(edtHeightInch.getText())) {
+                    openBottomSheetDialogueForHeight();
+                }else
+                {
+                    edtHeightInch.setText(" ");
+                    edtHeightInch.setFocusableInTouchMode(false);
+                    openBottomSheetDialogueForHeight();
+                }
+                break;
+            case R.id.edt_weight:
+                if(TextUtils.isEmpty(edtWeight.getText()))
+                {
+                    OpenBottomSheetDialogueForWeight();
+                }else
+                {
+                    edtWeight.setText(" ");
+                    edtWeight.setFocusableInTouchMode(false);
+                    openBottomSheetDialogueForHeight();
+                }
+
 
         }
 
 
+    }
+
+    private void OpenBottomSheetDialogueForWeight() {
+
+        View view = getLayoutInflater().inflate(R.layout.item_bottomsheet_weight, null);
+        CustomFontTextView txtKg = (CustomFontTextView) view.findViewById(R.id.lbl_kg);
+        CustomFontTextView txtPounds = (CustomFontTextView) view.findViewById(R.id.lbl_pounds);
+
+        Button btnOk = (Button) view.findViewById(R.id.btn_ok);
+        final Dialog mBottomSheetDialog = new Dialog(ProfileActivity.this,
+                R.style.MaterialDialogSheet);
+        mBottomSheetDialog.setContentView(view);
+        mBottomSheetDialog.setCancelable(true);
+        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mBottomSheetDialog.show();
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBottomSheetDialog.dismiss();
+                setDataFromBottomSheetForWieght();
+
+            }
+        });
+        txtKg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFromKG = true;
+
+            }
+        });
+        txtPounds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFromKG = false;
+            }
+        });
 
 
 
+    }
+
+    private void openBottomSheetDialogueForHeight() {
+
+        View view = getLayoutInflater().inflate(R.layout.item_bottomsheet_height, null);
+        CustomFontTextView txtCm = (CustomFontTextView) view.findViewById(R.id.lbl_cm);
+        CustomFontTextView txtFeet = (CustomFontTextView) view.findViewById(R.id.lbl_feet);
+
+        Button btnOk = (Button) view.findViewById(R.id.btn_ok);
+        final Dialog mBottomSheetDialog = new Dialog(ProfileActivity.this,
+                R.style.MaterialDialogSheet);
+        mBottomSheetDialog.setContentView(view);
+        mBottomSheetDialog.setCancelable(true);
+        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mBottomSheetDialog.show();
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBottomSheetDialog.dismiss();
+                setDataFromBottomSheetForHeight();
+            }
+        });
+        txtCm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String cm = txtCm.getText().toString();
+                isFromCm= true;
+
+            }
+        });
+        txtFeet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String feet = txtFeet.getText().toString();
+                isFromCm=false;
+
+            }
+        });
+
+    }
+
+    private void setDataFromBottomSheetForHeight() {
+        if(isFromCm==true) {
+            edtHeight.setVisibility(View.VISIBLE);
+            llHeightFeet.setVisibility(View.GONE);
+            edtHeight.setFocusable(true);
+            edtHeight.setFocusableInTouchMode(true);
+            edtHeight.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }else
+        {
+            edtHeight.setVisibility(View.GONE);
+            llHeightFeet.setVisibility(View.VISIBLE);
+            llHeightFeet.setFocusableInTouchMode(true);
+            edtHeightInch.setFocusableInTouchMode(true);
+            edtHeightFeet.setFocusableInTouchMode(true);
+            edtHeightInch.setFocusable(true);
+            edtHeightInch.setInputType(InputType.TYPE_CLASS_NUMBER);
+            edtHeightFeet.setFocusable(true);
+            edtHeightFeet.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
+//        isFromCm=!isFromCm;
+    }
+
+    private void setDataFromBottomSheet(String gender) {
+        edtGender.setText(gender);
+        Log.d(getClass().getSimpleName(), "BottomSheet:" + gender);
+
+    }
+
+    private void openBottomSheetDialogueForGender() {
+
+        View view = getLayoutInflater().inflate(R.layout.fragment_basic_profile, null);
+        CustomFontTextView txtFemale = (CustomFontTextView) view.findViewById(R.id.lbl_female);
+        CustomFontTextView txtMale = (CustomFontTextView) view.findViewById(R.id.lbl_male);
+
+        Button btnOk = (Button) view.findViewById(R.id.btn_ok);
+        final Dialog mBottomSheetDialog = new Dialog(ProfileActivity.this,
+                R.style.MaterialDialogSheet);
+        mBottomSheetDialog.setContentView(view);
+        mBottomSheetDialog.setCancelable(true);
+        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mBottomSheetDialog.show();
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBottomSheetDialog.dismiss();
+            }
+        });
+        txtFemale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String fe = txtFemale.getText().toString();
+                setDataFromBottomSheet(fe);
+
+
+            }
+        });
+        txtMale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ma = txtMale.getText().toString();
+                setDataFromBottomSheet(ma);
+
+            }
+        });
+
+
+    }
+
+    private void setDataFromBottomSheetForWieght() {
+        edtWeight.setFocusableInTouchMode(true);
+        edtWeight.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
     @Override
@@ -243,17 +452,17 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
     }
 
     private float calculateWeightInKg() {
-        if (rgbWeightPounds.isChecked())
+        if (isFromKG)
             return (float) poundsToKilos(Double.parseDouble(edtWeight.getText().toString()));
         else
             return Float.parseFloat(edtWeight.getText().toString());
     }
 
     private float calculateHeightInFeet() {
-        if (rgbHeightCm.isChecked())
-            return Helper.centimeterToFeet(edtHeightCm.getText().toString());
+        if (isFromCm)
+            return Helper.centimeterToFeet(edtHeight.getText().toString());
         else
-            return (float) (Float.parseFloat(edtHeight.getText().toString()) + (0.1 * Float.parseFloat(edtHeightCm.getText().toString())));
+            return (float) (Float.parseFloat(edtHeight.getText().toString()) + (0.1 * Float.parseFloat(edtHeight.getText().toString())));
     }
 
     private boolean validate() {
@@ -281,7 +490,6 @@ public class ProfileActivity extends AppCompatActivity implements RadioGroup.OnC
         edtName.requestFocus();
 
     }
-
 
 
 }

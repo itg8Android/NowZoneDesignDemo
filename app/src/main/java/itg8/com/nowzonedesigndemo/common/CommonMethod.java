@@ -43,6 +43,7 @@ public class CommonMethod {
     public static final String STEP_GOAL = "stepGoal";
     public static final String ALARM_AP = "ALARM_AP";
     public static final String ENABLE_TO_CONNECT_IN_TIME = "ENABLE_TO_CONNECT_IN_TIME";
+    public static final String BREATH ="BREATH" ;
 
 
     private static Typeface typeface;

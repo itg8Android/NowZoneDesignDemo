@@ -91,7 +91,8 @@ class BreathHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return list.size();
+       // return list.size();
+        return 10;
     }
 
 

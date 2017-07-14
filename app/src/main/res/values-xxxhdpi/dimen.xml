@@ -9,14 +9,14 @@
     <dimen name="txt_sleep_value">2sp</dimen>
     <dimen name="text_sleep_normal">19sp</dimen>
     <dimen name="fabSize">56dp</dimen>
-    <dimen name="lbl_breath_value">22dp</dimen>
+    <dimen name="lbl_breath_value">20sp</dimen>
 
 
     <dimen name="txt_value">14sp</dimen>
     <dimen name="txt_lbl_dash_top">18sp</dimen>
     <dimen name="txt_home">12sp</dimen>
     <dimen name="txt_value_time">13sp</dimen>
-    <dimen name="txt_value_time_steps">18sp</dimen>
+    <dimen name="txt_value_time_steps">10sp</dimen>
     <dimen name="txt_lbl_dash_bottom">12sp</dimen>
     <dimen name="txt_hr">14sp</dimen>
 
@@ -28,7 +28,7 @@
     -->
     <dimen name="marginAlarm">10sp</dimen>
     <dimen name="paddingAlarm">5sp</dimen>
-    <dimen name="lbl_alarm_time">16sp</dimen>
+    <dimen name="lbl_alarm_time">19sp</dimen>
     <dimen name="lbl_time_front">20sp</dimen>
     <dimen name="lbl_alarm_setting_time">48sp</dimen>
     <dimen name="margin_alarm_left">15sp</dimen>
@@ -36,8 +36,8 @@
     <dimen name="margin_alarm_top">10sp</dimen>
 
     <!-- For Profile Actvity-->
-    <dimen name="marginLeftProfile">10sp</dimen>
-    <dimen name="marginRightProfile">10sp</dimen>
+    <dimen name="marginLeftProfile">20sp</dimen>
+    <dimen name="marginRightProfile">20sp</dimen>
     <dimen name="txt_edit_text_size">14sp</dimen>
     <dimen name="txt_step_goal">20sp</dimen>
 

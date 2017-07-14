@@ -33,7 +33,7 @@
     <item
         android:id="@+id/action_meditation"
         android:orderInCategory="100"
-        android:title="@string/action_step_goal"
+        android:title="@string/action_meditation"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_about"

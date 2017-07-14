@@ -104,6 +104,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         sceneSmartAlarmCollapse.enter();
 
         View expandView = createView(containerMeditation, R.layout.layout_smart_alarm);
+
         CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
         CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
         if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME)!= null)
@@ -130,9 +131,11 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         sceneSmartAlarmCollapse = Scene.getSceneForLayout(container, R.layout.layout_smart_alarm, this);
         sceneSmartAlarmCollapse.enter();
         View expandView = createView(frmContainerSmartAlarm, R.layout.layout_smart_alarm);
+
         CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
         CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
         RelativeLayout relativeLayout = (RelativeLayout) expandView.findViewById(R.id.rl_alarm_smart);
+
         addCardView(relativeLayout);
 
 
