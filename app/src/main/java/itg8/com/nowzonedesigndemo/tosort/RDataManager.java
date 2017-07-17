@@ -11,4 +11,7 @@ import itg8.com.nowzonedesigndemo.common.DataModel;
 
 public interface RDataManager {
     void onRawDataModel(DataModel model, Context applicationContext);
+    void onSleepStarted(boolean b);
+    void onStartAlarmTime(long startAlarm);
+    void onEndAalrmTime(long endAlarm);
 }

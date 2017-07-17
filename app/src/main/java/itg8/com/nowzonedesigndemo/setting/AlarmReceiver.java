@@ -5,7 +5,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -19,8 +22,9 @@ import itg8.com.nowzonedesigndemo.setting.notification.AlarmNotification;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class AlarmReceiver extends BroadcastReceiver {
-
     private static final int ALARM_ID = 1234;
+    private static final String TAG = AlarmReceiver.class.getSimpleName();
+    private static final int PENDING_RQ = 234;
     private int requestCode=123;
     private NotificationManager notificationManager;
     private NotificationCompat.Builder noti;
@@ -29,7 +33,16 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+Intent intent1;
 
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            for (String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                Log.d(TAG, String.format("%s %s (%s)", key,
+                        value.toString(), value.getClass().getName()));
+            }
+        }
         // an Intent broadcast.
          if(intent.hasExtra(CommonMethod.ALARM_FROMTIMEPICKER))
          {
@@ -70,16 +83,24 @@ public class AlarmReceiver extends BroadcastReceiver {
 
              // hide the notification after its selected
              SharePrefrancClass.getInstance(context).savePref(CommonMethod.SLEEP_STARTED,"ss");
-           //  context.sendBroadcast(new Intent()context.getResources().getString(R.string.action_device_sleep_start));
+             intent1 = new Intent(context.getResources().getString(R.string.action_device_sleep_start));
+            intent1.putExtra(CommonMethod.START_ALARM_TIME,startTime);
+            intent1.putExtra(CommonMethod.END_ALARM_TIME,endTime);
+             LocalBroadcastManager.getInstance(context).sendBroadcast(intent1);
              notificationManager.notify(ALARM_ID, noti.build());
 
 
-         }else if (intent.hasExtra(CommonMethod.END_ALARM_TIME))
+         }else if (intent.hasExtra(CommonMethod.ALARM_END))
          {
              notificationManager.cancel(ALARM_ID);
-            SharePrefrancClass.getInstance(context).clearPref(CommonMethod.SLEEP_STARTED);
+             intent1 = new Intent(context.getResources().getString(R.string.action_device_sleep_end));
+             intent1.putExtra(CommonMethod.ALARM_END,System.currentTimeMillis());
+             LocalBroadcastManager.getInstance(context).sendBroadcast(intent1);
+             SharePrefrancClass.getInstance(context).clearPref(CommonMethod.SLEEP_STARTED);
 
          }
+
+
 
     }
 
@@ -87,8 +108,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     private PendingIntent createSelfPendingIntent(Context context) {
         Intent intent = new Intent(context, getClass());
         intent.setAction(CommonMethod.ACTION_ALARM_NOTIFICATION);
-        intent.putExtra(CommonMethod.END_ALARM_TIME,true);
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
+        intent.putExtra(CommonMethod.ALARM_END,"00");
+        return PendingIntent.getBroadcast(context, PENDING_RQ, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private CharSequence calculateHours(long startTime, long endTime) {

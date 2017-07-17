@@ -738,6 +738,7 @@ class CheckAccelImp {
                     }
                 }
             }
+
         }).subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Object>() {
                     @Override
@@ -764,7 +765,7 @@ class CheckAccelImp {
     }
 
     private void createFileSleep(String timeInMillis) {
-        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", Helper.getCurrentDate()+".txt");
+        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", Helper.getCurrentDate()+"_sleep.txt");
         try {
             FileWriter fWriter;
             fWriter = new FileWriter(completeFileStructure, true);

@@ -1,18 +1,11 @@
 package itg8.com.nowzonedesigndemo.utility;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
-import com.google.gson.Gson;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -32,7 +25,7 @@ import itg8.com.nowzonedesigndemo.tosort.RDataManagerListener;
  * This is responsible for calculation uploading and all.
  */
 
-public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyListener {
+public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerifyListener {
 
     /**
      * this veriable use to define rolling average window. W=30
@@ -49,14 +42,16 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private static final String TAG = RDataManagerImp.class.getSimpleName();
     private final RDataManagerListener listener;
     private final Observer<DataModel> observer;
-    private DataModel[] dataStorage;
     Job dataToFileJob;
     CheckAccelImp accelImp;
+    boolean isSleepStarted;
     /**
      * this will be use to send data from service to store in file.
      */
     FirebaseJobDispatcher dispatcher;
-    private Rolling rolling, rolling2,rolling3;
+    DataModel dataModel;
+    private DataModel[] dataStorage;
+    private Rolling rolling, rolling2, rolling3;
     private Observable<String> observable;
     private DataModel[] dataStorageRaw;
     private DataModel modelTemp;
@@ -64,19 +59,23 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     private DataModel[] tempHolder;
     private AlgoAsync async;
     private DataModel[] tempHolderRaw;
+    private long startAlarmTime, endAlarmTime;
 
-    public RDataManagerImp(RDataManagerListener listener,Context mContext) {
+    public RDataManagerImp(RDataManagerListener listener, Context mContext) {
         this.listener = listener;
+        isSleepStarted = false;
+        startAlarmTime = 0;
+        endAlarmTime = 0;
         rolling = new Rolling(ROLLING_AVG_SIZE);
         rolling2 = new Rolling(ROLLING_AVG_SIZE);
         rolling3 = new Rolling(ROLLING_AVG_SIZE);
         dataStorage = new DataModel[PACKET_READY_TO_IMP];
         tempHolder = new DataModel[PACKET_READY_TO_IMP];
-        indexDataStorage=0;
-        dataStorageRaw=new DataModel[PACKET_READY_TO_IMP];
-        tempHolderRaw=new DataModel[PACKET_READY_TO_IMP];
-        accelImp=new CheckAccelImp(this,SharePrefrancClass.getInstance(mContext).getIPreference(CommonMethod.STEP_COUNT));
-        observer= new Observer<DataModel>() {
+        indexDataStorage = 0;
+        dataStorageRaw = new DataModel[PACKET_READY_TO_IMP];
+        tempHolderRaw = new DataModel[PACKET_READY_TO_IMP];
+        accelImp = new CheckAccelImp(this, SharePrefrancClass.getInstance(mContext).getIPreference(CommonMethod.STEP_COUNT));
+        observer = new Observer<DataModel>() {
             @Override
             public void onSubscribe(Disposable d) {
 
@@ -105,18 +104,30 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     }
 
+    public void setSleepStarted(boolean sleepStarted) {
+        isSleepStarted = sleepStarted;
+    }
+
+    public void setStartAlarmTime(long startAlarmTime) {
+        this.startAlarmTime = startAlarmTime;
+    }
+
+    public void setEndAlarmTime(long endAlarmTime) {
+        this.endAlarmTime = endAlarmTime;
+    }
+
     @Override
     public void onRawDataModel(DataModel model, Context context) {
         if (model != null) {
-            Log.d(TAG,"pressure max : "+model.getPressure());
+            Log.d(TAG, "pressure max : " + model.getPressure());
 
             //  Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
-                    if(SharePrefrancClass.getInstance(context).hasSPreference(CommonMethod.SLEEP_STARTED)){
-                        pushToSleep(model,SharePrefrancClass.getInstance(context).getLPref(CommonMethod.START_ALARM_TIME),
-                                SharePrefrancClass.getInstance(context).getLPref(CommonMethod.END_ALARM_TIME));
+                    if (isSleepStarted) {
+                        pushToSleep(model, startAlarmTime,
+                                endAlarmTime);
                         return;
                     }
 
@@ -125,26 +136,26 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
                 }
             }).subscribeOn(Schedulers.computation())
                     .subscribe(new Observer<String>() {
-                @Override
-                public void onSubscribe(Disposable d) {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                }
+                        }
 
-                @Override
-                public void onNext(String s) {
+                        @Override
+                        public void onNext(String s) {
 
-                }
+                        }
 
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                }
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
 
-                @Override
-                public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                }
-            });
+                        }
+                    });
             /**
              * Currently we are working on pressure
              */
@@ -155,12 +166,27 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         }
     }
 
+    @Override
+    public void onSleepStarted(boolean b) {
+        setSleepStarted(b);
+    }
+
+    @Override
+    public void onStartAlarmTime(long startAlarm) {
+        setStartAlarmTime(startAlarm);
+    }
+
+    @Override
+    public void onEndAalrmTime(long endAlarm) {
+        setEndAlarmTime(endAlarm);
+    }
+
     private void pushToSleep(DataModel model, long startTime, long endTime) {
-            accelImp.onSleepdataAvail(model, startTime,endTime);
+        accelImp.onSleepdataAvail(model, startTime, endTime);
     }
 
     private DataModel copy(DataModel model) {
-        modelTemp=new DataModel();
+        modelTemp = new DataModel();
         modelTemp.setTimestamp(model.getTimestamp());
         modelTemp.setBattery(model.getBattery());
         modelTemp.setPressure(model.getPressure());
@@ -172,47 +198,44 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     }
 
     private void processForStepCounting(DataModel model) {
-            //TODO We need to check step and activity in this method
-            accelImp.onModelAvail(model);
+        //TODO We need to check step and activity in this method
+        accelImp.onModelAvail(model);
     }
 
-    DataModel dataModel;
-
     private void processModelData(DataModel model, Context context) {
-        dataModel=model;
+        dataModel = model;
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
         listener.onDataProcessed(model);
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
-        checkIfDataGatheringCompleted(model, context,dataModel);
+        checkIfDataGatheringCompleted(model, context, dataModel);
 //        rolling3.add(rolling2.getaverage());
 //        dataModel=new DataModel();
 //        dataModel.setPressure(rolling3.getaverage());
     }
 
     private synchronized void checkIfDataGatheringCompleted(DataModel model, Context context, DataModel rawData) {
-        dataStorage[indexDataStorage]=model;
-        dataStorageRaw[indexDataStorage]=rawData;
-       // Log.d(TAG,"Size of dataStorage "+dataStorage.size());
+        dataStorage[indexDataStorage] = model;
+        dataStorageRaw[indexDataStorage] = rawData;
+        // Log.d(TAG,"Size of dataStorage "+dataStorage.size());
 
-        if (indexDataStorage == PACKET_READY_TO_IMP-1) {
-            Log.d(TAG,"datas  is greater");
+        if (indexDataStorage == PACKET_READY_TO_IMP - 1) {
+            Log.d(TAG, "datas  is greater");
             implementStorageProcess(context, dataStorage);
-            indexDataStorage=0;
-        }else {
+            indexDataStorage = 0;
+        } else {
             indexDataStorage++;
         }
     }
 
 
-
     private void implementStorageProcess(Context context, DataModel[] dataStorage) {
-        tempHolder=new DataModel[ROLLING_AVG_SIZE];
-        tempHolder=dataStorage.clone();
+        tempHolder = new DataModel[ROLLING_AVG_SIZE];
+        tempHolder = dataStorage.clone();
 
-        tempHolderRaw=new DataModel[ROLLING_AVG_SIZE];
-        tempHolderRaw=this.dataStorageRaw.clone();
+        tempHolderRaw = new DataModel[ROLLING_AVG_SIZE];
+        tempHolderRaw = this.dataStorageRaw.clone();
 
 //        resetDataStorage(this.dataStorage);
 //        resetDataStorage(this.dataStorageRaw);
@@ -224,14 +247,14 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     }
 
     private void passForFIleStorage(DataModel[] dataStorage, Context context) {
-      //  dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        //  dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
 
         /**
          * Currently we are haulting this TODO uncomment after complete implementaion of breath count
          * v2: we are again starting it for storing data into local storage visible to user. After implementation of this data we will
          * change STORAGE PATH ONLY
          */
-        FileAsync async=new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH));
+        FileAsync async = new FileAsync(SharePrefrancClass.getInstance(context).getPref(CommonMethod.STORAGE_PATH));
         async.execute(this.tempHolderRaw);
 
 //        Bundle bundle=new Bundle();
@@ -256,7 +279,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     }
 
     private void passForCalculation(DataModel[] dataStorage) {
-        Log.d(TAG,"came for calculation");
+        Log.d(TAG, "came for calculation");
         async = new AlgoAsync(this);
         async.execute(dataStorage);
     }
@@ -267,7 +290,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     @Override
     public void onCountResultAvailable(int count, long timestamp) {
-        Log.d(TAG,"bpmCount = "+count);
+        Log.d(TAG, "bpmCount = " + count);
         listener.onCountAvailable(count, timestamp);
     }
 
@@ -278,17 +301,17 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
 
     @Override
     public void onMotionStarts() {
-        Log.d(TAG,"motion: started");
+        Log.d(TAG, "motion: started");
     }
 
     @Override
     public void onMotionEnds() {
-        Log.d(TAG,"motion: finish");
+        Log.d(TAG, "motion: finish");
     }
 
     @Override
     public void onStep(int step) {
-    //    Log.d(TAG,"Step count: "+step);
+        //    Log.d(TAG,"Step count: "+step);
         listener.onStepCountReceived(step);
     }
 

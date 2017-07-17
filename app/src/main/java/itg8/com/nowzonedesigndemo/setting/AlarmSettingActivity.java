@@ -135,7 +135,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
 
                         Log.d(getClass().getSimpleName(), "Time:" + time);
                         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEALARMTIME, time);
-                        sendBroadCast(false);
+                        sendBroadCast(true);
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
@@ -145,7 +145,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     private void sendBroadCast(boolean b) {
         Intent intent = new Intent(CommonMethod.ACTION_ALARM_NOTIFICATION);
         intent.putExtra(CommonMethod.ALARM_FROMTIMEPICKER, b);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+      //  LocalBroadcastManager.getInstance(getApplicationContext()).
+                sendBroadcast(intent);
     }
 
     private void startAnimation() {

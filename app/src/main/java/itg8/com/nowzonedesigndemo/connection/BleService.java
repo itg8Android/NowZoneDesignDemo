@@ -85,6 +85,20 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
                 }
+            }else if(action.equalsIgnoreCase(getResources().getString(R.string.action_device_sleep_start)))
+            {
+                if(dataManager!=null)
+                {
+                    dataManager.onSleepStarted(true);
+                    dataManager.onStartAlarmTime(intent.getLongExtra(CommonMethod.START_ALARM_TIME,0));
+                    dataManager.onEndAalrmTime(intent.getLongExtra(CommonMethod.END_ALARM_TIME,0));
+                }
+            }else if(action.equals(getResources().getString(R.string.action_device_sleep_end)))
+            {
+                if(dataManager!= null)
+                {
+                    dataManager.onSleepStarted(false);
+                }
             }
         }
     };
@@ -105,7 +119,12 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         super.onCreate();
         Log.d(TAG, "BLE Service started");
         dataManager = new RDataManagerImp(this,getApplicationContext());
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, new IntentFilter(getResources().getString(R.string.action_device_disconnect)));
+        IntentFilter intentFilter =new IntentFilter();
+        intentFilter.addAction(getResources().getString(R.string.action_device_disconnect));
+        intentFilter.addAction(getResources().getString(R.string.action_device_sleep_start));
+        intentFilter.addAction(getResources().getString(R.string.action_device_sleep_end));
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, intentFilter);
     }
 
     @Override

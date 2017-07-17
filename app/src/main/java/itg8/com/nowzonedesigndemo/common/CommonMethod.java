@@ -52,7 +52,7 @@ public class CommonMethod {
     public static final String BREATH ="BREATH" ;
 
     public static final String ACTION_DATA_LONG = "ACTION_AVAIL_LONG_TSMP";
-
+    public static final String ALARM_END = "ALARM_END";
 
 
     private static Typeface typeface;
