@@ -3,7 +3,12 @@ package itg8.com.nowzonedesigndemo.common;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Environment;
+import android.util.Log;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +48,7 @@ public class CommonMethod {
     public static final String STEP_GOAL = "stepGoal";
     public static final String ALARM_AP = "ALARM_AP";
     public static final String ENABLE_TO_CONNECT_IN_TIME = "ENABLE_TO_CONNECT_IN_TIME";
+    public static final String ACTION_DATA_LONG = "ACTION_AVAIL_LONG_TSMP";
 
 
     private static Typeface typeface;
@@ -93,6 +99,7 @@ public class CommonMethod {
         if (data != null && data.length > 0) {
             byte value1 = data[8]; //Convert to double [Higher bit of pressure]
             byte value2 = data[9]; //Convert to double [Lower bit of pressure]
+            createFile(String.valueOf(value1)+" "+String.valueOf(value2));
             byte xHValue = data[0];
             byte xLValue = data[1];
             byte yHValue = data[2];
@@ -126,6 +133,25 @@ public class CommonMethod {
         }
         return model;
     }
+
+    private static void createFile(String log) {
+        File completeFileStructure = new File(Environment.getExternalStorageDirectory()+File.separator+"nowzone","raw data1.txt");
+        try {
+            FileWriter fWriter;
+            if(completeFileStructure.exists()) {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.append(log).append("\n");
+            }else {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.write(log);
+            }
+            fWriter.flush();
+            fWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static int bytesToHex(byte[] bytes) throws NumberFormatException {
         char[] hexChars = new char[bytes.length * 2];

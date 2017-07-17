@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -184,8 +185,10 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
      */
     private void sendBroadcast(String key, Object data) {
         Intent intent = new Intent(getResources().getString(R.string.action_data_avail));
-        if (data instanceof DataModel)
+        if (data instanceof DataModel){
             intent.putExtra(key, ((DataModel) data).getPressure());
+            intent.putExtra(CommonMethod.ACTION_DATA_LONG,((DataModel) data).getTimestamp());
+    }
         else if (data instanceof Integer) {
             intent.putExtra(key, (int) data);
         }
@@ -205,7 +208,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void onDataAvail(byte[] data) {
-//        SharePrefrancClass.getInstance(this).savePref(CommonMethod.TIMESTAMP, Calendar.getInstance().getTimeInMillis());
+        //        SharePrefrancClass.getInstance(this).savePref(CommonMethod.TIMESTAMP, Calendar.getInstance().getTimeInMillis());
+
         dataManager.onRawDataModel(getArragedData(data), getApplicationContext());
 
 //        Log.d(TAG, "value : " + getArragedData(data).getPressure() + " , " + " timestamp: " + CommonMethod.getTimeFromTMP(getArragedData(data).getTimestamp()));
@@ -271,6 +275,33 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         sendBroadcast(CommonMethod.ACTION_DATA_AVAILABLE, dataModel);
 
     }
+    private double dLast;
+    private float a = 0.96f;
+    private static final double PI_MIN = -8.02d;
+    private static final double PI_MAX = 8.02d;
+    private static final double MIN_PRESSURE = 1100;
+    private static final double MAX_PRESSURE = 8100;
+
+    private double calculateProportion(double pressure) {
+//        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
+//        double d=(double) Math.round((CONST_1+(CONST_2*((pressure-(lastMin))/(lastMax-lastMin)))) * 1000000000000000000d) / 1000000000000000000d;
+//        s(i)=a*y(i)+(1-a)*s(i-1)
+
+
+        double d = a * pressure + ((1 - a) * dLast);
+//        double d=pressure;
+//        rolling.add(pressure);
+//        d=rolling.getaverage();
+        dLast = d;
+        // Log.d(TAG,"ds:"+d);
+//        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
+
+//        update(pressure);
+//        Log.d(TAG, String.valueOf(var()));
+
+        return (PI_MIN + ((PI_MAX - PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
+    }
+
 
     /**
      * @param count     breath count

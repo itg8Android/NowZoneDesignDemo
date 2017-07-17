@@ -58,7 +58,6 @@ import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.utility.Rolling;
-import itg8.com.nowzonedesigndemo.widget.CircleWave;
 import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -420,14 +419,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
 
     @Override
-    public void onPressureDataAvail(double pressure) {
+    public void onPressureDataAvail(double pressure, long ts) {
 //            firstPreference(pressure);
         //Second Preference
+
         Observable.create(new ObservableOnSubscribe<Double>() {
             @Override
             public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
 //                firstPreference(pressure);
-//                e.onNext(calculateProportion(pressure));
+                e.onNext(calculateProportion(pressure));
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -534,8 +534,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         // Log.d(TAG,"ds:"+d);
 //        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
 
-        update(pressure);
-        Log.d(TAG, String.valueOf(var()));
+//        update(pressure);
+//        Log.d(TAG, String.valueOf(var()));
 
         return (PI_MIN + ((PI_MAX - PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }

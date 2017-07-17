@@ -107,7 +107,9 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
     @Override
     public void onRawDataModel(DataModel model, Context context) {
         if (model != null) {
-          //  Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
+            Log.d(TAG,"pressure max : "+model.getPressure());
+
+            //  Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
