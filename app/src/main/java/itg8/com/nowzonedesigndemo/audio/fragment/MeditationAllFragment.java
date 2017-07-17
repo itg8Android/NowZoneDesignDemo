@@ -1,23 +1,18 @@
 package itg8.com.nowzonedesigndemo.audio.fragment;
 
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,18 +44,21 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
     Button btnStart;
     @BindView(R.id.rl_first)
     RelativeLayout rlFirst;
-//    @BindView(R.id.lbl_meditation_start)
+    //    @BindView(R.id.lbl_meditation_start)
 //    TextView lblMeditationStart;
 //    @BindView(R.id.img_play)
 //    ImageView imgPlay;
 //    @BindView(R.id.img_pause)
 //    ImageView imgPause;
-    @BindView(R.id.rl_second)
-    RelativeLayout rlSecond;
+
     Unbinder unbinder;
 
     @BindView(R.id.viewpager)
     ViewPager viewpager;
+    @BindView(R.id.titlestrip)
+    PagerTitleStrip titlestrip;
+    @BindView(R.id.rl_second)
+    RelativeLayout rlSecond;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -69,6 +67,7 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
     private Animation animFadeOut;
     private MeditationAllFragment meditationAllFragment;
     private MeditationFragment meditationFragment;
+    private ViewPagerMeditationAdapter adapter;
 
 
     public MeditationAllFragment() {
@@ -114,37 +113,19 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
 
     private void setInit() {
 
-        btnStart.setOnClickListener(this);
-//        imgPlay.setOnClickListener(this);
-//        imgPause.setOnClickListener(this);
         setupViewpager();
 
-
-
+        btnStart.setOnClickListener(this);
         animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
                 R.anim.fade_in);
         animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
                 R.anim.fade_out);
 
-        Transition changeTransform = TransitionInflater.from(getActivity()).
-                inflateTransition(R.transition.meditation_imge_transition);
-        Transition explodeTransform = TransitionInflater.from(getActivity()).
-                inflateTransition(R.transition.meditation_imge_single);
-        //android.R.transition.explode
 
-        // Setup exit transition on first fragment
-        meditationAllFragment = new MeditationAllFragment();
-
-        meditationAllFragment.setSharedElementReturnTransition(changeTransform);
-        meditationAllFragment.setExitTransition(explodeTransform);
-        meditationFragment = new MeditationFragment();
-
-        meditationFragment.setSharedElementEnterTransition(changeTransform);
-        meditationFragment.setEnterTransition(explodeTransform);
     }
 
     private void setupViewpager() {
-        ViewPagerMeditationAdapter adapter = new ViewPagerMeditationAdapter(getActivity().getSupportFragmentManager(), getActivity());
+        adapter = new ViewPagerMeditationAdapter(getActivity().getSupportFragmentManager(), getActivity());
         viewpager.setAdapter(adapter);
         viewpager.addOnPageChangeListener(this);
 
@@ -170,22 +151,21 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
                         .replace(R.id.frameLayout, meditationFragment)
                         .addToBackStack("transaction")
                         .addSharedElement(v.findViewById(R.id.img_play), "1");
-                // Apply the transaction
                 ft.commit();
                 break;
-            case R.id.img_pause:
-                ViewCompat.setTransitionName(v.findViewById(R.id.img_pause), "2");
-                FragmentTransaction fts = getFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, meditationFragment)
-                        .addToBackStack("transaction")
-                        .addSharedElement(v.findViewById(R.id.img_pause), "2");
-                // Apply the transaction
-                fts.commit();
+//            case R.id.img_pause:
+//                ViewCompat.setTransitionName(v.findViewById(R.id.img_pause), "2");
+//                FragmentTransaction fts = getFragmentManager().beginTransaction()
+//                        .replace(R.id.frameLayout, meditationFragment)
+//                        .addToBackStack("transaction")
+//                        .addSharedElement(v.findViewById(R.id.img_pause), "2");
+//                // Apply the transaction
+//                fts.commit();
+            //break;
+
+
+            default:
                 break;
-
-
-             default:
-                 break;
 
         }
 
@@ -199,9 +179,8 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onPageSelected(int position) {
-        Drawable drawable = getActivity().getResources().getDrawable( R.drawable.ic_pause );
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-
+        adapter.setSelectedItem(position);
+        adapter.notifyDataSetChanged();
     }
 
 

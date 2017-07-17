@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@drawable/blur2"
+    android:background="@drawable/wallpaper_3"
     android:layout_height="match_parent"
     tools:context="itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity">
 
@@ -20,7 +20,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"
             app:theme="@style/ToolbarColoredBackArrow" />
-
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_breath_history" />

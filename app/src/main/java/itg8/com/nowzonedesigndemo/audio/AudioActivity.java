@@ -41,7 +41,7 @@ public class AudioActivity extends AppCompatActivity {
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frameLayout, new MeditationAllFragment(), getClass().getSimpleName()).commit();
+        fragmentManager.beginTransaction().add(R.id.frameLayout, new MeditationAllFragment(), getClass().getSimpleName()).commit();
 
 
     }

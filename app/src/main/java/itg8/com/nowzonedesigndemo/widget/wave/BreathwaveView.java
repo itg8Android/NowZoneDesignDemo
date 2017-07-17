@@ -85,6 +85,7 @@ public class BreathwaveView extends View {
         this.mWaveShadowPaint.setColor(ViewCompat.MEASURED_STATE_MASK);
         this.mWaveShadowPaint.setAlpha(15);
 
+
         setLayerType(2, null);
     }
 
