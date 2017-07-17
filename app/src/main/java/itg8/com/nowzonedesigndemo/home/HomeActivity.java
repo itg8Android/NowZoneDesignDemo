@@ -61,6 +61,7 @@ import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.utility.Rolling;
 import itg8.com.nowzonedesigndemo.widget.CircleWave;
 import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
+import itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -150,8 +151,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     FloatingActionButton fab;
     @BindView(R.id.nav_view)
     NavigationView navView;
-    //    @BindView(R.id.waveLoadingView)
-//    WaveLoadingView waveLoadingView;
+        @BindView(R.id.waveLoadingView)
+    WaveLoadingView waveLoadingView;
     @BindView(R.id.breathview)
     BreathwaveView breathview;
     @BindView(R.id.txt_focus)
@@ -232,13 +233,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setType();
         setAnimator();
 
-//        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_NORMAL_M));
-//        waveLoadingView.setBorderColor(Color.parseColor(COLOR_NORMAL_S));
+        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_NORMAL_M));
+        waveLoadingView.setBorderColor(Color.parseColor(COLOR_NORMAL_S));
 
         initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
 //        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
-        SharePrefrancClass.getInstance(this).setIPreference(CommonMethod.GOAL, 6000);
 
     }
 
@@ -286,15 +286,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void onDestroy() {
-//        waveLoadingView.cancelAnimation();
+        waveLoadingView.cancelAnimation();
         presenter.onDetach();
         super.onDestroy();
     }
 
     private void setType() {
-//        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.SQUARE);
-//        waveLoadingView.setAmplitudeRatio(20);
-//        waveLoadingView.setProgressValue(50);
+        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
+        waveLoadingView.setAmplitudeRatio(20);
+        waveLoadingView.setProgressValue(50);
     }
 
     /**
@@ -306,8 +306,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         // Sets the length of the animation, default is 1000.
 
 
-//        waveLoadingView.setAnimDuration(3000);
-//        waveLoadingView.startAnimation();
+        waveLoadingView.setAnimDuration(3000);
+        waveLoadingView.startAnimation();
 
 
         //  waveLoadingView.cancelAnimation();

@@ -125,6 +125,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
                     .subscribe(new Observer<String>() {
                 @Override
                 public void onSubscribe(Disposable d) {
+
                 }
 
                 @Override
@@ -192,6 +193,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback,AccelVerifyL
         dataStorage[indexDataStorage]=model;
         dataStorageRaw[indexDataStorage]=rawData;
        // Log.d(TAG,"Size of dataStorage "+dataStorage.size());
+
         if (indexDataStorage == PACKET_READY_TO_IMP-1) {
             Log.d(TAG,"datas  is greater");
             implementStorageProcess(context, dataStorage);
