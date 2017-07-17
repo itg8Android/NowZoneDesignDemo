@@ -61,20 +61,23 @@ class BreathHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
         TblState state = list.get(holder.getAdapterPosition());
-        int color= getColorByState(state.getState());
-        if(holder instanceof ViewHolder) {
-            ViewHolder holder1= (ViewHolder) holder;
-            holder1.txtDateValue.setText(Helper.getDateTimeFromMillies(state.getTimestampEnd()));
-            holder1.txtStateValue.setText(state.getState());
-            holder1.txtCountValue.setText(String.valueOf(state.getCount()));
-            holder1.txtCountValue.setTextColor(color);
-        }else if(holder instanceof HeaderViewHolder){
-            ((HeaderViewHolder) holder).headerView.setText(state.getDate());
-            ((HeaderViewHolder) holder).txtDateValue.setText(Helper.getDateTimeFromMillies(state.getTimestampEnd()));
-            ((HeaderViewHolder) holder).txtStateValue.setText(state.getState());
-            ((HeaderViewHolder) holder).txtCountValue.setText(String.valueOf(state.getCount()));
-            ((HeaderViewHolder) holder).txtCountValue.setTextColor(color);
+        if(state!= null) {
+            int color = getColorByState(state.getState());
+            if (holder instanceof ViewHolder) {
+                ViewHolder holder1 = (ViewHolder) holder;
+                holder1.txtDateValue.setText(Helper.getDateTimeFromMillies(state.getTimestampEnd()));
+                holder1.txtStateValue.setText(state.getState());
+                holder1.txtCountValue.setText(String.valueOf(state.getCount()));
+                holder1.txtCountValue.setTextColor(color);
+            } else if (holder instanceof HeaderViewHolder) {
+                ((HeaderViewHolder) holder).headerView.setText(state.getDate());
+                ((HeaderViewHolder) holder).txtDateValue.setText(Helper.getDateTimeFromMillies(state.getTimestampEnd()));
+                ((HeaderViewHolder) holder).txtStateValue.setText(state.getState());
+                ((HeaderViewHolder) holder).txtCountValue.setText(String.valueOf(state.getCount()));
+                ((HeaderViewHolder) holder).txtCountValue.setTextColor(color);
+            }
         }
     }
 
@@ -91,8 +94,7 @@ class BreathHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-       // return list.size();
-        return 10;
+        return list.size();
     }
 
 

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorBlack"
         android:textSize="@dimen/lbl_alarm_time"
         app:font_value="1"
         android:visibility="visible"
@@ -23,7 +23,7 @@
         android:layout_below="@+id/lbl_height"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorBlack"
         android:textSize="@dimen/txt_value_sleep"
         android:background="@drawable/textview_ripple_effect"
         android:clickable="true"
@@ -37,7 +37,7 @@
         android:layout_below="@+id/lbl_cm"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorBlack"
         android:background="@drawable/textview_ripple_effect"
         android:clickable="true"
         android:textSize="@dimen/txt_value_sleep"
@@ -51,7 +51,8 @@
         android:background="@drawable/btn_background"
         android:layout_marginTop="30dp"
         android:layout_below="@+id/lbl_feet"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorBlack"
+        android:visibility="gone"
         android:text="OK"/>
 
 

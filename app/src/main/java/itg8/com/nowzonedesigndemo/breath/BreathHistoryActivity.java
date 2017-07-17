@@ -1,5 +1,6 @@
 package itg8.com.nowzonedesigndemo.breath;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -36,6 +39,7 @@ import itg8.com.nowzonedesigndemo.breath.timeline.InMemoryCursor;
 import itg8.com.nowzonedesigndemo.breath.timeline.TimelineChartView;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
+import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 
 
 public class BreathHistoryActivity extends AppCompatActivity implements BreathHistoryMVP.BreathHistoryView, View.OnClickListener {
@@ -65,6 +69,24 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
     RelativeLayout rlFocus;
     @BindView(R.id.rl_stress)
     RelativeLayout rlStress;
+    @BindView(R.id.lbl_calm)
+    CustomFontTextView lblCalm;
+    @BindView(R.id.txt_calm_value)
+    CustomFontTextView txtCalmValue;
+    @BindView(R.id.lbl_calm_time)
+    CustomFontTextView lblCalmTime;
+    @BindView(R.id.lbl_focus)
+    CustomFontTextView lblFocus;
+    @BindView(R.id.txt_focus_value)
+    CustomFontTextView txtFocusValue;
+    @BindView(R.id.lbl_focus_time)
+    CustomFontTextView lblFocusTime;
+    @BindView(R.id.lbl_stress)
+    CustomFontTextView lblStress;
+    @BindView(R.id.txt_stress_value)
+    CustomFontTextView txtStressValue;
+    @BindView(R.id.lbl_stress_time)
+    CustomFontTextView lblStressTime;
 
 
     private Calendar mStart;
@@ -85,9 +107,7 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
             "GRAPH_MODE_BARS",
             "GRAPH_MODE_BARS_STACK",
             "GRAPH_MODE_BARS_SIDE_BY_SIDE"};
-    private int mMode;
-    private int mSound;
-    private boolean mInLiveUpdate;
+
 
     private static final int LIVE_UPDATE_INTERVAL = 2;
     private Handler mHandler;
@@ -97,15 +117,15 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         @Override
         public void run() {
             mStart.setTimeInMillis(System.currentTimeMillis());
-            mStart.set(Calendar.MILLISECOND, 0);
-//            mCursor.add(createItem(mStart.getTimeInMillis()));
+            mStart.set(Calendar.DATE, 0);
+          //  mCursor.add(createItem(mStart.getTimeInMillis()));
             mHandler.postDelayed(this, LIVE_UPDATE_INTERVAL * 1000);
         }
     };
-    private int seekB;
-    private int seekR;
-    private int seekG;
+
     private List<TblState> listState = new ArrayList<>();
+    private int[] mValue = new int[]{1300,2000, 1500};
+    private int[] mColor= new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")};
 
     private Object[] createItem(long timeInMillis) {
 
@@ -139,6 +159,8 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         setContentView(R.layout.activity_breath_history);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         ButterKnife.bind(this);
+        presenter = new BreathHistoryPresenterImp(this);
+        presenter.initListOfState();
         init();
 
 //        FragmentManager fm = getSupportFragmentManager();
@@ -146,6 +168,38 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 //fm.beginTransaction().replace(R.id.frameLayout, new BreathHistoryFragment(), getClass().getSimpleName()).commit();
 
 
+    }
+
+    private void checkScreenDensity(Context context, TextView... textView) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        switch (displayMetrics.densityDpi) {
+            case DisplayMetrics.DENSITY_LOW:
+                for (TextView text : textView
+                        ) {
+                    text.setTextSize(15);
+
+                }
+                //textView.setTextSize(R.dimen.lbl_breath_value);
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                //textView.setTextSize(R.dimen.lbl_breath_value);
+                for (TextView text : textView
+                        ) {
+                    text.setTextSize(18);
+                }
+
+
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                //  textView.setTextSize(R.dimen.lbl_breath_value);
+                for (TextView text : textView
+                        ) {
+
+                    text.setTextSize(20);
+                }
+                break;
+        }
     }
 
     private void init() {
@@ -157,13 +211,11 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        checkScreenDensity(getApplicationContext(),lblCalm, lblCalmTime, lblFocus, lblFocusTime, lblStress, lblStressTime, txtCalmValue, txtFocusValue, txtStressValue );
+
         rlCalm.setOnClickListener(this);
         rlFocus.setOnClickListener(this);
         rlStress.setOnClickListener(this);
-        presenter = new BreathHistoryPresenterImp(this);
-        presenter.initListOfState();
-
-
         initGraphWithTimeline();
 
     }
@@ -178,7 +230,8 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         graph.setGraphAreaBackground(Color.TRANSPARENT);
 
         // graph.setUserPalette(new int[]{Color.parseColor("#388E3C"),Color.parseColor("#1976D2"),Color.parseColor("#EF5350")});
-        graph.setUserPalette(new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#F8BBD0")});
+        //graph.setUserPalette(new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#F8BBD0")});
+        graph.setUserPalette(new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")});
         //E53935
 
         mCursor = createInMemoryCursor();
@@ -194,9 +247,6 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
                 graph.smoothScrollTo(item.mTimestamp);
             }
         });
-
-
-
 
         setUpCalender();
 
@@ -222,13 +272,15 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
             title.setText(getString(R.string.item_name, COLUMN_NAMES[i]));
             title.setTextColor(Color.WHITE);
             mSeries[i - 1] = (TextView) v.findViewById(R.id.value);
-            mSeries[i - 1].setText("Value");
+           // mSeries[i - 1].setText(mValue[i]);
             mSeriesColors[i - 1] = v.findViewById(R.id.color);
-            mSeriesColors[i - 1].setBackgroundColor(R.color.colorOrange);
+           // mSeriesColors[i - 1].setBackgroundColor(mColor[i]);
 //            mSeriesColors[i - 1].setBackgroundColor(R.color.colorOrange);
 //            mSeriesColors[i ].setBackgroundColor(R.color.blue_half_transparent);
+
             series.addView(v);
         }
+
     }
 
     private void createRandomData(InMemoryCursor cursor) {
@@ -243,7 +295,7 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 //        today.set(Calendar.HOUR, 0);
 //        today.set(Calendar.SECOND, 0);
         today.set(Calendar.DAY_OF_MONTH, 0);
-        mStart = (Calendar) today.clone();
+      //  mStart = (Calendar) today.clone();
         mStart = Calendar.getInstance();
         mStart.add(Calendar.DAY_OF_MONTH, -30);
         while (mStart.compareTo(today) <= 0) {
@@ -251,6 +303,7 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
             mStart.add(Calendar.DAY_OF_MONTH, 1);
         }
         mStart.add(Calendar.DAY_OF_MONTH, -1);
+
         cursor.addAll(data);
 
 
@@ -259,7 +312,8 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 
     @Override
     public void onListAvailable(List<TblState> list) {
-   this.listState = list;
+        this.listState = list;
+
 
     }
 
@@ -295,8 +349,7 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.rl_calm:
                 callHistoryActivity();
                 break;

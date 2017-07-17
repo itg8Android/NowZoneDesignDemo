@@ -69,6 +69,8 @@
     <string name="item_timestamp">Timestamp:&#160;&#160;</string>
     <string name="item_name"><xliff:g id="name">%1$s</xliff:g>:&#160;&#160;</string>
     <string name="title_activity_breath_history_list">BreathHistoryList</string>
+    <string name="action_device_sleep_start">ACTION_NW_DEVICE_SLEEP_STARTED</string>
+
 
 
 </resources>

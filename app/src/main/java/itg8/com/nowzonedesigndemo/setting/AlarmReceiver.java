@@ -70,6 +70,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
              // hide the notification after its selected
              SharePrefrancClass.getInstance(context).savePref(CommonMethod.SLEEP_STARTED,"ss");
+           //  context.sendBroadcast(new Intent()context.getResources().getString(R.string.action_device_sleep_start));
              notificationManager.notify(ALARM_ID, noti.build());
 
 

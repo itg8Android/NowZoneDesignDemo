@@ -7,6 +7,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import java.util.List;
 
@@ -46,13 +47,18 @@ public class BreathHistoryListActivity extends AppCompatActivity {
          if(getIntent().hasExtra(CommonMethod.BREATH))
          {
              List<TblState> list = getIntent().getParcelableExtra(CommonMethod.BREATH);
-             BreathHistoryAdapter adapter = new BreathHistoryAdapter(list);
-             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-             recyclerView.setLayoutManager(layoutManager);
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                layoutManager.getOrientation());
-             recyclerView.addItemDecoration(dividerItemDecoration);
-             recyclerView.setAdapter(adapter);
+             if(list!= null && list.size()>0) {
+                 BreathHistoryAdapter adapter = new BreathHistoryAdapter(list);
+                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                 recyclerView.setLayoutManager(layoutManager);
+                 DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                         layoutManager.getOrientation());
+                 recyclerView.addItemDecoration(dividerItemDecoration);
+                 recyclerView.setAdapter(adapter);
+             }else
+             {
+                 Log.d(getClass().getSimpleName(),"ListEmpty:"+list);
+             }
          }
 
     }
