@@ -249,6 +249,8 @@
                     android:layout_marginTop="08dp"
                     android:gravity="center"
                     android:text="Calm"
+                    android:layout_alignEnd="@+id/lbl_calm_time"
+                    android:layout_alignStart="@+id/txt_calm_value"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_alarm_time"
                     app:font_value="0" />
@@ -260,7 +262,7 @@
                     android:layout_below="@+id/lbl_calm"
                     android:layout_marginBottom="08dp"
                     android:gravity="center"
-                    android:minWidth="45dp"
+                    android:minWidth="40dp"
                     android:text="1300"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_breath_value"
@@ -274,7 +276,7 @@
                     android:layout_alignBaseline="@+id/txt_calm_value"
                     android:layout_below="@+id/lbl_calm"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_toEndOf="@+id/txt_calm_value"
                     android:gravity="center"
                     android:text="min"
@@ -292,7 +294,6 @@
             android:layout_weight="1"
             android:gravity="center"
             cardview:cardBackgroundColor="@android:color/transparent"
-
             cardview:cardPreventCornerOverlap="true"
             cardview:cardUseCompatPadding="true">
 
@@ -309,10 +310,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="08dp"
-                    android:gravity="center"
-                    android:text="focus"
+
+                    android:layout_alignEnd="@+id/lbl_focus_time"
+                    android:layout_alignStart="@+id/txt_focus_value"
+                    android:gravity="center_horizontal"
+
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_alarm_time"
+                    android:text="focus"
                     app:font_value="0" />
 
                 <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
@@ -323,7 +328,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="08dp"
                     android:gravity="center"
-                    android:minWidth="45dp"
+                    android:minWidth="40dp"
                     android:text="2000"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_breath_value"
@@ -339,6 +344,7 @@
                     android:layout_toEndOf="@+id/txt_focus_value"
                     android:gravity="center"
                     android:text="min"
+                    android:layout_marginBottom="08dp"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/txt_value_time_steps"
                     app:font_value="2" />
@@ -367,12 +373,13 @@
 
             <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                 android:id="@+id/lbl_stress"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="08dp"
-                android:gravity="center"
                 android:minWidth="70dp"
+                android:gravity="center_horizontal"
+                android:layout_alignEnd="@+id/lbl_stress_time"
+                android:layout_alignStart="@+id/txt_stress_value"
                 android:text="@string/stress"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/lbl_alarm_time"
@@ -386,8 +393,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="08dp"
                 android:gravity="center"
-                android:minWidth="45dp"
-                android:text="150"
+                android:minWidth="40dp"
+                android:text="1500"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/lbl_breath_value"
                 android:textStyle="bold"
@@ -402,6 +409,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_toEndOf="@+id/txt_stress_value"
+                android:layout_alignBottom="@+id/txt_stress_value"
                 android:gravity="center"
                 android:text="min"
                 android:textColor="@color/colorWhite"

@@ -23,6 +23,7 @@
     <color name="colorOrangeCenter">#53f78b69</color>
     <color name="divider">#B6B6B6</color>
     <color name="transparent">#00000000</color>
+    <color name="transparent_color">#ffffff</color>
     <color name="btn_selected">#bc0a263d</color>
     <color name="btn_normal">#bc2196f3</color>
 

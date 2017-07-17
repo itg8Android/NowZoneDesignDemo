@@ -132,6 +132,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         edtGender.setOnClickListener(this);
         edtHeight.setOnClickListener(this);
         edtWeight.setOnClickListener(this);
+        edtHeightInch.setVisibility(View.GONE);
+        edtHeightFeet.setVisibility(View.GONE);
+        edtHeightFeet.setOnClickListener(this);
+        edtHeightInch.setOnClickListener(this);
+
 
 
 //        FragmentManager fm = getSupportFragmentManager();
@@ -236,7 +241,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 if (TextUtils.isEmpty(edtGender.getText())) {
                     openBottomSheetDialogueForGender();
                 } else {
-                    edtGender.setText(" ");
+                   // edtGender.setText(" ");
                     openBottomSheetDialogueForGender();
                 }
                 break;
@@ -245,16 +250,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     openBottomSheetDialogueForHeight();
                 }else
                 {
-                    edtHeight.setText(" ");
+                    //edtHeight.setText(" ");
                     edtHeight.setFocusableInTouchMode(false);
+                    openBottomSheetDialogueForHeight();
 
                 }
+                break;
             case R.id.edt_height_feet:
                 if (TextUtils.isEmpty(edtHeightFeet.getText())) {
                     openBottomSheetDialogueForHeight();
                 }else
                 {
-                    edtHeightFeet.setText(" ");
+                   // edtHeightFeet.setText(" ");
                     edtHeightFeet.setFocusableInTouchMode(false);
                     openBottomSheetDialogueForHeight();
                 }
@@ -265,9 +272,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     openBottomSheetDialogueForHeight();
                 }else
                 {
-                    edtHeightInch.setText(" ");
+                    //edtHeightInch.setText(" ");
                     edtHeightInch.setFocusableInTouchMode(false);
-                    openBottomSheetDialogueForHeight();
+                   openBottomSheetDialogueForHeight();
                 }
                 break;
             case R.id.edt_weight:
@@ -276,10 +283,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     OpenBottomSheetDialogueForWeight();
                 }else
                 {
-                    edtWeight.setText(" ");
+                   // edtWeight.setText(" ");
                     edtWeight.setFocusableInTouchMode(false);
-                    openBottomSheetDialogueForHeight();
+                    OpenBottomSheetDialogueForWeight();
                 }
+                break;
 
 
         }
@@ -306,7 +314,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 mBottomSheetDialog.dismiss();
-                setDataFromBottomSheetForWieght();
+
 
             }
         });
@@ -314,6 +322,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 isFromKG = true;
+                mBottomSheetDialog.dismiss();
+                setDataFromBottomSheetForWieght();
 
             }
         });
@@ -321,6 +331,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 isFromKG = false;
+                mBottomSheetDialog.dismiss();
+                setDataFromBottomSheetForWieght();
             }
         });
 
@@ -346,23 +358,26 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBottomSheetDialog.dismiss();
-                setDataFromBottomSheetForHeight();
+
             }
         });
         txtCm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cm = txtCm.getText().toString();
                 isFromCm= true;
+                setDataFromBottomSheetForHeight();
+                mBottomSheetDialog.dismiss();
+
 
             }
         });
         txtFeet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String feet = txtFeet.getText().toString();
                 isFromCm=false;
+                setDataFromBottomSheetForHeight();
+                mBottomSheetDialog.dismiss();
+
 
             }
         });
@@ -380,6 +395,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         {
             edtHeight.setVisibility(View.GONE);
             llHeightFeet.setVisibility(View.VISIBLE);
+            edtHeightFeet.setVisibility(View.VISIBLE);
+            edtHeightInch.setVisibility(View.VISIBLE);
             llHeightFeet.setFocusableInTouchMode(true);
             edtHeightInch.setFocusableInTouchMode(true);
             edtHeightFeet.setFocusableInTouchMode(true);
@@ -388,7 +405,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             edtHeightFeet.setFocusable(true);
             edtHeightFeet.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
-//        isFromCm=!isFromCm;
+        isFromCm=!isFromCm;
     }
 
     private void setDataFromBottomSheet(String gender) {
@@ -398,7 +415,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void openBottomSheetDialogueForGender() {
-
         View view = getLayoutInflater().inflate(R.layout.fragment_basic_profile, null);
         CustomFontTextView txtFemale = (CustomFontTextView) view.findViewById(R.id.lbl_female);
         CustomFontTextView txtMale = (CustomFontTextView) view.findViewById(R.id.lbl_male);
@@ -415,7 +431,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBottomSheetDialog.dismiss();
+
             }
         });
         txtFemale.setOnClickListener(new View.OnClickListener() {
@@ -423,6 +439,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(View v) {
                 String fe = txtFemale.getText().toString();
                 setDataFromBottomSheet(fe);
+                mBottomSheetDialog.dismiss();
 
 
             }
@@ -432,6 +449,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(View v) {
                 String ma = txtMale.getText().toString();
                 setDataFromBottomSheet(ma);
+                mBottomSheetDialog.dismiss();
 
             }
         });

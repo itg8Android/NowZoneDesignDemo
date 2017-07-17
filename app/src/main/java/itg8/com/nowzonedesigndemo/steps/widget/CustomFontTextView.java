@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.widget.TextView;
 
 import itg8.com.nowzonedesigndemo.R;
@@ -38,7 +39,12 @@ public class CustomFontTextView extends TextView {
     public CustomFontTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initeDef(context, attrs);
+
     }
+
+
+
+
 
     private void initeDef(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomFontTextView);
@@ -75,6 +81,8 @@ public class CustomFontTextView extends TextView {
 
         setTypeface(customFont);
     }
+
+
 
 
 
