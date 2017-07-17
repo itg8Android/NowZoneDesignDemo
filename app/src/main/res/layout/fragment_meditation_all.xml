@@ -77,6 +77,7 @@
         <RelativeLayout
             android:id="@+id/rl_second"
             android:visibility="visible"
+            android:layout_margin="15dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -91,39 +92,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 </android.support.v4.view.ViewPager>
-
-
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/lbl_meditation_start"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:layout_marginTop="50dp"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textStyle="bold"-->
-                <!--android:textSize="20sp"-->
-                <!--android:text="Lets started"/>-->
-
-            <!--<ImageView-->
-                <!--android:id="@+id/img_play"-->
-                <!--android:layout_width="120dp"-->
-                <!--android:layout_height="120dp"-->
-                <!--android:layout_marginTop="20dp"-->
-                <!--android:layout_marginEnd="30dp"-->
-                <!--android:layout_marginStart="20dp"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:background="@drawable/meditation_play"-->
-                <!--android:layout_below="@+id/lbl_meditation_start"/>-->
-            <!--<ImageView-->
-                <!--android:id="@+id/img_pause"-->
-                <!--android:layout_toEndOf="@+id/img_play"-->
-                <!--android:layout_width="120dp"-->
-                <!--android:layout_height="120dp"-->
-                <!--android:layout_marginTop="20dp"-->
-                <!--android:layout_marginStart="30dp"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:background="@drawable/meditation_stop"-->
-                <!--android:layout_below="@+id/lbl_meditation_start"/>-->
 
 
 

@@ -2,6 +2,7 @@ package itg8.com.nowzonedesigndemo.sanning;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -82,6 +83,7 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     private BluetoothAdapter bluetoothAdapter;
     private DeviceListAdapter deviceListAdapter;
     private boolean firstResult = true;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,9 +332,32 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
 
     @Override
     public void startHomeActivity() {
+        stopConnectingDialog();
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void startConnectingDialog() {
+        if(dialog==null)
+        {
+            showDialog();
+        }
+        if(!dialog.isShowing()){
+            showDialog();
+        }
+        
+    }
+
+    private void showDialog() {
+        dialog= ProgressDialog.show(ScanDeviceActivity.this,"","Connecting...",true,true);
+    }
+
+    @Override
+    public void stopConnectingDialog() {
+        if(dialog!=null && dialog.isShowing())
+            dialog.dismiss();
     }
 
     @Override

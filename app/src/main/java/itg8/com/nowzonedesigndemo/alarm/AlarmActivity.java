@@ -104,6 +104,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         sceneSmartAlarmCollapse.enter();
 
         View expandView = createView(containerMeditation, R.layout.layout_smart_alarm);
+
         CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
         CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
         if(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME)!= null)
@@ -129,10 +130,15 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         sceneSmartAlarmExpand = Scene.getSceneForLayout(container, R.layout.layout_alarm_set, this);
         sceneSmartAlarmCollapse = Scene.getSceneForLayout(container, R.layout.layout_smart_alarm, this);
         sceneSmartAlarmCollapse.enter();
-
         View expandView = createView(frmContainerSmartAlarm, R.layout.layout_smart_alarm);
+
         CustomFontTextView alarmDay = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_days);
         CustomFontTextView alarmTime = (CustomFontTextView) expandView.findViewById(R.id.txt_alarm_time);
+        RelativeLayout relativeLayout = (RelativeLayout) expandView.findViewById(R.id.rl_alarm_smart);
+
+        addCardView(relativeLayout);
+
+
         if(getApplicationContext()!= null && SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME)!= null)
         {
             alarmTime.setText(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVEALARMTIME));
@@ -149,6 +155,20 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             alarmDay.setText("Set alarm Day...!!!");
         }
 
+    }
+
+    private void addCardView(RelativeLayout relativeLayout) {
+        CardView card = new CardView(getApplicationContext());
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+        );
+        card.setLayoutParams(params);
+        card.setRadius(9);
+        card.setContentPadding(8, 8, 8, 8);
+        card.setCardElevation(9);
+        relativeLayout.addView(card);
     }
 
 

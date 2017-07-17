@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="itg8.com.nowzonedesigndemo.alarm.AlarmActivity"
-
     android:alpha="0.7"
     tools:showIn="@layout/activity_alarm">
+
 
     <RelativeLayout
         android:id="@+id/rl_alarm_smart_main"

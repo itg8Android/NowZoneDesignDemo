@@ -4,7 +4,7 @@ package itg8.com.nowzonedesigndemo.home.mvp;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
 
 public interface BreathView {
-    void onPressureDataAvail(double pressure);
+    void onPressureDataAvail(double pressure, long ts);
     void onDeviceConnected();
     void onDeviceDisconnected();
 

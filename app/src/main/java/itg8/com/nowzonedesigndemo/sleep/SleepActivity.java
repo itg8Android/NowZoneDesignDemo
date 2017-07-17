@@ -115,7 +115,7 @@ public class SleepActivity extends BaseSleepClass implements OnChartValueSelecte
         setUpViewPager();
        // setPieChart();
 
-      //  initBarChart();
+     //   initBarChart();
      //  initPositiveNegativeChart();
         cubicLineChart();
 

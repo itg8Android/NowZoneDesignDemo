@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import java.util.Random;
 
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
-import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
 
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STATE_ARRIVED;
@@ -35,8 +35,10 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
                     return;
                 if(intent.hasExtra(CommonMethod.ACTION_DATA_AVAILABLE)){
                     double model = intent.getDoubleExtra(CommonMethod.ACTION_DATA_AVAILABLE,0);
+                    long timestamp=intent.getLongExtra(CommonMethod.ACTION_DATA_LONG,0);
+//                    Log.d("BreathPresenterImp","data to presenter:"+model+"  "+timestamp);
                     BreathPresenterImp.this.model.dataStarted(true);
-                    onPressureReceived(model);
+                    onPressureReceived(model,timestamp);
                 }
                 if(intent.hasExtra(CommonMethod.BPM_COUNT)){
                     onCountReceived(intent.getIntExtra(CommonMethod.BPM_COUNT,0));
@@ -140,9 +142,9 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     }
 
     @Override
-    public void onPressureReceived(double pressure) {
+    public void onPressureReceived(double pressure, long ts) {
         if (checkNotNull()) {
-            view.onPressureDataAvail(pressure);
+            view.onPressureDataAvail(pressure,ts);
         }
     }
 

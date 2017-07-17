@@ -1,6 +1,5 @@
 package itg8.com.nowzonedesigndemo.common;
 
-import android.content.Context;
 
 /**
  * Created by itg_Android on 6/10/2017.
