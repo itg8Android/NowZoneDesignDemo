@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -144,7 +145,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     private void sendBroadCast(boolean b) {
         Intent intent = new Intent(CommonMethod.ACTION_ALARM_NOTIFICATION);
         intent.putExtra(CommonMethod.ALARM_FROMTIMEPICKER, b);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     private void startAnimation() {

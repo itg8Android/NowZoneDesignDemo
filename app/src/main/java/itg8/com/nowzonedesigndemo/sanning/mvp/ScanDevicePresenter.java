@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -153,7 +154,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
         if (view != null) {
             IntentFilter filter = new IntentFilter();
             filter.addAction(BleService.ACTION_DEVICE_CONNECTED);
-            ((Context) view).registerReceiver(receiver, filter);
+            LocalBroadcastManager.getInstance(((Context) view)).registerReceiver(receiver, filter);
             Log.d(TAG, "Receiver Registered");
         }
     }
@@ -173,7 +174,7 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
     @Override
     public void onStop() {
         if (view != null) {
-            ((Context) view).unregisterReceiver(receiver);
+            LocalBroadcastManager.getInstance(((Context) view)).unregisterReceiver(receiver);
             Log.d(TAG, "Receiver unregistered");
         }
     }

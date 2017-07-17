@@ -25,16 +25,16 @@
                 android:layout_height="match_parent">
 
 
-                <!--<itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView-->
-                    <!--android:id="@+id/waveLoadingView"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--app:wlv_borderColor="@color/color_wave"-->
-                    <!--app:wlv_borderWidth="0dp"-->
-                    <!--app:wlv_progressValue="40"-->
-                    <!--app:wlv_waveAmplitude="70"-->
-                    <!--android:alpha="0.6"-->
-                    <!--app:wlv_waveColor="@color/color_wave" />-->
+                <itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView
+                    android:id="@+id/waveLoadingView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:wlv_borderColor="@color/color_wave"
+                    app:wlv_borderWidth="0dp"
+                    app:wlv_progressValue="40"
+                    app:wlv_waveAmplitude="70"
+                    android:alpha="0.6"
+                    app:wlv_waveColor="@color/color_wave" />
 
                 <itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView
                     android:layout_width="match_parent"

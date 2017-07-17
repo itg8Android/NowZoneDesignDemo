@@ -88,7 +88,7 @@ public class StateCheckImp  {
             try {
                 sizeOfBreathCount = userDao.queryForAll().size();
                 Log.d(StateCheckImp.class.getSimpleName(),"count size:"+sizeOfBreathCount);
-                checkMovement(sizeOfBreathCount,userDao,timestamp).subscribeOn(Schedulers.io())
+                checkMovement(sizeOfBreathCount,userDao,timestamp).subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(observer);
             } catch (SQLException e) {
