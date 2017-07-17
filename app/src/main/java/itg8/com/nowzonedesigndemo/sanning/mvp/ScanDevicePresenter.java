@@ -201,6 +201,10 @@ public class ScanDevicePresenter implements ScanDeviceModelListener, BluetoothAd
         if (mSelectedDevice == null && view != null) {
             Snackbar.make(view, R.string.selected_device, Snackbar.LENGTH_LONG).show();
         } else if ((mSelectedDevice != null ? mSelectedDevice.getAddress() : null) != null) {
+            if(this.view!=null)
+            {
+                this.view.startConnectingDialog();
+            }
             Intent intent = new Intent(view.getContext(), BleService.class);
             intent.putExtra(CommonMethod.DEVICE_ADDRESS,mSelectedDevice.getAddress());
             intent.putExtra(CommonMethod.DEVICE_NAME,mSelectedDevice.getName());

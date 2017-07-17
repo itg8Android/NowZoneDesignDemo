@@ -1,6 +1,9 @@
 package itg8.com.nowzonedesigndemo.utility;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.Map;
@@ -32,13 +35,17 @@ class AlgoAsync extends AsyncTask<DataModel[],Void,Integer> {
             int count= Math.max(data.get(0).size(),data.get(1).size());
             DataModel[] listModel = lists[0];
             if (listModel.length > 0) {
-//                long timeTaken = listModel.get(listModel.size() - 1).getTimestamp() - listModel.get(0).getTimestamp();
-//                if (timeTaken > 1000) {
-//                    bpmInMinute = (int) ((ONE_MINUTE * count) / timeTaken);
+                long timeTaken = listModel[listModel.length - 1].getTimestamp() - listModel[0].getTimestamp();
+                if (timeTaken > 1000) {
+                    bpmInMinute = (int) ((ONE_MINUTE * count) / timeTaken);
 //                    callback.onCountResultAvailable(bpmInMinute, listModel.get(listModel.size() - 1).getTimestamp());
+                }
                     /**
                      * as we cakculated that a count in one minute is 2000. so we will directly send count
                      */
+                Log.d(TAG,"hashmap : "+new Gson().toJson(data));
+                Log.d(TAG,"hashmap BPMInMinute: "+bpmInMinute);
+                Log.d(TAG,"hashmap timestamp : "+listModel[0].getTimestamp()+" "+listModel[listModel.length-1].getTimestamp());
                     callback.onCountResultAvailable(count, listModel[listModel.length-1].getTimestamp());
 //                    callback.onCountResultAvailable(count, listModel.get(listModel.size() - 1).getTimestamp());
             }

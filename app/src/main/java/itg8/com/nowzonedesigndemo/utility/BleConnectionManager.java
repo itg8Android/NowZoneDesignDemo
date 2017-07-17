@@ -8,9 +8,13 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -136,8 +140,28 @@ public class BleConnectionManager implements ConnectionManager {
      */
     private void dataReceived(byte[] value) {
 //            Log.d(TAG, "data received:" + Helper.bytesToHex(value));
+//        createFile(value.toString());
             listener.onDataAvail(value);
     }
+
+    private void createFile(String log) {
+        File completeFileStructure = new File(Environment.getExternalStorageDirectory()+File.separator+"nowzone","raw data1.txt");
+        try {
+            FileWriter fWriter;
+            if(completeFileStructure.exists()) {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.append(log).append("\n");
+            }else {
+                fWriter = new FileWriter(completeFileStructure, true);
+                fWriter.write(log);
+            }
+            fWriter.flush();
+            fWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private boolean writeCharacteristics(UUID serviceUUID, UUID charactUUID) throws NullPointerException {
 

@@ -22,4 +22,8 @@ public interface ScanDeviceView {
     void onShowScanning();
 
     void onShowButton();
+
+    void startConnectingDialog();
+
+    void stopConnectingDialog();
 }

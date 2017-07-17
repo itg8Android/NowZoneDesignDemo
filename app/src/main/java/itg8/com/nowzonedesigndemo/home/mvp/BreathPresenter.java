@@ -19,7 +19,7 @@ public interface BreathPresenter {
     void initGraphData();
 
     public interface BreathFragmentModelListener{
-        void onPressureReceived(double pressure);
+        void onPressureReceived(double pressure, long ts);
 
         void onCountReceived(int intExtra);
 

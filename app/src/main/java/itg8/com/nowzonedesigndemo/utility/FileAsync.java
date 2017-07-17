@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,7 +64,8 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
     @SafeVarargs
     @Override
     protected final Boolean doInBackground(List<DataModel>... lists) {
-        List<DataModel> dataModels = lists[0];
+        List<DataModel> dataModels = new ArrayList<>();
+        dataModels.addAll(lists[0]);
         storeToFile(dataModels);
         return true;
     }
@@ -138,7 +140,7 @@ public class FileAsync extends AsyncTask<List<DataModel>, Void, Boolean> {
     private void writeInFile(String content, String newFileName) {
 //        File completeFileStructure = new File(newFileName);
         Log.d(TAG,"FileName:"+newFileName);
-        File completeFileStructure = new File(COMPLETE_FILE_PATH,newFileName);
+        File completeFileStructure = new File(COMPLETE_FILE_PATH,Helper.getCurrentDate()+".txt");
         try {
             FileWriter fWriter;
             if(completeFileStructure.exists()) {

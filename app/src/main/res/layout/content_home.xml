@@ -35,12 +35,15 @@
                     <!--app:wlv_waveAmplitude="70"-->
                     <!--android:alpha="0.6"-->
                     <!--app:wlv_waveColor="@color/color_wave" />-->
+
                 <itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView
                     android:layout_width="match_parent"
                     android:layout_height="247dp"
                     android:layout_gravity="center"
+                    android:visibility="visible"
                     android:background="@color/transparent"
                     android:id="@+id/breathview"/>
+
             </FrameLayout>
             <!--this layout is for wave  which working in background.-->
 
