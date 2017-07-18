@@ -1,5 +1,6 @@
 package itg8.com.nowzonedesigndemo.breath;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class BreathHistoryListActivity extends AppCompatActivity {
     private void init() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setRecyclerView();
 

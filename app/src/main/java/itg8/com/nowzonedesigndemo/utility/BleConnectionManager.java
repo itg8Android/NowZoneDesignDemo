@@ -276,6 +276,7 @@ public class BleConnectionManager implements ConnectionManager {
      *
      * @return true if discovers all the services offered by the DAQ and
      * configuration is successful
+     * @param
      */
     public boolean configureServices() {
         List<BluetoothGattService> gattServices = getSupportedGattServices();

@@ -601,8 +601,10 @@ public class TimelineChartView extends View {
 
         final DisplayMetrics dp = getResources().getDisplayMetrics();
         mSize8 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 8, dp);
-        mSize12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, dp);
-        mSize20 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 20, dp);
+//        mSize12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, dp);
+        mSize12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, dp);
+//        mSize20 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 20, dp);
+        mSize20 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, dp);
 
         final ViewConfiguration vc = ViewConfiguration.get(ctx);
         mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
@@ -688,7 +690,8 @@ public class TimelineChartView extends View {
             setupEdgeEffects();
         }
         setupAnimators();
-        setupSoundEffects();
+
+        //setupSoundEffects();
 
         // Initialize the drawing refs (this will be update when we have
         // the real size of the canvas)

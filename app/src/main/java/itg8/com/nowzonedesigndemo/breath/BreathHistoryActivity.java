@@ -113,18 +113,17 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
     private Handler mHandler;
     private InMemoryCursor mCursor;
 
-    private final Runnable mLiveUpdateTask = new Runnable() {
-        @Override
-        public void run() {
-            mStart.setTimeInMillis(System.currentTimeMillis());
-            mStart.set(Calendar.DATE, 0);
-          //  mCursor.add(createItem(mStart.getTimeInMillis()));
-            mHandler.postDelayed(this, LIVE_UPDATE_INTERVAL * 1000);
-        }
-    };
+//    private final Runnable mLiveUpdateTask = new Runnable() {
+//        @Override
+//        public void run() {
+//            mStart.setTimeInMillis(System.currentTimeMillis());
+//            mStart.set(Calendar.DATE, 0);
+//          //  mCursor.add(createItem(mStart.getTimeInMillis()));
+//            mHandler.postDelayed(this, LIVE_UPDATE_INTERVAL * 1000);
+//        }
+//    };
 
     private List<TblState> listState = new ArrayList<>();
-    private int[] mValue = new int[]{1300,2000, 1500};
     private int[] mColor= new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")};
 
     private Object[] createItem(long timeInMillis) {
@@ -233,9 +232,8 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         //graph.setUserPalette(new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#F8BBD0")});
         graph.setUserPalette(new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")});
         //E53935
-
         mCursor = createInMemoryCursor();
-        createRandomData(mCursor);
+       // createRandomData(mCursor);
         graph.observeData(mCursor);
 
         graph.setOnClickItemListener(new TimelineChartView.OnClickItemListener() {
@@ -269,15 +267,12 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         for (int i = 1; i < COLUMN_NAMES.length; i++) {
             View v = inflater.inflate(R.layout.serie_item_layout, series, false);
             TextView title = (TextView) v.findViewById(R.id.title);
-            title.setText(getString(R.string.item_name, COLUMN_NAMES[i]));
+            //title.setText(getString(R.string.item_name, COLUMN_NAMES[i]));
+            title.setText(COLUMN_NAMES[i]);
             title.setTextColor(Color.WHITE);
             mSeries[i - 1] = (TextView) v.findViewById(R.id.value);
-           // mSeries[i - 1].setText(mValue[i]);
             mSeriesColors[i - 1] = v.findViewById(R.id.color);
-           // mSeriesColors[i - 1].setBackgroundColor(mColor[i]);
-//            mSeriesColors[i - 1].setBackgroundColor(R.color.colorOrange);
-//            mSeriesColors[i ].setBackgroundColor(R.color.blue_half_transparent);
-
+            mSeriesColors[i - 1].setBackgroundColor(mColor[i-1]);
             series.addView(v);
         }
 
@@ -303,7 +298,6 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
             mStart.add(Calendar.DAY_OF_MONTH, 1);
         }
         mStart.add(Calendar.DAY_OF_MONTH, -1);
-
         cursor.addAll(data);
 
 
