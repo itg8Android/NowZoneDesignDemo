@@ -73,7 +73,7 @@ public class BleConnectionManager implements ConnectionManager {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.w(TAG, "onServicesDiscovered");
                 listener.currentState(DeviceState.DISCOVERED);
-                if (configureServices(gatt)) {
+                if (configureServices()) {
                     Log.d(TAG, "write successful");
                 }
             } else {
@@ -272,20 +272,13 @@ public class BleConnectionManager implements ConnectionManager {
      *
      * @return true if discovers all the services offered by the DAQ and
      * configuration is successful
-     * @param gatt
+     * @param
      */
-    public boolean configureServices(BluetoothGatt gatt) {
+    public boolean configureServices() {
         List<BluetoothGattService> gattServices = getSupportedGattServices();
         if (gattServices.isEmpty()) {
-            Log.d(TAG,"service empty");
-            if(retryDescover<4){
-                discoverServices();
-                retryDescover++;
-            }
             return false;
         }
-
-        retryDescover=1;
         // We have a list of services
         // Iterate through the list of services
         for (BluetoothGattService gattService : gattServices) {
@@ -295,20 +288,20 @@ public class BleConnectionManager implements ConnectionManager {
             List<BluetoothGattCharacteristic> gattCharacteristics =
                     gattService.getCharacteristics();
             // Loops through available Characteristics.
-            //   Log.d(TAG, "Service " + gattService.getUuid().toString() + " , Characteristics " + gattCharacteristic.getUuid().toString());
-// One more characteristic UUID to check
-// Characteristic found requires notification
-// Characteristic Supports Notify
-// Enable Notification on this characteristic
-            gattCharacteristics.stream().filter(gattCharacteristic -> DATA_ENABLE.toString().contentEquals(gattCharacteristic.getUuid().toString())).forEach(gattCharacteristic -> {
-                // Characteristic found requires notification
-                int charaProp = gattCharacteristic.getProperties();
-                if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                    // Characteristic Supports Notify
+            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
 
-                    setCharacteristicNotification(gattCharacteristic, true); // Enable Notification on this characteristic
+                //   Log.d(TAG, "Service " + gattService.getUuid().toString() + " , Characteristics " + gattCharacteristic.getUuid().toString());
+                // One more characteristic UUID to check
+                if (DATA_ENABLE.toString().contentEquals(gattCharacteristic.getUuid().toString())) {
+                    // Characteristic found requires notification
+                    int charaProp = gattCharacteristic.getProperties();
+                    if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+                        // Characteristic Supports Notify
+
+                        setCharacteristicNotification(gattCharacteristic, true); // Enable Notification on this characteristic
+                    }
                 }
-            });
+            }
         }
         return true;
     }

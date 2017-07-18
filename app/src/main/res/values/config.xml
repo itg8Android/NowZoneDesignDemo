@@ -65,6 +65,8 @@
         <!--<item>HH:mm:ss</item>-->
         <!--<item>HH:mm</item>-->
         <!--<item>dd\u000AMMM\u000Ayyyy</item>-->
-        <item></item>
+        <!--<item>yyyy-MM-dd</item>-->
+        <item>dd-MM-yyyy</item>
+
     </string-array>
 </resources>

@@ -6,7 +6,7 @@ package itg8.com.nowzonedesigndemo.alarm.model;
  * Created by Android itg 8 on 6/22/2017.
  */
 
-public class AlarmDaysModel {
+public class AlarmDaysModel   {
 
 
     public String getDays() {

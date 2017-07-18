@@ -16,14 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true"
+            app:cardPreventCornerOverlap="true"
+            app:cardBackgroundColor="@android:color/transparent">
+            <include layout="@layout/layout_smart_alarm"/>
+        </android.support.v7.widget.CardView>
 
-            <FrameLayout
-                android:id="@+id/frm_container_smart_alarm"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/margin_alarm_top"
-                android:layout_height="wrap_content">
-
-            </FrameLayout>
 
     </RelativeLayout>
 
@@ -38,12 +39,22 @@
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:id="@+id/cardView_medition">-->
+        <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardPreventCornerOverlap="true"
+        app:cardBackgroundColor="@android:color/transparent">
 
-            <FrameLayout
-                android:id="@+id/frame_layout_meditation"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/margin_alarm_top"
-                android:layout_height="wrap_content"/>
+
+            <!--<FrameLayout-->
+                <!--android:id="@+id/frame_layout_meditation"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_marginTop="@dimen/margin_alarm_top"-->
+                <!--android:layout_height="wrap_content"/>-->
+            <include layout="@layout/layout_smart_alarm"/>
+
+        </android.support.v7.widget.CardView>
 
                 <!--<RelativeLayout-->
                     <!--android:visibility="gone"-->

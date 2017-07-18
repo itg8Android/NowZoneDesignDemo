@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper_3"
+    android:fitsSystemWindows="true"
     tools:context="itg8.com.nowzonedesigndemo.breath.BreathHistoryListActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
->
+        android:background="@android:color/transparent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"

@@ -18,6 +18,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import itg8.com.nowzonedesigndemo.alarm.model.AlarmDaysModel;
+
 /**
  * Created by Android itg 8 on 4/20/2017.
  */
@@ -251,6 +253,10 @@ public class CommonMethod {
             e.printStackTrace();
         }
         return ss;
+    }
+
+    public interface alarmListener{
+        void onAlarmListener(List<AlarmDaysModel> abc);
     }
 
 

@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:id="@+id/frame_layout_days"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:animateLayoutChanges="true"
+    android:layout_margin="@dimen/marginAlarm"
+    android:orientation="vertical"
+    >
 
-    <LinearLayout
-        android:id="@+id/ll_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:animateLayoutChanges="true"
-        android:layout_margin="@dimen/marginAlarm"
-        android:orientation="vertical">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center"-->
+        <!--android:animateLayoutChanges="true"-->
+        <!--android:layout_margin="@dimen/marginAlarm"-->
+        <!--android:orientation="vertical">-->
 
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:id="@+id/txt_days"
@@ -21,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/marginAlarm"
             android:text="MON"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/homeText"
             app:font_value="1" />
 
@@ -32,4 +36,4 @@
             android:layout_height="20dp"
             android:src="@drawable/dots" />
     </LinearLayout>
-    </FrameLayout>
+    <!--</LinearLayout>-->
