@@ -208,9 +208,10 @@ public class BleConnectionManager implements ConnectionManager {
     @Override
     public void disconnect() {
         if(mBluetoothGatt!=null){
+
             mBluetoothGatt.disconnect();
             mBluetoothGatt.close();
-            mBluetoothGatt=null;
+//            mBluetoothGatt=null;
         }
     }
 
@@ -244,6 +245,7 @@ public class BleConnectionManager implements ConnectionManager {
                 && mBluetoothGatt != null) {
 //            mBluetoothGatt.disconnect();
 //            mBluetoothGatt.close();
+
             if (mBluetoothGatt.connect()) {
                 Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
                 return true;
@@ -253,6 +255,7 @@ public class BleConnectionManager implements ConnectionManager {
         }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
         if (device == null) {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
@@ -260,6 +263,7 @@ public class BleConnectionManager implements ConnectionManager {
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         Log.d(TAG, "Trying to create a new connection.");
+
         mBluetoothDeviceAddress = address;
         listener.connectGatt(device, callback);
 

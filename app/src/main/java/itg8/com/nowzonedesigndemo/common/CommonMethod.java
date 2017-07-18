@@ -260,5 +260,7 @@ public class CommonMethod {
     }
 
 
-
+    public static void resetTmpstmp() {
+        currentMillies=0;
+    }
 }

@@ -21,6 +21,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 
+import static java.lang.Math.atan2;
+import static java.lang.Math.sqrt;
+
 
 class CheckAccelImp {
 
@@ -32,6 +35,7 @@ class CheckAccelImp {
     private static final int Z = 2;
     private static final int TOTAL_SIZE_OF_DATA_COLLECTION = 33;
     private static final double G = 0.244;
+    private static final double M_PI = 3.1415;
     private static int nStepCount = 0;
     private AccelVerifyListener listener;
     private Observer observer;
@@ -77,6 +81,11 @@ class CheckAccelImp {
     private long alarmStartTime;
     private int stepListener=0;
     private File completeFileStructure;
+    private String info;
+    private static final float alpha=0.5f;
+    private double fXg=0;
+    private double fYg=0;
+    private double fZg=0;
 
     /**
      * We will pass the listener and latest step count received before service destroyed.
@@ -130,14 +139,14 @@ class CheckAccelImp {
         sb.append("RawXYZ: X: ").append(model.getX()).append(" Y: ").append(model.getY()).append(" Z: ").append(model.getZ());
         Log.d(TAG, sb.toString());
         return Observable.create(e -> {
-
             double xG = (model.getX()>32768)?model.getX():model.getX()-65536;
             double yG = (model.getY() >32768) ?model.getY():model.getY()-65536;
             double zG = (model.getZ() >32768) ?model.getZ():model.getZ()-65536;
+            calculatePitchRoll(xG,yG,zG);
             xG = (xG * G) / 1000;
             yG = (yG * G) / 1000;
             zG = (zG * G) / 1000;
-            roll = Math.sqrt((xG * xG) + (yG * yG) + (zG * zG));
+            roll = sqrt((xG * xG) + (yG * yG) + (zG * zG));
 //            Log.d("gdata:","X:"+xG+" Y:"+yG+" Z:"+zG);
 //              Log.d("Rollng avg:",String.valueOf(roll));
 
@@ -170,7 +179,7 @@ class CheckAccelImp {
                     });
 //                    print(" Y =   %fG  #####" % ((ACCy * 0.224)/1000)),
 //                    print(" Z =  %fG  #####" % ((ACCz * 0.224)/1000))
-            pitch = Math.atan2(-model.getX(), Math.sqrt((model.getY() * model.getY()) + (model.getZ() * model.getZ()))) * degconvert;
+            pitch = atan2(-model.getX(), sqrt((model.getY() * model.getY()) + (model.getZ() * model.getZ()))) * degconvert;
 
             // Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " roll " + roll + " pitch " + pitch);
 //            Log.d(TAG, "value ---" + model.getX() + " " + model.getY() + " " + model.getZ() + " theta " + theta + " pie " + pie+" alpha "+alpha);
@@ -227,14 +236,21 @@ class CheckAccelImp {
     }
 
 
-//    private double calculateVector(double x, double y, double z) {
+    private double calculatePitchRoll(double x, double y, double z) {
 //        Log.v(TAG, "axis: x:" + x + " y:" + y + " z:" + z);
-//        x2 = x * x;
-//        y2 = y * y;
-//        z2 = z * z;
-//        vector = x2 + y2 + z2;
-//        return Math.atan2(x, y) * 180 / 2.14f;
-//    }
+
+        //Low Pass Filter
+        fXg = x * alpha + (fXg * (1.0 - alpha));
+        fYg = y * alpha + (fYg * (1.0 - alpha));
+        fZg = z * alpha + (fZg * (1.0 - alpha));
+
+        //Roll & Pitch Equations
+        roll  = (atan2(-fYg, fZg)*360.0)/M_PI;
+        pitch = (atan2(fXg, sqrt(fYg*fYg + fZg*fZg))*360.0)/M_PI;
+        Log.d(TAG,"Roll: "+roll+" Pitch: "+pitch);
+
+        return atan2(x, y) * 180 / 2.14f;
+    }
 
     void onModelAvail(DataModel model) {
         checkMovement(model).subscribeOn(Schedulers.computation())
@@ -411,7 +427,7 @@ class CheckAccelImp {
 //            nZ[i] = (float)(co1.mAccelData[i*3+2]+32768)/65535.f;
             nZ[i] = (float) (objectArray[i].getZ() + 32768) / 65535.f;
             //Logs.d("#"+nZ[i]);
-            n3D[i] = (float) Math.sqrt(nX[i] * nX[i] + nY[i] * nY[i] + nZ[i] * nZ[i]);
+            n3D[i] = (float) sqrt(nX[i] * nX[i] + nY[i] * nY[i] + nZ[i] * nZ[i]);
 //            Log.d("###","#"+n3D[i]);
         }
         Log.d(TAG,"n3D "+ Arrays.toString(n3D));
@@ -701,13 +717,13 @@ class CheckAccelImp {
 
 
     public void onSleepdataAvail(DataModel model, long alarmStartTime, long alarmEndsTime) {
-
         Observable.create(new ObservableOnSubscribe<Object>() {
             Calendar calendar;
 
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
-                String info = "Timestamp: "+ model.getTimestamp() + " X: " + model.getX() + " Y: " + model.getY() + " Z: " + model.getZ();
+                sb=new StringBuilder();
+                info = sb.append("Timestamp: ").append(model.getTimestamp()).append(" X: ").append(model.getX()).append(" Y: ").append(model.getY()).append(" Z: ").append(model.getZ()).toString();
 
                 calendar = Calendar.getInstance();
                 if (!calibarated) {
@@ -794,6 +810,6 @@ class CheckAccelImp {
     }
 
     private double calculateVector(DataModel model) {
-        return Math.sqrt((model.getX() * model.getX()) + (model.getY() * model.getY()) + (model.getZ() * model.getZ()));
+        return sqrt((model.getX() * model.getX()) + (model.getY() * model.getY()) + (model.getZ() * model.getZ()));
     }
 }

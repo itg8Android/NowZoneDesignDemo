@@ -27,20 +27,20 @@
 
                 <itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView
                     android:id="@+id/waveLoadingView"
-                    android:layout_width="match_parent"
+                    android:layout_width="300dp"
                     android:layout_height="match_parent"
-                    app:wlv_borderColor="@color/color_wave"
                     app:wlv_borderWidth="0dp"
                     app:wlv_progressValue="40"
+
+                    android:layout_gravity="center"
                     app:wlv_waveAmplitude="70"
-                    android:alpha="0.6"
-                    app:wlv_waveColor="@color/color_wave" />
+                    />
 
                 <itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView
                     android:layout_width="match_parent"
                     android:layout_height="247dp"
                     android:layout_gravity="center"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:background="@color/transparent"
                     android:id="@+id/breathview"/>
 
