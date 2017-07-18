@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,6 +87,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final double PI_MAX = 8.02d;
     private static final double MIN_PRESSURE = 1100;
     private static final double MAX_PRESSURE = 8100;
+    private static final float MAX_CIRCLE_SIZE=100f;
+    private static final float MIN_CIRCLE_SIZE = 1f;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -185,6 +188,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     Rolling rolling;
     private double dLast;
     private float a = 0.96f;
+    private Double lastPressure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,10 +234,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         llBreathAvg.setOnClickListener(this);
 
         setType();
-        setAnimator();
 
-        waveLoadingView.setWaveBgColor(Color.parseColor(COLOR_NORMAL_M));
-        waveLoadingView.setBorderColor(Color.parseColor(COLOR_NORMAL_S));
+        waveLoadingView.setWaveBgColor(getResources().getColor(R.color.color_wave_normal,null));
+        waveLoadingView.setWaveColor(getResources().getColor(R.color.color_wave_normal_bg,null));
 
         initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
@@ -292,11 +295,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void setType() {
         waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
+
         waveLoadingView.setAmplitudeRatio(20);
-        waveLoadingView.setProgressValue(50);
+        waveLoadingView.setProgressValue(10);
+        waveLoadingView.setBorderWidth(1f);
 //        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
 //        waveLoadingView.setAmplitudeRatio(20);
 //        waveLoadingView.setProgressValue(50);
+
+//        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
+//        waveLoadingView.setTopTitle("Top Title");
+//        waveLoadingView.setCenterTitleColor(Color.GRAY);
+//        waveLoadingView.setBottomTitleSize(18);
+//        waveLoadingView.setProgressValue(50);
+//        waveLoadingView.setBorderWidth(10);
+//        waveLoadingView.setAmplitudeRatio(60);
+//        waveLoadingView.setWaveColor(Color.GREEN);
+//        waveLoadingView
+//        waveLoadingView.setBorderColor(Color.GRAY);
+//        waveLoadingView.setTopTitleStrokeColor(Color.BLUE);
+//        waveLoadingView.setTopTitleStrokeWidth(3);
+
     }
 
     /**
@@ -434,6 +453,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
 //                firstPreference(pressure);
+                secondPref(pressure);
                 e.onNext(calculateProportion(pressure));
             }
         })
@@ -450,7 +470,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            Log.d(TAG, "Presssure: "+pressure+" value after smoothing: " + smoothedValue(pressure) + " proportion:" + calculateProportion(smoothedValue(pressure)));
 //            secondPref(pressure);
 //            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
-                            breathview.addSample(SystemClock.elapsedRealtime(), aDouble);
+//                            breathview.addSample(SystemClock.elapsedRealtime(), aDouble);
+                            Log.d(TAG,"Progress wave: "+aDouble.intValue());
+                            if(!Objects.equals(lastPressure, aDouble)) {
+                                waveLoadingView.setProgressValue(aDouble.intValue());
+                            }
+                            lastPressure=aDouble;
                         } else {
                             count++;
                         }
@@ -544,7 +569,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        update(pressure);
 //        Log.d(TAG, String.valueOf(var()));
 
-        return (PI_MIN + ((PI_MAX - PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
+        return (MIN_CIRCLE_SIZE + ((MAX_CIRCLE_SIZE- MIN_CIRCLE_SIZE) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
+//        return (lastMin + ((lastMax- lastMin) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
 
 
