@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -83,6 +84,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                 if (manager != null) {
                     if(intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT))
                         manager.disconnect();
+
+                    if(intent.hasExtra(CommonMethod.BLUETOOTH_OFF)){
+                        manager.disconnect();
+                        return;
+                    }
                     SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
                     Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
@@ -293,6 +299,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
 
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback,BluetoothDevice.TRANSPORT_LE));
+                    }else {
+                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback));
+                    }
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -303,7 +314,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
 //                    manager.setBluetoothGatt( (new BleConnectionCompat(getApplicationContext()).connectGatt(device, true, callback)));
 
-                    manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback));
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), true, callback,BluetoothDevice.TRANSPORT_LE));
+//                    }else {
+//                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback));
+//                    }
 //                    mGatt = device.connectGatt(getApplicationContext(), true, mGattCallback);
 //                    scanLeDevice(false);// will stop after first device detection
                 }

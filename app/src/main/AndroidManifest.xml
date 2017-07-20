@@ -91,6 +91,14 @@
             </intent-filter>
         </receiver>
         <receiver
+            android:name=".connection.BluetoothBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name=".setting.AlarmReceiver"
             android:enabled="true"
             android:exported="true">

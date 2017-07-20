@@ -107,6 +107,8 @@ public class WaveLoadingView extends View {
     private float radius=0;
     private ObjectAnimator waterLevelAnim;
     private AnimatorSet animatorSetProgress;
+    private static Bitmap bitmap;
+    private Canvas canvas;
 
     // Constructor & Init Method.
     public WaveLoadingView(final Context context) {
@@ -375,8 +377,8 @@ public class WaveLoadingView extends View {
                 float defaultAmplitude = height * DEFAULT_AMPLITUDE_RATIO;
                 mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO;
 
-                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bitmap);
+                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                canvas = new Canvas(bitmap);
 
                 Paint wavePaint = new Paint();
                 wavePaint.setStrokeWidth(2);
@@ -549,8 +551,8 @@ public class WaveLoadingView extends View {
         if(animatorSetProgress==null)
             animatorSetProgress = new AnimatorSet();
 
-        animatorSetProgress.cancel();
-        animatorSetProgress.end();
+//        animatorSetProgress.cancel();
+//        animatorSetProgress.end();
         animatorSetProgress.play(waterLevelAnim);
         animatorSetProgress.start();
     }
@@ -573,7 +575,7 @@ public class WaveLoadingView extends View {
     public void setWaterLevelRatio(float waterLevelRatio) {
         if (this.mWaterLevelRatio != waterLevelRatio) {
             this.mWaterLevelRatio = waterLevelRatio;
-            invalidate();
+            postInvalidate();
         }
     }
 
