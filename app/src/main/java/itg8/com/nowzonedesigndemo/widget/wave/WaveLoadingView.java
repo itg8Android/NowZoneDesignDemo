@@ -26,6 +26,7 @@ import android.view.animation.LinearInterpolator;
 import itg8.com.nowzonedesigndemo.R;
 
 
+@SuppressWarnings("unused")
 public class WaveLoadingView extends View {
     /**
      * +------------------------+
@@ -252,10 +253,10 @@ public class WaveLoadingView extends View {
                 // Draw triangle
                 case 0:
                     // Currently does not support the border settings
-                    Point start = new Point(0, getHeight());
-                    Path triangle = getEquilateralTriangle(start, getWidth(), getHeight(), mTriangleDirection);
-                    canvas.drawPath(triangle, mWaveBgPaint);
-                    canvas.drawPath(triangle, mWavePaint);
+//                    Point start = new Point(0, getHeight());
+//                    Path triangle = getEquilateralTriangle(start, getWidth(), getHeight(), mTriangleDirection);
+//                    canvas.drawPath(triangle, mWaveBgPaint);
+//                    canvas.drawPath(triangle, mWavePaint);
                     break;
                 // Draw circle
                 case 1:
@@ -271,41 +272,41 @@ public class WaveLoadingView extends View {
                     break;
                 // Draw square
                 case 2:
-                    if (borderWidth > 0) {
-                        canvas.drawRect(
-                                borderWidth / 2f,
-                                borderWidth / 2f,
-                                getWidth() - borderWidth / 2f - 0.5f,
-                                getHeight() - borderWidth / 2f - 0.5f,
-                                mBorderPaint);
-                    }
-
-                    canvas.drawRect(borderWidth, borderWidth, getWidth() - borderWidth,
-                            getHeight() - borderWidth, mWaveBgPaint);
-                    canvas.drawRect(borderWidth, borderWidth, getWidth() - borderWidth,
-                            getHeight() - borderWidth, mWavePaint);
+//                    if (borderWidth > 0) {
+//                        canvas.drawRect(
+//                                borderWidth / 2f,
+//                                borderWidth / 2f,
+//                                getWidth() - borderWidth / 2f - 0.5f,
+//                                getHeight() - borderWidth / 2f - 0.5f,
+//                                mBorderPaint);
+//                    }
+//
+//                    canvas.drawRect(borderWidth, borderWidth, getWidth() - borderWidth,
+//                            getHeight() - borderWidth, mWaveBgPaint);
+//                    canvas.drawRect(borderWidth, borderWidth, getWidth() - borderWidth,
+//                            getHeight() - borderWidth, mWavePaint);
                     break;
                 // Draw rectangle
                 case 3:
-                    if (mIsRoundRectangle) {
-                        if (borderWidth > 0) {
-                            RectF rect = new RectF(borderWidth / 2f, borderWidth / 2f, getWidth() - borderWidth / 2f - 0.5f, getHeight() - borderWidth / 2f - 0.5f);
-                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWaveBgPaint);
-                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWavePaint);
-                        } else {
-                            RectF rect = new RectF(0, 0, getWidth(), getHeight());
-                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWaveBgPaint);
-                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWavePaint);
-                        }
-                    } else {
-                        if (borderWidth > 0) {
-                            canvas.drawRect(borderWidth / 2f, borderWidth / 2f, getWidth() - borderWidth / 2f - 0.5f, getHeight() - borderWidth / 2f - 0.5f, mWaveBgPaint);
-                            canvas.drawRect(borderWidth / 2f, borderWidth / 2f, getWidth() - borderWidth / 2f - 0.5f, getHeight() - borderWidth / 2f - 0.5f, mWavePaint);
-                        } else {
-                            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mWaveBgPaint);
-                            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mWavePaint);
-                        }
-                    }
+//                    if (mIsRoundRectangle) {
+//                        if (borderWidth > 0) {
+//                            RectF rect = new RectF(borderWidth / 2f, borderWidth / 2f, getWidth() - borderWidth / 2f - 0.5f, getHeight() - borderWidth / 2f - 0.5f);
+//                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWaveBgPaint);
+//                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWavePaint);
+//                        } else {
+//                            RectF rect = new RectF(0, 0, getWidth(), getHeight());
+//                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWaveBgPaint);
+//                            canvas.drawRoundRect(rect, mRoundRectangleXY, mRoundRectangleXY, mWavePaint);
+//                        }
+//                    } else {
+//                        if (borderWidth > 0) {
+//                            canvas.drawRect(borderWidth / 2f, borderWidth / 2f, getWidth() - borderWidth / 2f - 0.5f, getHeight() - borderWidth / 2f - 0.5f, mWaveBgPaint);
+//                            canvas.drawRect(borderWidth / 2f, borderWidth / 2f, getWidth() - borderWidth / 2f - 0.5f, getHeight() - borderWidth / 2f - 0.5f, mWavePaint);
+//                        } else {
+//                            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mWaveBgPaint);
+//                            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mWavePaint);
+//                        }
+//                    }
                     break;
                 default:
                     break;
@@ -373,7 +374,6 @@ public class WaveLoadingView extends View {
                 double defaultAngularFrequency = 2.0f * Math.PI / DEFAULT_WAVE_LENGTH_RATIO / width;
                 float defaultAmplitude = height * DEFAULT_AMPLITUDE_RATIO;
                 mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO;
-                float defaultWaveLength = width;
 
                 Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);
@@ -398,7 +398,7 @@ public class WaveLoadingView extends View {
                 }
 
                 wavePaint.setColor(mWaveColor);
-                final int wave2Shift = (int) (defaultWaveLength / 4);
+                final int wave2Shift = (int) ((float) width / 4);
                 for (int beginX = 0; beginX < endX; beginX++) {
                     canvas.drawLine(beginX, waveY[(beginX + wave2Shift) % endX], beginX, endY, wavePaint);
                 }
@@ -821,9 +821,11 @@ public class WaveLoadingView extends View {
         }
 
         Path path = new Path();
-        path.moveTo(p1.x, p1.y);
-        path.lineTo(p2.x, p2.y);
-        path.lineTo(p3.x, p3.y);
+            path.moveTo(p1.x, p1.y);
+        if(p2!=null)
+            path.lineTo(p2.x, p2.y);
+        if(p3!=null)
+            path.lineTo(p3.x, p3.y);
 
         return path;
     }
@@ -835,7 +837,7 @@ public class WaveLoadingView extends View {
         RECTANGLE
     }
 
-    public enum TriangleDirection {
+    private enum TriangleDirection {
         NORTH,
         SOUTH,
         EAST,
