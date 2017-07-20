@@ -82,12 +82,14 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
                 imgPause.setVisibility(View.GONE);
                 final Animation myAnims = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_down);
                 imgPlay.startAnimation(myAnims);
+                imgPause.setClickable(false);
                 break;
             case R.id.img_play:
                 imgPlay.setVisibility(View.GONE);
                 imgPause.setVisibility(View.VISIBLE);
                 final Animation myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_up);
                 imgPause.startAnimation(myAnim);
+                imgPlay.setClickable(false);
                 break;
             case R.id.img_reply:
                 break;

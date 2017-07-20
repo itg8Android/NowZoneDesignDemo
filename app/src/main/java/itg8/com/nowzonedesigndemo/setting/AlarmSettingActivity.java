@@ -58,6 +58,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     Button btnAlarmFinished;
     private Animation zoomIn, zoomOut;
     private Thread thread;
+    private Calendar c;
 
 
     @Override
@@ -109,7 +110,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
 
     private void OpenTimePickerDia() {
         // Get Current Time
-        final Calendar c = Calendar.getInstance();
+  c = Calendar.getInstance();
         int mHour = c.get(Calendar.HOUR_OF_DAY);
         int mMinute = c.get(Calendar.MINUTE);
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
@@ -117,22 +118,16 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        c.set(Calendar.MINUTE, minute);
-                        Log.d(getClass().getSimpleName(), "Start Alarm Time:" + c.getTime());
-                        SharePrefrancClass.getInstance(getApplicationContext()).setLPref(CommonMethod.START_ALARM_TIME, c.getTimeInMillis());
-                        c.add(Calendar.MINUTE, 30);
-                        Log.d(getClass().getSimpleName(), "End Alarm Time:" + c.getTime());
-                        SharePrefrancClass.getInstance(getApplicationContext()).setLPref(CommonMethod.END_ALARM_TIME, c.getTimeInMillis());
+
                         SimpleDateFormat formatDate = new SimpleDateFormat("hh:mm");
                         SimpleDateFormat formatDate2 = new SimpleDateFormat("a");
                         String time = (hourOfDay + ":" + minute);
-                        c.add(Calendar.MINUTE, -30);
                         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.ALARM_AP, formatDate2.format(c.getTime()));
+                        c = CommonMethod.ConvertTime(getApplicationContext(),hourOfDay,minute);
                         txtAm.setText(formatDate2.format(c.getTime()));
+                        txtAlarmTime.setText(time);
                         time = formatDate.format(c.getTime());
                         txtAlarmTime.setText(time);
-
                         Log.d(getClass().getSimpleName(), "Time:" + time);
                         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.SAVEALARMTIME, time);
                         sendBroadCast(true);

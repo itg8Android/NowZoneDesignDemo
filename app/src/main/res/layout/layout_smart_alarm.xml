@@ -23,7 +23,7 @@
         android:layout_marginStart="@dimen/margin_alarm_left"
         android:layout_marginTop="@dimen/margin_alarm_top"
         android:layout_toEndOf="@+id/img_alarm"
-        android:text="Smart Alarm"
+        android:text=""
         android:textAllCaps="true"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/lbl_alarm_time"

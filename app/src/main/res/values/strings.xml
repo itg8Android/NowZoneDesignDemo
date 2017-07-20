@@ -6,6 +6,7 @@
     <string name="action_contact">Contact Us</string>
     <string name="action_step_goal">Step Goal</string>
     <string name="action_meditation">Meditation</string>
+    <string name="action_smart">Smart</string>
     <string name="action_logout">Logout</string>
     <string name="action_about">About Us</string>
 

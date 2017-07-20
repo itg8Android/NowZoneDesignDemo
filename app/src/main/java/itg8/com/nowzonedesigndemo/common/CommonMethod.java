@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +56,9 @@ public class CommonMethod {
 
     public static final String ACTION_DATA_LONG = "ACTION_AVAIL_LONG_TSMP";
     public static final String ALARM_END = "ALARM_END";
+    public static final String  FROMSMARTALARM ="FROMSMARTALARM" ;
+    public static final String FROMMEDITATION = "FROMMEDITATION";
+    public static final String SAVE_DAYS_FOR_MEDITATION = "SAVEDAYSFORMEDITATION";
 
 
     private static Typeface typeface;
@@ -255,8 +259,26 @@ public class CommonMethod {
         return ss;
     }
 
+    public static Calendar ConvertTime(Context mContext, int hourOfDay, int minute) {
+
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        c.add(Calendar.MINUTE, 30);
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        SharePrefrancClass.getInstance(mContext).setLPref(CommonMethod.START_ALARM_TIME, c.getTimeInMillis());
+        c.add(Calendar.MINUTE, 30);
+        SharePrefrancClass.getInstance(mContext).setLPref(CommonMethod.END_ALARM_TIME, c.getTimeInMillis());
+        c.add(Calendar.MINUTE, -30);
+
+        return c;
+
+
+    }
+
     public interface alarmListener{
-        void onAlarmListener(List<AlarmDaysModel> abc);
+        void onAlarmListener(List<AlarmDaysModel> abc, String from);
     }
 
 

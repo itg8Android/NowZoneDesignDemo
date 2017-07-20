@@ -37,14 +37,17 @@ public class AlarmDaysAdapter extends BaseAdapter {
 
     private Context mContext;
      private CommonMethod.alarmListener listener;
+    String from;
 
 
 
-    public AlarmDaysAdapter(Context mContext, List<AlarmDaysModel> days, CommonMethod.alarmListener listener) {
+    public AlarmDaysAdapter(Context mContext, List<AlarmDaysModel> days, CommonMethod.alarmListener listener, String fromsmartalarm) {
         this.mContext = mContext;
         this.inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.days = days;
          this.listener = listener;
+        this.from= fromsmartalarm;
+
     }
 
     @Override
@@ -97,7 +100,7 @@ public class AlarmDaysAdapter extends BaseAdapter {
                 } else {
                     setImageViewFadeIn(img, position);
                 }
-                listener.onAlarmListener(days);
+                listener.onAlarmListener(days, from);
 
                 // List<AlarmDaysModel> list2 = gson.fromJson(s, listOfTestObject);
 
@@ -150,7 +153,6 @@ public class AlarmDaysAdapter extends BaseAdapter {
             public void onAnimationStart(Animation animation) {
 
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 img.setVisibility(View.GONE);

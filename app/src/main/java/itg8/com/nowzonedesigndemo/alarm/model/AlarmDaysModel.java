@@ -30,9 +30,6 @@ public class AlarmDaysModel   {
     private String time;
     private  boolean isChecked = false;
 
-
-
-
     public AlarmDaysModel() {
     }
 

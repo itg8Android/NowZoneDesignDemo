@@ -57,9 +57,6 @@ public class BreathHistoryListActivity extends AppCompatActivity {
                          layoutManager.getOrientation());
                  recyclerView.addItemDecoration(dividerItemDecoration);
                  recyclerView.setAdapter(adapter);
-             }else
-             {
-                 Log.d(getClass().getSimpleName(),"ListEmpty:"+list);
              }
          }
 

@@ -145,7 +145,7 @@ public class MeditationFragment extends Fragment implements View.OnClickListener
                  FragmentTransaction ft = getFragmentManager().beginTransaction()
                          .replace(R.id.frameLayout, meditationSingleFragment)
                          .addToBackStack(getClass().getSimpleName())
-                         .addSharedElement(v.findViewById(R.id.img_play), "1");
+                         .addSharedElement(v.findViewById(R.id.img_play), "1").addToBackStack(getClass().getSimpleName());
                  // Apply the transaction
                  ft.commit();
                  break;
