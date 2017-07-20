@@ -48,82 +48,89 @@ public class BleConnectionManager implements ConnectionManager {
 
 
     private Queue<BluetoothGattDescriptor> descriptorWriteQueue = new LinkedList<>();
-    private BluetoothGattCallback callback = new BluetoothGattCallback() {
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                listener.onDeviceConnected(address);
-                listener.currentState(DeviceState.CONNECTED);
-                Log.d(TAG, "Connected to GATT Server");
-                Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
-                if (discoverServices()) {
-                    listener.currentState(DeviceState.DISCOVERING);
-                }else
-                {
-                    Log.d(TAG,"Fail to descover service: Error "+status );
-                }
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                listener.currentState(DeviceState.DISCONNECTED);
-                Log.i(TAG, "Disconnected from GATT server.");
-            }
-        }
-
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.w(TAG, "onServicesDiscovered");
-                listener.currentState(DeviceState.DISCOVERED);
-                if (configureServices()) {
-                    Log.d(TAG, "write successful");
-                }
-            } else {
-                failWithReason(DeviceState.DISCOVER_FAIL, status);
-                Log.w(TAG, "onServicesDiscovered fail received: " + status);
-            }
-        }
-
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                listener.currentState(DeviceState.READ);
-            } else {
-                failWithReason(DeviceState.READ_FAIL, status);
-            }
-        }
-
-        @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Logs.d("Characteristics written:"+characteristic.getValue());
-            super.onCharacteristicWrite(gatt, characteristic, status);
-        }
-
-        @Override
-        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-            Log.d(TAG, "DescriptorWrite Called");
-
-            if (writeCharacteristics(TEMP_SERVICE_UUID, SENSOR_ON_OFF)) {
-                listener.currentState(DeviceState.WRITE);
-            } else {
-                failWithReason(DeviceState.WRITE_FAIL, status);
-            }
-            if(descriptorWriteQueue!=null && descriptorWriteQueue.size()>0)
-                descriptorWriteQueue.poll();
-        }
-
-        @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-//            Log.d(TAG,"characteristics int value: "+ characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, ERR).intValue());
-                dataReceived(characteristic.getValue());
-        }
-    };
+    private BluetoothGattCallback callback;
     private Queue<BluetoothGattCharacteristic> characteristicReadQueue = new LinkedList<BluetoothGattCharacteristic>();
     private int retryDescover=1;
+    private  boolean connecting;
 
     public BleConnectionManager(ConnectionStateListener listener) {
         if (listener == null) {
             throw new NullPointerException("You need to implement ConnectionStateListener in caller service...");
         }
         this.listener = listener;
+        initCallback();
+    }
+
+    private void initCallback() {
+        callback = new BluetoothGattCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    listener.onDeviceConnected(address);
+                    listener.currentState(DeviceState.CONNECTED);
+                    connecting=false;
+                    Log.d(TAG, "Connected to GATT Server");
+                    Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+                    if (discoverServices()) {
+                        listener.currentState(DeviceState.DISCOVERING);
+                    }else
+                    {
+                        Log.d(TAG,"Fail to descover service: Error "+status );
+                    }
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    listener.currentState(DeviceState.DISCONNECTED);
+                    Log.i(TAG, "Disconnected from GATT server.");
+                }
+            }
+
+            @Override
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.w(TAG, "onServicesDiscovered");
+                    listener.currentState(DeviceState.DISCOVERED);
+                    if (configureServices()) {
+                        Log.d(TAG, "write successful");
+                    }
+                } else {
+                    failWithReason(DeviceState.DISCOVER_FAIL, status);
+                    Log.w(TAG, "onServicesDiscovered fail received: " + status);
+                }
+            }
+
+            @Override
+            public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    listener.currentState(DeviceState.READ);
+                } else {
+                    failWithReason(DeviceState.READ_FAIL, status);
+                }
+            }
+
+            @Override
+            public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                Logs.d("Characteristics written:"+characteristic.getValue());
+                super.onCharacteristicWrite(gatt, characteristic, status);
+            }
+
+            @Override
+            public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+                Log.d(TAG, "DescriptorWrite Called");
+
+                if (writeCharacteristics(TEMP_SERVICE_UUID, SENSOR_ON_OFF)) {
+                    listener.currentState(DeviceState.WRITE);
+                } else {
+                    failWithReason(DeviceState.WRITE_FAIL, status);
+                }
+                if(descriptorWriteQueue!=null && descriptorWriteQueue.size()>0)
+                    descriptorWriteQueue.poll();
+            }
+
+            @Override
+            public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+//            Log.d(TAG,"characteristics int value: "+ characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, ERR).intValue());
+                dataReceived(characteristic.getValue());
+            }
+        };
     }
 
     private boolean discoverServices() {
@@ -208,9 +215,12 @@ public class BleConnectionManager implements ConnectionManager {
     @Override
     public void disconnect() {
         if(mBluetoothGatt!=null){
+
             mBluetoothGatt.disconnect();
             mBluetoothGatt.close();
+            callback=null;
             mBluetoothGatt=null;
+//            mBluetoothGatt=null;
         }
     }
 
@@ -238,21 +248,27 @@ public class BleConnectionManager implements ConnectionManager {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
             return false;
         }
-
+        /*
         // Previously connected device.  Try to reconnect.
-        if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
-                && mBluetoothGatt != null) {
-//            mBluetoothGatt.disconnect();
-//            mBluetoothGatt.close();
-            if (mBluetoothGatt.connect()) {
-                Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-                return true;
-            } else {
-                return false;
-            }
-        }
+        // When we change device.connect(context, autoconnect, callback) autoconnect to false, we cannot use below method there.
+        // Device acting strange when changing device autoconnect to true. It connect to only some device. So decided to change autoconnect
+        // to false and commenting below code
+        */
+//        if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
+//                && mBluetoothGatt != null) {
+////            mBluetoothGatt.disconnect();
+////            mBluetoothGatt.close();
+//
+//            if (mBluetoothGatt.connect()) {
+//                Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
         if (device == null) {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
@@ -260,10 +276,16 @@ public class BleConnectionManager implements ConnectionManager {
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         Log.d(TAG, "Trying to create a new connection.");
-        mBluetoothDeviceAddress = address;
-        listener.connectGatt(device, callback);
 
-        return true;
+        mBluetoothDeviceAddress = address;
+        if(callback==null)
+            initCallback();
+        if(!connecting) {
+            listener.connectGatt(device, callback);
+            connecting = true;
+        }
+
+            return true;
     }
 
 

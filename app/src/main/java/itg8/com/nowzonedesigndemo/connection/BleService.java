@@ -9,8 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -42,6 +45,7 @@ import itg8.com.nowzonedesigndemo.db.tbl.TblState;
 import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.tosort.RDataManager;
 import itg8.com.nowzonedesigndemo.tosort.RDataManagerListener;
+import itg8.com.nowzonedesigndemo.utility.BleConnectionCompat;
 import itg8.com.nowzonedesigndemo.utility.BleConnectionManager;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
 import itg8.com.nowzonedesigndemo.utility.DeviceState;
@@ -80,6 +84,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                 if (manager != null) {
                     if(intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT))
                         manager.disconnect();
+
+                    if(intent.hasExtra(CommonMethod.BLUETOOTH_OFF)){
+                        manager.disconnect();
+                        return;
+                    }
                     SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
                     Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
                     i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
@@ -119,6 +128,9 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         super.onCreate();
         Log.d(TAG, "BLE Service started");
         dataManager = new RDataManagerImp(this,getApplicationContext());
+        dataManager.onSleepStarted(SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.SLEEP_STARTED));;
+        dataManager.onStartAlarmTime(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.START_ALARM_TIME));
+        dataManager.onEndAalrmTime(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.END_ALARM_TIME));
         IntentFilter intentFilter =new IntentFilter();
         intentFilter.addAction(getResources().getString(R.string.action_device_disconnect));
         intentFilter.addAction(getResources().getString(R.string.action_device_sleep_start));
@@ -241,6 +253,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void currentState(DeviceState state) {
         Log.d(TAG, "state is: " + state.name());
         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STATE, state.name());
+        CommonMethod.resetTmpstmp();
     }
 
     @Override
@@ -278,10 +291,40 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         Log.d(TAG, "On destroy  called");
     }
 
+    /**
+     * This helps to connect with ble device
+     * @param device
+     * @param callback
+     */
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
-//        manager.disconnect();
-        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), true, callback));
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback,BluetoothDevice.TRANSPORT_LE));
+                    }else {
+                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback));
+                    }
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+
+
+                if (device != null) {
+
+//                    manager.setBluetoothGatt( (new BleConnectionCompat(getApplicationContext()).connectGatt(device, true, callback)));
+
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), true, callback,BluetoothDevice.TRANSPORT_LE));
+//                    }else {
+//                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback));
+//                    }
+//                    mGatt = device.connectGatt(getApplicationContext(), true, mGattCallback);
+//                    scanLeDevice(false);// will stop after first device detection
+                }
+            }
+        });
+
 
     }
 

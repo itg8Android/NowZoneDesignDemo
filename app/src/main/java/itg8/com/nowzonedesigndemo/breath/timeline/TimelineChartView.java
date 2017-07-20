@@ -1895,11 +1895,13 @@ public class TimelineChartView extends View {
     }
 
     private void releaseSoundEffects() {
-        if (mSoundEffectMP.isPlaying()) {
-            mSoundEffectMP.stop();
+        if(mSoundEffectMP!=null) {
+            if (mSoundEffectMP.isPlaying()) {
+                mSoundEffectMP.stop();
+            }
+            mSoundEffectMP.release();
+            mSoundEffectMP = null;
         }
-        mSoundEffectMP.release();
-        mSoundEffectMP = null;
     }
 
     private void setupAnimators() {

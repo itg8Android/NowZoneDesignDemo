@@ -28,7 +28,7 @@
     <color name="btn_normal">#bc2196f3</color>
 
 
-    <color name="color_wave">#b71892c2</color>
+    <color name="color_wave">#efc22c18</color>
     <color name="color_endColor">#10133c</color>
     <!--<color name="color_startColor">#2C1951</color>-->
     <!--<color name="color_startColor">#361f66</color>-->
@@ -48,6 +48,8 @@
 
     <color name="pressed_color">#4d90fe</color>
     <color name="default_color">#ffffff</color>
+    <color name="color_wave_normal">#24005fb7</color>
+    <color name="color_wave_normal_bg">#2786fb</color>
 
 
 </resources>
