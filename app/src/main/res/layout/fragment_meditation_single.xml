@@ -43,6 +43,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:src="@drawable/play_meditation"
+        android:clickable="false"
     android:visibility="gone" />
 
     <ImageView

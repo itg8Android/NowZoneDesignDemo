@@ -20,6 +20,7 @@ import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +60,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     private Animation zoomIn, zoomOut;
     private Thread thread;
     private Calendar c;
+    SimpleDateFormat formatDate = new SimpleDateFormat("hh:mm", Locale.getDefault());
+    SimpleDateFormat formatDate2 = new SimpleDateFormat("a",Locale.getDefault());
 
 
     @Override
@@ -83,6 +86,18 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         btnAlarmStarted.setOnClickListener(this);
         btnAlarmCalibarating.setOnClickListener(this);
         txtAlarmTime.setOnClickListener(this);
+        if(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.START_ALARM_TIME)>0)
+        {
+             c = Calendar.getInstance();
+            c.setTimeInMillis(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.START_ALARM_TIME));
+            txtAlarmTime.setText(formatDate.format(c.getTime()));
+            txtAm.setText(formatDate2.format(c.getTime()));
+            int  hour = c.get(Calendar.HOUR);
+            int minute = c.get(Calendar.MINUTE);
+            Log.d(getClass().getSimpleName(),"ShareTime:"+hour+" "+minute);
+           // txtAlarmTime.setText(hour+":"+ minute);
+
+        }
     }
 
     @Override
@@ -119,8 +134,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-                        SimpleDateFormat formatDate = new SimpleDateFormat("hh:mm");
-                        SimpleDateFormat formatDate2 = new SimpleDateFormat("a");
+
                         String time = (hourOfDay + ":" + minute);
                         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.ALARM_AP, formatDate2.format(c.getTime()));
                         c = CommonMethod.ConvertTime(getApplicationContext(),hourOfDay,minute);

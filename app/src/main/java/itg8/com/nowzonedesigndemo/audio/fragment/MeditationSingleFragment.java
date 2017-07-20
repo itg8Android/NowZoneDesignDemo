@@ -46,6 +46,7 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
     @BindView(R.id.img_like)
     ImageView imgLike;
     Unbinder unbinder;
+    private String fromPlay="fromPlay";
 
     public MeditationSingleFragment() {
         // Required empty public constructor
@@ -66,6 +67,8 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
         imgPlay.setOnClickListener(this);
         imgPause.setOnClickListener(this);
         imgComplete.setOnClickListener(this);
+        imgPause.setClickable(true);
+        imgPlay.setClickable(true);
     }
 
     @Override
@@ -76,20 +79,58 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        Animation myAnim = null;
         switch (v.getId()) {
+
             case R.id.img_pause:
-                imgPlay.setVisibility(View.VISIBLE);
                 imgPause.setVisibility(View.GONE);
-                final Animation myAnims = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_down);
-                imgPlay.startAnimation(myAnims);
-                imgPause.setClickable(false);
+                //checkAnimation(fromPlay);
+
+                myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_down);
+                myAnim.setDuration(2000);
+
+                myAnim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        imgPlay.startAnimation(animation);
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        imgPlay.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
                 break;
             case R.id.img_play:
                 imgPlay.setVisibility(View.GONE);
-                imgPause.setVisibility(View.VISIBLE);
-                final Animation myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_up);
-                imgPause.startAnimation(myAnim);
-                imgPlay.setClickable(false);
+              //  checkAnimation(fromPlay);
+              myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_up);
+               // imgPause.startAnimation(myAnim);
+                myAnim.setDuration(2000);
+
+
+                myAnim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        imgPause.startAnimation(animation);
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        imgPause.setVisibility(View.VISIBLE);
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
                 break;
             case R.id.img_reply:
                 break;
@@ -98,4 +139,5 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
 
         }
     }
+
 }

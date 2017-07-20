@@ -92,6 +92,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         txtDaysMed = (CustomFontTextView) tmpRl.findViewById(R.id.txt_alarm_days);
         txtAlarmTimeMed = (CustomFontTextView) tmpRl.findViewById(R.id.txt_alarm_time);
         txtTitleSmart.setText(getResources().getString(R.string.action_meditation));
+        checkSharePrefAlarmTime();
         alarmModel = new AlarmModel();
         days = new ArrayList<>();
         daysForMeditation = new ArrayList<>();
@@ -126,7 +127,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
                 days.addAll(share.getModel());
             }
             txtDaysSmart.setText(getCheckDays(days, CommonMethod.FROMSMARTALARM));
-            txtAlarmTimeSmart.setText(convertLongToDate(share.getAlarmTime(),formatDate)+" "+convertLongToDate(share.getAlarmTime(),formatDate2));
+            checkSharePrefAlarmTime();
+           // txtAlarmTimeSmart.setText(convertLongToDate(share.getAlarmTime(),formatDate)+" "+convertLongToDate(share.getAlarmTime(),formatDate2));
 
         }
         if (SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.SAVE_DAYS_FOR_MEDITATION) != null) {
@@ -147,6 +149,20 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    private void checkSharePrefAlarmTime() {
+        if(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.START_ALARM_TIME)>0)
+        {
+            c = Calendar.getInstance();
+            c.setTimeInMillis(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.START_ALARM_TIME));
+            int  hour = c.get(Calendar.HOUR);
+            int minute = c.get(Calendar.MINUTE);
+            Log.d(getClass().getSimpleName(),"ShareTime:"+hour+" "+minute);
+            txtAlarmTimeSmart.setText(formatDate.format(c.getTime())+" "+formatDate2.format(c.getTime()));
+
+
+        }
+    }
+
     private void openDateTimeDialogue(View v, String fromsmartalarm) {
         // Get Current Time
      c = Calendar.getInstance();
@@ -161,13 +177,14 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         c = CommonMethod.ConvertTime(getApplicationContext(),hourOfDay,minute);
                         txt.setText(formatDate.format(c.getTime())+" "+formatDate2.format(c.getTime()));
-                        alarmModel.setAlarmTime(c.getTimeInMillis());
                         if(fromsmartalarm.equalsIgnoreCase(CommonMethod.FROMSMARTALARM))
                         {
                             txtAlarmTimeSmart.setText(formatDate.format(c.getTime())+" "+formatDate2.format(c.getTime()));
                         }else
                         {
                             txtAlarmTimeMed.setText(formatDate.format(c.getTime())+" "+formatDate2.format(c.getTime()));
+                            alarmModel.setAlarmTime(c.getTimeInMillis());
+
                         }
                         saveToSharePref(fromsmartalarm);
                     }

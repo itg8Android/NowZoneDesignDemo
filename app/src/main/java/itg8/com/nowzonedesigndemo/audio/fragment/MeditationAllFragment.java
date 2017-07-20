@@ -149,7 +149,7 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
                 ViewCompat.setTransitionName(v.findViewById(R.id.img_play), "1");
                 FragmentTransaction ft = getFragmentManager().beginTransaction()
                         .replace(R.id.frameLayout, meditationFragment)
-                        .addToBackStack("transaction")
+                        .addToBackStack(getClass().getSimpleName())
                         .addSharedElement(v.findViewById(R.id.img_play), "1");
                 ft.commit();
                 break;
