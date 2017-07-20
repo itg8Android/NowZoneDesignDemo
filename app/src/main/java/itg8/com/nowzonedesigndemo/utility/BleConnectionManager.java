@@ -239,20 +239,24 @@ public class BleConnectionManager implements ConnectionManager {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
             return false;
         }
-
+        /*
         // Previously connected device.  Try to reconnect.
-        if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
-                && mBluetoothGatt != null) {
-//            mBluetoothGatt.disconnect();
-//            mBluetoothGatt.close();
-
-            if (mBluetoothGatt.connect()) {
-                Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-                return true;
-            } else {
-                return false;
-            }
-        }
+        // When we change device.connect(context, autoconnect, callback) autoconnect to false, we cannot use below method there.
+        // Device acting strange when changing device autoconnect to true. It connect to only some device. So decided to change autoconnect
+        // to false and commenting below code
+        */
+//        if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
+//                && mBluetoothGatt != null) {
+////            mBluetoothGatt.disconnect();
+////            mBluetoothGatt.close();
+//
+//            if (mBluetoothGatt.connect()) {
+//                Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
 
