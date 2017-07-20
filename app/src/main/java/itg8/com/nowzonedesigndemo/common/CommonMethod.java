@@ -59,6 +59,7 @@ public class CommonMethod {
     public static final String  FROMSMARTALARM ="FROMSMARTALARM" ;
     public static final String FROMMEDITATION = "FROMMEDITATION";
     public static final String SAVE_DAYS_FOR_MEDITATION = "SAVEDAYSFORMEDITATION";
+    public static final String BLUETOOTH_OFF = "BLUETOOTH_OFF";
 
 
     private static Typeface typeface;
@@ -275,6 +276,10 @@ public class CommonMethod {
         return c;
 
 
+    }
+
+    public static void resetTmpstmp() {
+        currentMillies=0;
     }
 
     public interface alarmListener{
