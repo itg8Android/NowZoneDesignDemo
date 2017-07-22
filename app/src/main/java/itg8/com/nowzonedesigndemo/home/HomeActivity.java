@@ -37,6 +37,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
@@ -188,7 +189,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     Rolling rolling;
     private double dLast;
     private float a = 0.96f;
-    private Double lastPressure;
+    private Double lastPressure=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -297,7 +298,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
 
         waveLoadingView.setAmplitudeRatio(20);
-        waveLoadingView.setProgressValue(10);
+        waveLoadingView.setProgressValue(90);
         waveLoadingView.setBorderWidth(1f);
 //        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
 //        waveLoadingView.setAmplitudeRatio(20);
@@ -458,6 +459,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         })
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Double>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -472,10 +474,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
 //                            breathview.addSample(SystemClock.elapsedRealtime(), aDouble);
                             Log.d(TAG,"Progress wave: "+aDouble.intValue());
-                            if(!Objects.equals(lastPressure, aDouble)) {
+
                                 waveLoadingView.setProgressValue(aDouble.intValue());
-                            }
-                            lastPressure=aDouble;
+//                            }
+//                            lastPressure=aDouble;
                         } else {
                             count++;
                         }
@@ -483,7 +485,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -569,7 +571,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        update(pressure);
 //        Log.d(TAG, String.valueOf(var()));
 
-        return (MIN_CIRCLE_SIZE + ((MAX_CIRCLE_SIZE- MIN_CIRCLE_SIZE) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
+        return (MIN_CIRCLE_SIZE + ((MAX_CIRCLE_SIZE- MIN_CIRCLE_SIZE) * ((d - (lastMin)) / (lastMax - lastMin))));
 //        return (lastMin + ((lastMax- lastMin) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
 

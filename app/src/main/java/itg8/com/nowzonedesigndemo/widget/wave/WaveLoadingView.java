@@ -1,5 +1,6 @@
 package itg8.com.nowzonedesigndemo.widget.wave;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -22,6 +23,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import itg8.com.nowzonedesigndemo.R;
 
@@ -109,6 +113,8 @@ public class WaveLoadingView extends View {
     private AnimatorSet animatorSetProgress;
     private static Bitmap bitmap;
     private Canvas canvas;
+    private List<Animator> waterAnimList;
+    private Paint wavePaint;
 
     // Constructor & Init Method.
     public WaveLoadingView(final Context context) {
@@ -125,6 +131,7 @@ public class WaveLoadingView extends View {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        waterAnimList=new ArrayList<>(10);
         mContext = context;
         // Init Wave.
         mShaderMatrix = new Matrix();
@@ -380,7 +387,7 @@ public class WaveLoadingView extends View {
                 bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 canvas = new Canvas(bitmap);
 
-                Paint wavePaint = new Paint();
+                wavePaint = new Paint();
                 wavePaint.setStrokeWidth(2);
                 wavePaint.setAntiAlias(true);
 
@@ -546,15 +553,26 @@ public class WaveLoadingView extends View {
     public void setProgressValue(int progress) {
         mProgressValue = progress;
         waterLevelAnim = ObjectAnimator.ofFloat(this, "waterLevelRatio", mWaterLevelRatio, ((float) mProgressValue / 100));
-//        waterLevelAnim.setDuration(1000);
+        waterLevelAnim.setDuration(50);
         waterLevelAnim.setInterpolator(new DecelerateInterpolator());
         if(animatorSetProgress==null)
             animatorSetProgress = new AnimatorSet();
 
-//        animatorSetProgress.cancel();
-//        animatorSetProgress.end();
+        animatorSetProgress.end();
+//        if(!animatorSetProgress.isStarted()) {
+//            animatorSetProgress.play(waterLevelAnim);
+//            animatorSetProgress.start();
+//        }else {
+//            animatorSetProgress.playSequentially();
+//
+//        }
+        if(waterAnimList.size()>=10)
+            waterAnimList.remove(0);
+
+        waterAnimList.add(waterLevelAnim);
+
         animatorSetProgress.play(waterLevelAnim);
-        animatorSetProgress.start();
+            animatorSetProgress.start();
     }
 
     public float getWaveShiftRatio() {
