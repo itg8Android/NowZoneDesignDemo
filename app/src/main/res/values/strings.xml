@@ -74,5 +74,9 @@
     <string name="action_device_sleep_start">ACTION_NW_DEVICE_SLEEP_STARTED</string>
     <string name="action_device_sleep_end">ACTION_NW_DEVICE_SLEEP_ENDED</string>
 
+    <string name="title_activity_wakeup_alarm">Wakeup</string>
+    <string name="stop_button">STOP ALARM</string>
+    <string name="wakeup_alarm_content">WAKE UP..\nWAKE UP… \nWAKE UP....</string>
+
 
 </resources>

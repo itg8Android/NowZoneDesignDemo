@@ -1,5 +1,6 @@
 package itg8.com.nowzonedesigndemo.connection;
 
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCallback;
@@ -33,6 +34,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.WakeupAlarmActivity;
 import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
@@ -66,6 +68,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public static final String ACTION_STEP_COUNT = TAGWithFull + ".ACTION_STEP_COUNT";
     public static final String ACTION_STATE_ARRIVED = TAGWithFull + ".ACTION_STATE_AVAIL";
     public static final String ACTION_DEVICE = TAGWithFull + ".ACTION_DEVICE";
+    private static final int WAKE_UP = 999;
     private final IBinder mBinder = new LocalBinder();
     private final StateCheckImp stateManager;
     TblBreathCounter counter;
@@ -381,6 +384,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         int avgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
         if(avgCount<=0)
             return;
+
+
         List<TblBreathCounter> breathCounters = null;
         try {
             QueryBuilder<TblBreathCounter, Integer> builder = userDao.queryBuilder().limit(2L).orderBy(TblBreathCounter.FIELD_NAME_ID, false);
@@ -402,8 +407,9 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         if (mLastOneCount <= 0 && mSecondLastCount <= 0) {
             return;
         }
-        int newCalmCheck = avgCount - 4;
-        int newStressCheck = avgCount + 4;
+        int percent=percent(avgCount,10);
+        int newCalmCheck = avgCount - percent;
+        int newStressCheck = avgCount + percent;
 
         if (mLastOneCount <= newCalmCheck && mSecondLastCount <= newCalmCheck && count <= newCalmCheck) {
             sendBroadcastState(BreathState.CALM,count,timestamp);
@@ -414,6 +420,10 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                 sendBroadcastState(BreathState.FOCUSED, count, timestamp);
             }
         }
+    }
+
+    private int percent(int avgCount, int percent) {
+        return Math.round(((avgCount/100.0f)*percent));
     }
 
     private void sendBroadcastState(BreathState state, int count, long timestamp) {
@@ -610,8 +620,23 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onStartWakeupSevice() {
         Log.d(TAG,"notification alarm start active");
         SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.SLEEP_STARTED);
+        createPendingIntentForWakehimUp();
 //        Intent intent=new Intent(getApplicationContext(),.class);
 //        startActivity(intent);
+    }
+
+    private void createPendingIntentForWakehimUp() {
+        Intent intent = new Intent(getApplicationContext(), WakeupAlarmActivity.class);
+        intent.putExtra("WAKEUP",Calendar.getInstance().getTimeInMillis());
+        PendingIntent pi = PendingIntent.getActivity(this, WAKE_UP, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            pi.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+        if(dataManager!=null) {
+            dataManager.onSleepStarted(false);
+        }
     }
 
     public class LocalBinder extends Binder {
