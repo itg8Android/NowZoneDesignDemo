@@ -1,15 +1,13 @@
 package itg8.com.nowzonedesigndemo.breath;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,15 +18,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,10 +36,16 @@ import itg8.com.nowzonedesigndemo.breath.timeline.TimelineChartView;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
+import itg8.com.nowzonedesigndemo.utility.Helper;
+
+import static itg8.com.nowzonedesigndemo.utility.BreathState.CALM;
+import static itg8.com.nowzonedesigndemo.utility.BreathState.FOCUSED;
+import static itg8.com.nowzonedesigndemo.utility.BreathState.STRESS;
 
 
 public class BreathHistoryActivity extends AppCompatActivity implements BreathHistoryMVP.BreathHistoryView, View.OnClickListener {
 
+    private static final String TAG = BreathHistoryActivity.class.getSimpleName();
     BreathHistoryMVP.BreathHistoryPresenter presenter;
     //
 //    @BindView(R.id.recyclerview)
@@ -89,67 +91,18 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
     CustomFontTextView lblStressTime;
 
 
-    private Calendar mStart;
-
     private final SimpleDateFormat DATETIME_FORMATTER =
             new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    // new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-    private final NumberFormat NUMBER_FORMATTER = new DecimalFormat("#0.00");
     private final String[] COLUMN_NAMES = {"timestamp", "Calm", "Focus", "Stress"};
-    private TextView[] mSeries;
-    private View[] mSeriesColors;
 
-    private final int[] MODES = {
-            TimelineChartView.GRAPH_MODE_BARS,
-            TimelineChartView.GRAPH_MODE_BARS_STACK,
-            TimelineChartView.GRAPH_MODE_BARS_SIDE_BY_SIDE};
-    private final String[] MODES_TEXT = {
-            "GRAPH_MODE_BARS",
-            "GRAPH_MODE_BARS_STACK",
-            "GRAPH_MODE_BARS_SIDE_BY_SIDE"};
+//    private final int[] MODES = {
+//            TimelineChartView.GRAPH_MODE_BARS,
+//            TimelineChartView.GRAPH_MODE_BARS_STACK,
+//            TimelineChartView.GRAPH_MODE_BARS_SIDE_BY_SIDE};
 
-
-    private static final int LIVE_UPDATE_INTERVAL = 2;
-    private Handler mHandler;
-    private InMemoryCursor mCursor;
-
-//    private final Runnable mLiveUpdateTask = new Runnable() {
-//        @Override
-//        public void run() {
-//            mStart.setTimeInMillis(System.currentTimeMillis());
-//            mStart.set(Calendar.DATE, 0);
-//          //  mCursor.add(createItem(mStart.getTimeInMillis()));
-//            mHandler.postDelayed(this, LIVE_UPDATE_INTERVAL * 1000);
-//        }
-//    };
 
     private List<TblState> listState = new ArrayList<>();
-    private int[] mColor= new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")};
-
-    private Object[] createItem(long timeInMillis) {
-
-        Object[] item = new Object[COLUMN_NAMES.length];
-        item[0] = timeInMillis;
-        for (int i = 1; i < COLUMN_NAMES.length; i++) {
-            item[i] = random(9999);
-        }
-        return item;
-
-    }
-//    private Object[] createItem(Date timeInMillis) {
-//
-//            Object[] item = new Object[COLUMN_NAMES.length];
-//            item[0] = timeInMillis;
-//            for (int i = 1; i < COLUMN_NAMES.length; i++) {
-//                item[i] = random(9999);
-//            }
-//            return item;
-//
-//    }
-
-    private int random(int max) {
-        return (int) (Math.random() * (max + 1));
-    }
+    private int[] mColor = new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")};
 
 
     @Override
@@ -159,8 +112,8 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         ButterKnife.bind(this);
         presenter = new BreathHistoryPresenterImp(this);
-        presenter.initListOfState();
         init();
+        presenter.initListOfState();
 
 //        FragmentManager fm = getSupportFragmentManager();
 //        viewPager.setAdapter(new BreathPagerAdapter(getApplicationContext(),fm));
@@ -169,7 +122,7 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 
     }
 
-    private void checkScreenDensity(Context context, TextView... textView) {
+    private void checkScreenDensity(TextView... textView) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         switch (displayMetrics.densityDpi) {
@@ -179,19 +132,14 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
                     text.setTextSize(15);
 
                 }
-                //textView.setTextSize(R.dimen.lbl_breath_value);
                 break;
             case DisplayMetrics.DENSITY_MEDIUM:
-                //textView.setTextSize(R.dimen.lbl_breath_value);
                 for (TextView text : textView
                         ) {
                     text.setTextSize(18);
                 }
-
-
                 break;
             case DisplayMetrics.DENSITY_HIGH:
-                //  textView.setTextSize(R.dimen.lbl_breath_value);
                 for (TextView text : textView
                         ) {
 
@@ -210,12 +158,11 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        checkScreenDensity(getApplicationContext(),lblCalm, lblCalmTime, lblFocus, lblFocusTime, lblStress, lblStressTime, txtCalmValue, txtFocusValue, txtStressValue );
+        checkScreenDensity(lblCalm, lblCalmTime, lblFocus, lblFocusTime, lblStress, lblStressTime, txtCalmValue, txtFocusValue, txtStressValue);
 
         rlCalm.setOnClickListener(this);
         rlFocus.setOnClickListener(this);
         rlStress.setOnClickListener(this);
-        initGraphWithTimeline();
 
     }
 
@@ -228,12 +175,10 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         graph.setGraphMode(1);
         graph.setGraphAreaBackground(Color.TRANSPARENT);
 
-        // graph.setUserPalette(new int[]{Color.parseColor("#388E3C"),Color.parseColor("#1976D2"),Color.parseColor("#EF5350")});
-        //graph.setUserPalette(new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#F8BBD0")});
         graph.setUserPalette(new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")});
         //E53935
-        mCursor = createInMemoryCursor();
-       // createRandomData(mCursor);
+        InMemoryCursor mCursor = createInMemoryCursor();
+        createRandomData(mCursor, listState);
         graph.observeData(mCursor);
 
         graph.setOnClickItemListener(new TimelineChartView.OnClickItemListener() {
@@ -243,6 +188,9 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
                 System.out.println(timestamp);
                 Log.d(getClass().getSimpleName(), "TimesStamped:" + timestamp);
                 graph.smoothScrollTo(item.mTimestamp);
+                double[] object=item.mSeries;
+                putValuesTotxt(object,null);
+
             }
         });
 
@@ -251,10 +199,20 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 
     }
 
+    private void putValuesTotxt(@Nullable double[] object, @Nullable Object[] data) {
+        if(object!=null) {
+            txtCalmValue.setText(String.valueOf(object[1]));
+            txtFocusValue.setText(String.valueOf(object[2]));
+            txtStressValue.setText(String.valueOf(object[3]));
+        }else if(data!=null){
+            txtCalmValue.setText(String.valueOf(data[1]));
+            txtFocusValue.setText(String.valueOf(data[2]));
+            txtStressValue.setText(String.valueOf(data[3]));
+        }
+    }
+
     private InMemoryCursor createInMemoryCursor() {
-        InMemoryCursor cursor = new InMemoryCursor(COLUMN_NAMES);
-        createRandomData(cursor);
-        return cursor;
+        return new InMemoryCursor(COLUMN_NAMES);
 
     }
 
@@ -262,74 +220,92 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
         LayoutInflater inflater = LayoutInflater.from(this);
         ViewGroup series = (ViewGroup) findViewById(R.id.item_series);
 
-        mSeries = new TextView[COLUMN_NAMES.length - 1];
-        mSeriesColors = new View[COLUMN_NAMES.length - 1];
+        TextView[] mSeries = new TextView[COLUMN_NAMES.length - 1];
+        View[] mSeriesColors = new View[COLUMN_NAMES.length - 1];
         for (int i = 1; i < COLUMN_NAMES.length; i++) {
             View v = inflater.inflate(R.layout.serie_item_layout, series, false);
             TextView title = (TextView) v.findViewById(R.id.title);
-            //title.setText(getString(R.string.item_name, COLUMN_NAMES[i]));
             title.setText(COLUMN_NAMES[i]);
             title.setTextColor(Color.WHITE);
             mSeries[i - 1] = (TextView) v.findViewById(R.id.value);
             mSeriesColors[i - 1] = v.findViewById(R.id.color);
-            mSeriesColors[i - 1].setBackgroundColor(mColor[i-1]);
+            mSeriesColors[i - 1].setBackgroundColor(mColor[i - 1]);
             series.addView(v);
         }
 
     }
 
-    private void createRandomData(InMemoryCursor cursor) {
+    private void createRandomData(InMemoryCursor cursor, List<TblState> list) {
         List<Object[]> data = new ArrayList<>();
-        Calendar today = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
-        //Calendar today = Calendar.getInstance( Locale.getDefault());
-//        today.set(Calendar.HOUR_OF_DAY, 0);
-//        today.set(Calendar.MINUTE, 0);
-//        today.set(Calendar.SECOND, 0);
-//        today.set(Calendar.MILLISECOND, 0);
-        //today.set(Calendar.HOUR_OF_DAY, 24);
-//        today.set(Calendar.HOUR, 0);
-//        today.set(Calendar.SECOND, 0);
-        today.set(Calendar.DAY_OF_MONTH, 0);
-      //  mStart = (Calendar) today.clone();
-        mStart = Calendar.getInstance();
-        mStart.add(Calendar.DAY_OF_MONTH, -30);
-        while (mStart.compareTo(today) <= 0) {
-            data.add(createItem(mStart.getTimeInMillis()));
-            mStart.add(Calendar.DAY_OF_MONTH, 1);
+        HashMap<String, Object[]> dateWiseStates = new LinkedHashMap<>();
+        Log.d(TAG, "creating data....");
+        Object[] object = new Object[COLUMN_NAMES.length];
+        for (TblState states :
+                list) {
+            if (dateWiseStates.containsKey(states.getDate())) {
+                object = dateWiseStates.get(states.getDate());
+
+            }
+            object[0] = states.getTimestampEnd();
+            if (states.getState().equalsIgnoreCase(CALM.toString())) {
+                if (object[1] == null)
+                    object[1] = 1;
+                else
+                    object[1] = (int) object[1] + 1;
+            } else {
+                if (object[1] == null) {
+                    object[1] = 0;
+                }
+            }
+            if (states.getState().equalsIgnoreCase(FOCUSED.toString())) {
+                if (object[2] == null)
+                    object[2] = 1;
+                else
+                    object[2] = (int) object[2] + 1;
+            } else {
+                if (object[2] == null) {
+                    object[2] = 0;
+                }
+            }
+            if (states.getState().equalsIgnoreCase(STRESS.toString())) {
+                if (object[3] == null)
+                    object[3] = 1;
+                else
+                    object[3] = (int) object[3] + 1;
+            } else {
+                if (object[3] == null) {
+                    object[3] = 0;
+                }
+            }
+            dateWiseStates.put(states.getDate(), object);
         }
-        mStart.add(Calendar.DAY_OF_MONTH, -1);
+
+        //noinspection Convert2streamapi
+        for (Map.Entry<String, Object[]> entry : dateWiseStates.entrySet()) {
+            data.add(entry.getValue());
+        }
+        putValuesTotxt(null,dateWiseStates.get(Helper.getCurrentDate()));
+
         cursor.addAll(data);
-
-
     }
+
 
 
     @Override
     public void onListAvailable(List<TblState> list) {
         this.listState = list;
-
-
+        initGraphWithTimeline();
     }
 
-    private void setRecyclerView(List<TblState> list) {
-        BreathHistoryAdapter adapter = new BreathHistoryAdapter(list);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-//        recyclerview.setLayoutManager(layoutManager);
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerview.getContext(),
-//                layoutManager.getOrientation());
-//        recyclerview.addItemDecoration(dividerItemDecoration);
-//        recyclerview.setAdapter(adapter);
-
-    }
 
     @Override
     public void onErrorLoading(String error) {
-
+        Log.e(TAG, "Error:" + error);
     }
 
     @Override
     public void onConnectionFailed(String issue) {
-
+        Log.e(TAG, "connection Error :" + issue);
     }
 
     @Override

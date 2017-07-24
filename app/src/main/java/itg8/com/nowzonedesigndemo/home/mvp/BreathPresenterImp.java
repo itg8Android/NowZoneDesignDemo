@@ -144,7 +144,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     @Override
     public void onPressureReceived(double pressure, long ts) {
         if (checkNotNull()) {
-            view.onPressureDataAvail(pressure,ts);
+//            view.onPressureDataAvail(pressure,ts);
         }
     }
 

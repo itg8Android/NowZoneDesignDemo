@@ -454,8 +454,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
 //                firstPreference(pressure);
-                secondPref(pressure);
-                e.onNext(calculateProportion(pressure));
+
+//                secondPref(pressure);
+//                e.onNext(calculateProportion(pressure));
             }
         })
                 .subscribeOn(Schedulers.io())

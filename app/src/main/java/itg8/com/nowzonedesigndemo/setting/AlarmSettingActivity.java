@@ -71,7 +71,6 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         ButterKnife.bind(this);
         init();
 
-
     }
 
     private void init() {

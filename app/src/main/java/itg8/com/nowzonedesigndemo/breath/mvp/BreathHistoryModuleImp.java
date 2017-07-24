@@ -12,6 +12,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.common.DBModule;
@@ -71,7 +72,7 @@ public class BreathHistoryModuleImp extends DBModule implements BreathHistoryMVP
         Observable.create((ObservableOnSubscribe<List<TblState>>) e -> {
             e.onNext(listAllDataFrom());
         })
-                .observeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> listener.onListAvailable(o), Throwable::printStackTrace,() -> Timber.d("CREATED"));
     }

@@ -9,6 +9,8 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -23,7 +25,6 @@ import java.util.UUID;
 import itg8.com.nowzonedesigndemo.connection.ConnectionStateListener;
 import itg8.com.nowzonedesigndemo.exception.StringEmptyException;
 import itg8.com.nowzonedesigndemo.tosort.ConnectionManager;
-import timber.log.Timber;
 
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.BYTE_ARRAY_ON;
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.CLIENT_CHARACTERISTIC_CONFIG;
@@ -40,6 +41,8 @@ public class BleConnectionManager implements ConnectionManager {
 
 //    private static final int ERR = 0;
     private static final String TAG = BleConnectionManager.class.getSimpleName();
+    private static final int MSG_PRESSURE_ACCEL = 101;
+    private static final int MSG_CURRENT_STATE = 102;
     private final ConnectionStateListener listener;
     private BluetoothGatt mBluetoothGatt;
     private BluetoothAdapter mBluetoothAdapter;
@@ -53,6 +56,34 @@ public class BleConnectionManager implements ConnectionManager {
     private int retryDescover=1;
     private  boolean connecting;
 
+
+    /**
+     * All problem persist on connection can be solve by handler. Lets try it.
+     * STATUS:
+     * @param listener
+     */
+
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            BluetoothGattCharacteristic characteristic;
+            switch (msg.what){
+                case MSG_PRESSURE_ACCEL:
+                   characteristic=(BluetoothGattCharacteristic) msg.obj;
+                    if(characteristic.getValue()==null){
+                        Log.w(TAG,"Error obtaining prssure data");
+                        return;
+                    }
+                    listener.onDataAvail(characteristic.getValue());
+                    break;
+                case MSG_CURRENT_STATE:
+                    listener.currentState((DeviceState) msg.obj);
+                    break;
+            }
+        }
+    };
+
+
     public BleConnectionManager(ConnectionStateListener listener) {
         if (listener == null) {
             throw new NullPointerException("You need to implement ConnectionStateListener in caller service...");
@@ -63,6 +94,53 @@ public class BleConnectionManager implements ConnectionManager {
 
     private void initCallback() {
         callback = new BluetoothGattCallback() {
+            /* State Machine Tracking */
+            private int mState=0;
+
+            private void reset(){mState=0;}
+
+            private void advance(){mState++;}
+
+            /*
+            *   Send an enable command to each sensor by writing a configuration
+            *   characteistic, This is specific to the sensorTag to keep power low by
+            *   disableing sensors you aren't using.
+             */
+            private void enableNextSensor(BluetoothGatt gatt){
+                BluetoothGattCharacteristic characteristic = null;
+                switch (mState){
+                    case 0:
+                        Log.d(TAG,"Enabling pressure accel");
+                        characteristic=gatt.getService(TEMP_SERVICE_UUID).getCharacteristic(SENSOR_ON_OFF);
+                        characteristic.setValue(new byte[]{0x02});
+                        break;
+                }
+                if(characteristic!=null)
+                    gatt.writeCharacteristic(characteristic);
+                else
+                    Log.w(TAG,"Characteristics null. Please check mState=0");
+            }
+
+            /*
+             * Enable notification of changes on data characteristics for each sensor,
+             * by writing enable notification flag
+             */
+            private void setNotifyNextSensor(BluetoothGatt gatt){
+                BluetoothGattCharacteristic characteristic=null;
+                switch (mState){
+                    case 0:
+                        Log.d(TAG,"Discriptor value");
+                        characteristic=gatt.getService(TEMP_SERVICE_UUID).getCharacteristic(DATA_ENABLE);
+                }
+
+                if(characteristic!=null){
+                    gatt.setCharacteristicNotification(characteristic,true);
+                    BluetoothGattDescriptor desc=characteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
+                    desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                    gatt.writeDescriptor(desc);
+                }
+            }
+
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
@@ -72,14 +150,17 @@ public class BleConnectionManager implements ConnectionManager {
                     Log.d(TAG, "Connected to GATT Server");
                     Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
                     if (discoverServices()) {
-                        listener.currentState(DeviceState.DISCOVERING);
+                        mHandler.sendMessage(Message.obtain(null,MSG_CURRENT_STATE,DeviceState.DISCOVERING));
                     }else
                     {
                         Log.d(TAG,"Fail to descover service: Error "+status );
                     }
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                    listener.currentState(DeviceState.DISCONNECTED);
+                    mHandler.sendMessage(Message.obtain(null,MSG_CURRENT_STATE,DeviceState.DISCONNECTED));
                     Log.i(TAG, "Disconnected from GATT server.");
+                    connecting=false;
+                }else if(status != BluetoothGatt.GATT_SUCCESS){
+                    gatt.disconnect();
                 }
             }
 
@@ -87,10 +168,12 @@ public class BleConnectionManager implements ConnectionManager {
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     Log.w(TAG, "onServicesDiscovered");
-                    listener.currentState(DeviceState.DISCOVERED);
-                    if (configureServices()) {
-                        Log.d(TAG, "write successful");
-                    }
+                    mHandler.sendMessage(Message.obtain(null,MSG_CURRENT_STATE,DeviceState.DISCOVERED));
+//                    if (configureServices()) {
+//                        Log.d(TAG, "write successful");
+//                    }
+                    reset();
+                    enableNextSensor(gatt);
                 } else {
                     failWithReason(DeviceState.DISCOVER_FAIL, status);
                     Log.w(TAG, "onServicesDiscovered fail received: " + status);
@@ -109,26 +192,36 @@ public class BleConnectionManager implements ConnectionManager {
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 Logs.d("Characteristics written:"+characteristic.getValue());
+                setNotifyNextSensor(gatt);
                 super.onCharacteristicWrite(gatt, characteristic, status);
             }
 
             @Override
             public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
                 Log.d(TAG, "DescriptorWrite Called");
-
-                if (writeCharacteristics(TEMP_SERVICE_UUID, SENSOR_ON_OFF)) {
-                    listener.currentState(DeviceState.WRITE);
-                } else {
-                    failWithReason(DeviceState.WRITE_FAIL, status);
-                }
-                if(descriptorWriteQueue!=null && descriptorWriteQueue.size()>0)
-                    descriptorWriteQueue.poll();
+                advance();
+                mHandler.sendMessage(Message.obtain(null,MSG_CURRENT_STATE,DeviceState.WRITE));
+                enableNextSensor(gatt);
+//                if (writeCharacteristics(TEMP_SERVICE_UUID, SENSOR_ON_OFF)) {
+//                    listener.currentState(DeviceState.WRITE);
+//                } else {
+//                    failWithReason(DeviceState.WRITE_FAIL, status);
+//                }
+//                if(descriptorWriteQueue!=null && descriptorWriteQueue.size()>0)
+//                    descriptorWriteQueue.poll();
             }
 
             @Override
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 //            Log.d(TAG,"characteristics int value: "+ characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, ERR).intValue());
-                dataReceived(characteristic.getValue());
+                mHandler.sendMessage(Message.obtain(null,MSG_PRESSURE_ACCEL,characteristic));
+//                dataReceived(characteristic.getValue());
+            }
+
+            @Override
+            public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+                Log.d(TAG,"Remote RSSI: "+rssi);
+                super.onReadRemoteRssi(gatt, rssi, status);
             }
         };
     }
@@ -220,7 +313,15 @@ public class BleConnectionManager implements ConnectionManager {
             mBluetoothGatt.close();
             callback=null;
             mBluetoothGatt=null;
+            connecting=false;
 //            mBluetoothGatt=null;
+        }
+    }
+
+    @Override
+    public void isDisconnectedByUser(boolean b) {
+        if(!b){
+          connect(address);
         }
     }
 
@@ -278,11 +379,16 @@ public class BleConnectionManager implements ConnectionManager {
         Log.d(TAG, "Trying to create a new connection.");
 
         mBluetoothDeviceAddress = address;
-        if(callback==null)
+        if(callback==null) {
+            Log.d(TAG, "Callback is null");
             initCallback();
+        }
         if(!connecting) {
+            Log.d(TAG, "now in connecting,....");
             listener.connectGatt(device, callback);
             connecting = true;
+        }else {
+            Log.d(TAG, "not connecting.. connecting is true");
         }
 
             return true;

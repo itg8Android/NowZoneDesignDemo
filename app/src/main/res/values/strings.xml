@@ -77,6 +77,7 @@
     <string name="title_activity_wakeup_alarm">Wakeup</string>
     <string name="stop_button">STOP ALARM</string>
     <string name="wakeup_alarm_content">WAKE UP..\nWAKE UP… \nWAKE UP....</string>
+    <string name="msg_device_disconnect">Please connect device manually...</string>
 
 
 </resources>

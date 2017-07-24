@@ -1,5 +1,7 @@
 package itg8.com.nowzonedesigndemo.connection;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,6 +11,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +39,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.WakeupAlarmActivity;
+import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
 import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
@@ -45,6 +50,7 @@ import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
 import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
+import itg8.com.nowzonedesigndemo.home.HomeActivity;
 import itg8.com.nowzonedesigndemo.tosort.RDataManager;
 import itg8.com.nowzonedesigndemo.tosort.RDataManagerListener;
 import itg8.com.nowzonedesigndemo.utility.BleConnectionCompat;
@@ -58,6 +64,9 @@ import itg8.com.nowzonedesigndemo.utility.StateCheckImp;
 
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.STEP_COUNT;
 import static itg8.com.nowzonedesigndemo.common.CommonMethod.getArragedData;
+import static itg8.com.nowzonedesigndemo.home.HomeActivity.COLOR_CALM_M;
+import static itg8.com.nowzonedesigndemo.home.HomeActivity.COLOR_FOCUSED_M;
+import static itg8.com.nowzonedesigndemo.home.HomeActivity.COLOR_STRESS_M;
 
 
 public class BleService extends OrmLiteBaseService<DbHelper> implements ConnectionStateListener, RDataManagerListener, OnStateAvailableListener {
@@ -68,7 +77,15 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public static final String ACTION_STEP_COUNT = TAGWithFull + ".ACTION_STEP_COUNT";
     public static final String ACTION_STATE_ARRIVED = TAGWithFull + ".ACTION_STATE_AVAIL";
     public static final String ACTION_DEVICE = TAGWithFull + ".ACTION_DEVICE";
+    private static final String CALM = "State: CALM";
+    private static final String FOCUSED = "State: FOCUSED";
+    private static final String STRESS = "State: STRESS";
+    private static final String DISCONNECTED = "Device Disconnected...";
     private static final int WAKE_UP = 999;
+    private static final int STRESS_NOTIFICATION_ID = 201;
+    private static final int CALM_NOTIFICATION_ID = 202;
+    private static final int FOCUSED_NOTIFICATION_ID = 203;
+    private static final int DISCONNECTED_NOTIFICATION_ID = 204;
     private final IBinder mBinder = new LocalBinder();
     private final StateCheckImp stateManager;
     TblBreathCounter counter;
@@ -78,37 +95,37 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private Dao<TblStepCount, Integer> stepDao = null;
     private BleConnectionManager manager;
     private Calendar calendar;
+    boolean autoConnect;
 
+    private boolean disconnectByUser;
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(getResources().getString(R.string.action_device_disconnect))) {
                 if (manager != null) {
-                    if(intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT))
+                    if (intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT))
                         manager.disconnect();
 
-                    if(intent.hasExtra(CommonMethod.BLUETOOTH_OFF)){
+
+                    if (intent.hasExtra(CommonMethod.BLUETOOTH_OFF)) {
                         manager.disconnect();
                         return;
                     }
-                    SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE,DeviceState.DISCONNECTED.name());
-                    Intent i=new Intent(context.getResources().getString(R.string.action_data_avail));
-                    i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED,"DISCONNECT");
+                    disconnectByUser=true;
+                    SharePrefrancClass.getInstance(context).savePref(CommonMethod.STATE, DeviceState.DISCONNECTED.name());
+                    Intent i = new Intent(context.getResources().getString(R.string.action_data_avail));
+                    i.putExtra(CommonMethod.ACTION_GATT_DISCONNECTED, "DISCONNECT");
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
                 }
-            }else if(action.equalsIgnoreCase(getResources().getString(R.string.action_device_sleep_start)))
-            {
-                if(dataManager!=null)
-                {
+            } else if (action.equalsIgnoreCase(getResources().getString(R.string.action_device_sleep_start))) {
+                if (dataManager != null) {
                     dataManager.onSleepStarted(true);
-                    dataManager.onStartAlarmTime(intent.getLongExtra(CommonMethod.START_ALARM_TIME,0));
-                    dataManager.onEndAalrmTime(intent.getLongExtra(CommonMethod.END_ALARM_TIME,0));
+                    dataManager.onStartAlarmTime(intent.getLongExtra(CommonMethod.START_ALARM_TIME, 0));
+                    dataManager.onEndAalrmTime(intent.getLongExtra(CommonMethod.END_ALARM_TIME, 0));
                 }
-            }else if(action.equals(getResources().getString(R.string.action_device_sleep_end)))
-            {
-                if(dataManager!= null)
-                {
+            } else if (action.equals(getResources().getString(R.string.action_device_sleep_end))) {
+                if (dataManager != null) {
                     dataManager.onSleepStarted(false);
                 }
             }
@@ -130,11 +147,12 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "BLE Service started");
-        dataManager = new RDataManagerImp(this,getApplicationContext());
-        dataManager.onSleepStarted(SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.SLEEP_STARTED));;
+        dataManager = new RDataManagerImp(this, getApplicationContext());
+        dataManager.onSleepStarted(SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.SLEEP_STARTED));
+        ;
         dataManager.onStartAlarmTime(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.START_ALARM_TIME));
         dataManager.onEndAalrmTime(SharePrefrancClass.getInstance(getApplicationContext()).getLPref(CommonMethod.END_ALARM_TIME));
-        IntentFilter intentFilter =new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(getResources().getString(R.string.action_device_disconnect));
         intentFilter.addAction(getResources().getString(R.string.action_device_sleep_start));
         intentFilter.addAction(getResources().getString(R.string.action_device_sleep_end));
@@ -144,10 +162,10 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        calendar=Calendar.getInstance();
-        profileModel=((AppApplication)getApplication()).getProfileModel();
-        if(intent!=null && intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)){
-            if(manager!=null){
+        calendar = Calendar.getInstance();
+        profileModel = ((AppApplication) getApplication()).getProfileModel();
+        if (intent != null && intent.hasExtra(CommonMethod.ENABLE_TO_CONNECT)) {
+            if (manager != null) {
 //                manager.disconnect();
 
                 return START_STICKY;
@@ -162,7 +180,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             e.printStackTrace();
         }
         String address = null, name = null;
-        if (intent!=null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
+        if (intent != null && intent.hasExtra(CommonMethod.DEVICE_ADDRESS)) {
             address = intent.getStringExtra(CommonMethod.DEVICE_ADDRESS);
             name = intent.getStringExtra(CommonMethod.DEVICE_NAME);
         }
@@ -188,7 +206,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     private void checkAvailableDeviceToConnect() {
         if (SharePrefrancClass.getInstance(getApplicationContext()).hasSPreference(CommonMethod.DEVICE_ADDRESS) &&
-                SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS)!=null) {
+                SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS) != null) {
             sendToConnect(SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.DEVICE_ADDRESS), "name");
         }
     }
@@ -220,11 +238,10 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
      */
     private void sendBroadcast(String key, Object data) {
         Intent intent = new Intent(getResources().getString(R.string.action_data_avail));
-        if (data instanceof DataModel){
+        if (data instanceof DataModel) {
             intent.putExtra(key, ((DataModel) data).getPressure());
-            intent.putExtra(CommonMethod.ACTION_DATA_LONG,((DataModel) data).getTimestamp());
-    }
-        else if (data instanceof Integer) {
+            intent.putExtra(CommonMethod.ACTION_DATA_LONG, ((DataModel) data).getTimestamp());
+        } else if (data instanceof Integer) {
             intent.putExtra(key, (int) data);
         }
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
@@ -254,6 +271,16 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void currentState(DeviceState state) {
+        if (state == DeviceState.DISCONNECTED) {
+            if(disconnectByUser) {
+                disconnectByUser = false;
+                manager.isDisconnectedByUser(true);
+            }else {
+                manager.isDisconnectedByUser(false);
+            }
+            Intent intent = new Intent(this, HomeActivity.class);
+            createNotification(DISCONNECTED, COLOR_STRESS_M, getResources().getString(R.string.msg_device_disconnect),intent);
+        }
         Log.d(TAG, "state is: " + state.name());
         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STATE, state.name());
         CommonMethod.resetTmpstmp();
@@ -296,17 +323,19 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     /**
      * This helps to connect with ble device
+     *
      * @param device
      * @param callback
      */
     @Override
     public void connectGatt(BluetoothDevice device, BluetoothGattCallback callback) {
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback,BluetoothDevice.TRANSPORT_LE));
-                    }else {
-                        manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback));
-                    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback, BluetoothDevice.TRANSPORT_LE));
+        } else {
+            manager.setBluetoothGatt(device.connectGatt(getApplicationContext(), false, callback));
+        }
+        autoConnect=true;
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -341,32 +370,6 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         sendBroadcast(CommonMethod.ACTION_DATA_AVAILABLE, dataModel);
 
     }
-    private double dLast;
-    private float a = 0.96f;
-    private static final double PI_MIN = -8.02d;
-    private static final double PI_MAX = 8.02d;
-    private static final double MIN_PRESSURE = 1100;
-    private static final double MAX_PRESSURE = 8100;
-
-    private double calculateProportion(double pressure) {
-//        return (-0.02+(1.02*((pressure-(lastMax-500))/(lastMax-(lastMax-500)))));
-//        double d=(double) Math.round((CONST_1+(CONST_2*((pressure-(lastMin))/(lastMax-lastMin)))) * 1000000000000000000d) / 1000000000000000000d;
-//        s(i)=a*y(i)+(1-a)*s(i-1)
-
-
-        double d = a * pressure + ((1 - a) * dLast);
-//        double d=pressure;
-//        rolling.add(pressure);
-//        d=rolling.getaverage();
-        dLast = d;
-        // Log.d(TAG,"ds:"+d);
-//        return (PI_MIN + ((PI_MAX-PI_MIN) * ((d - (lastMin)) / (lastMax - lastMin))));
-
-//        update(pressure);
-//        Log.d(TAG, String.valueOf(var()));
-
-        return (PI_MIN + ((PI_MAX - PI_MIN) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
-    }
 
 
     /**
@@ -377,12 +380,12 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onCountAvailable(int count, long timestamp) {
         sendCountBroadcast(count, timestamp);
         stateManager.calculateNewBreathAvgForState(timestamp, userDao);
-        checkStateOfMind(count,timestamp);
+        checkStateOfMind(count, timestamp);
     }
 
     private void checkStateOfMind(int count, long timestamp) {
         int avgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
-        if(avgCount<=0)
+        if (avgCount <= 0)
             return;
 
 
@@ -390,7 +393,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         try {
             QueryBuilder<TblBreathCounter, Integer> builder = userDao.queryBuilder().limit(2L).orderBy(TblBreathCounter.FIELD_NAME_ID, false);
             breathCounters = userDao.query(builder.prepare());
-            Log.d(TAG,"breathcounters table data:"+new Gson().toJson(breathCounters));
+            Log.d(TAG, "breathcounters table data:" + new Gson().toJson(breathCounters));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -407,30 +410,74 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
         if (mLastOneCount <= 0 && mSecondLastCount <= 0) {
             return;
         }
-        int percent=percent(avgCount,10);
+        int percent = percent(avgCount, 10);
         int newCalmCheck = avgCount - percent;
         int newStressCheck = avgCount + percent;
 
-        if (mLastOneCount <= newCalmCheck && mSecondLastCount <= newCalmCheck && count <= newCalmCheck) {
-            sendBroadcastState(BreathState.CALM,count,timestamp);
+        if (mLastOneCount <= newCalmCheck && mSecondLastCount <= newCalmCheck && count == newCalmCheck) {
+            sendBroadcastState(BreathState.CALM, count, timestamp);
         } else if (mLastOneCount >= newStressCheck && mSecondLastCount >= newStressCheck && count >= newStressCheck) {
             sendBroadcastState(BreathState.STRESS, count, timestamp);
-        } else{
-            if(mLastOneCount == count && mSecondLastCount == count) {
+        } else {
+            if (count > avgCount && mLastOneCount == count && mSecondLastCount == count) {
                 sendBroadcastState(BreathState.FOCUSED, count, timestamp);
             }
         }
     }
 
     private int percent(int avgCount, int percent) {
-        return Math.round(((avgCount/100.0f)*percent));
+        return Math.round(((avgCount / 100.0f) * percent));
     }
 
     private void sendBroadcastState(BreathState state, int count, long timestamp) {
         Intent intent = new Intent(getResources().getString(R.string.action_data_avail));
         intent.putExtra(ACTION_STATE_ARRIVED, state);
+        buildNotificationForState(state);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-        saveStateToDb(state,count,timestamp);
+        saveStateToDb(state, count, timestamp);
+    }
+
+    private void buildNotificationForState(BreathState state) {
+        Intent intent = new Intent(this, BreathHistoryActivity.class);
+        if (state == BreathState.CALM) {
+            createNotification(CALM, COLOR_CALM_M, "You have calm for last 2 minutes",intent);
+        } else if (state == BreathState.FOCUSED) {
+            createNotification(FOCUSED, COLOR_FOCUSED_M, "You have focused for last 2 minutes",intent);
+        } else if (state == BreathState.STRESS) {
+            createNotification(STRESS, COLOR_STRESS_M, "You have stress for last 2 minutes",intent);
+        }
+    }
+
+    private void createNotification(String state, String color, String message, Intent intent) {
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+        // Build notification
+        // Actions are just fake
+        Notification noti = new Notification.Builder(this)
+                .setContentTitle(state)
+                .setContentText(message).setSmallIcon(R.drawable.ic_launcher)
+                .setContentIntent(pIntent)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setColor(Color.parseColor(color)).build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // hide the notification after its selected
+        noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(getIdByState(state), noti);
+
+    }
+
+    private int getIdByState(String state) {
+        if (state.equalsIgnoreCase(CALM))
+            return CALM_NOTIFICATION_ID;
+        else if (state.equalsIgnoreCase(FOCUSED)) {
+            return FOCUSED_NOTIFICATION_ID;
+        } else if (state.equalsIgnoreCase(STRESS)) {
+            return STRESS_NOTIFICATION_ID;
+        } else if (state.equalsIgnoreCase(DISCONNECTED)) {
+            return DISCONNECTED_NOTIFICATION_ID;
+        }
+        return 0;
     }
 
     private void saveStateToDb(BreathState state, int count, long timestamp) {
@@ -466,7 +513,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 //            tblState=new TblState();
 //            tblState.setTimestampStart(timestamp);
 //        }
-        tblState=new TblState();
+        tblState = new TblState();
         String currentDate = Helper.getCurrentDate();
         tblState.setTimestampEnd(timestamp);
         tblState.setCount(count);
@@ -484,55 +531,55 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onStepCountReceived(int step) {
         storeStepToDb(step);
-        SharePrefrancClass.getInstance(getApplicationContext()).setIPreference(STEP_COUNT,step);
+        SharePrefrancClass.getInstance(getApplicationContext()).setIPreference(STEP_COUNT, step);
         sendStepBroadcast(ACTION_STEP_COUNT, step);
     }
 
     private void storeStepToDb(int step) {
-        if(profileModel==null){
-            profileModel=((AppApplication)getApplication()).getProfileModel();
+        if (profileModel == null) {
+            profileModel = ((AppApplication) getApplication()).getProfileModel();
         }
-        Observable.create((ObservableOnSubscribe<Void>) e->{
+        Observable.create((ObservableOnSubscribe<Void>) e -> {
             calendar.setTimeInMillis(System.currentTimeMillis());
-            List<TblStepCount> countList=stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE,calendar.getTime()).query();
+            List<TblStepCount> countList = stepDao.queryBuilder().where().eq(TblStepCount.FIELD_DATE, calendar.getTime()).query();
             TblStepCount count;
-            boolean fi=false;
-            if(countList.size()>0) {
+            boolean fi = false;
+            if (countList.size() > 0) {
                 count = countList.get(countList.size() - 1);
-                fi=true;
-            }else
-                count=new TblStepCount();
+                fi = true;
+            } else
+                count = new TblStepCount();
             count.setDate(calendar.getTime());
             count.setSteps(step);
-            count.setCalBurn(Helper.calculateCalBurnByStepCount(step,profileModel));
+            count.setCalBurn(Helper.calculateCalBurnByStepCount(step, profileModel));
             count.setGoal(SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.GOAL));
-            if(!fi)
+            if (!fi)
                 stepDao.create(count);
             else
                 stepDao.update(count);
 
         }).subscribeOn(Schedulers.io())
-        .subscribe(new Observer<Void>() {
-            @Override
-            public void onSubscribe(Disposable d) {
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(Void aLong) {
+                    @Override
+                    public void onNext(Void aLong) {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG,e.getMessage(),e);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
 
-            @Override
-            public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-            }
-        });
+                    }
+                });
     }
 
     private void sendStepBroadcast(String action, int step) {
@@ -544,8 +591,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 //        intent.putExtra(CommonMethod.BPM_COUNT,count);
 
 //        if(count>) {
-            sendBroadcast(CommonMethod.BPM_COUNT, count);
-            storeToDb(count, timestamp);
+        sendBroadcast(CommonMethod.BPM_COUNT, count);
+        storeToDb(count, timestamp);
 //        }
     }
 
@@ -596,11 +643,11 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     @Override
     public void onStateAvailable(TblAverage model) {
         if (avgDao != null && model != null) {
-            Log.d(TAG,"AvgDao in save");
+            Log.d(TAG, "AvgDao in save");
             SharePrefrancClass.getInstance(getApplicationContext()).setIPreference(CommonMethod.USER_CURRENT_AVG, model.getAverage());
             try {
-                int c=avgDao.create(model);
-                Log.d(TAG,"AvgDao saved: "+c);
+                int c = avgDao.create(model);
+                Log.d(TAG, "AvgDao saved: " + c);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -618,23 +665,26 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
 
     @Override
     public void onStartWakeupSevice() {
-        Log.d(TAG,"notification alarm start active");
-        SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.SLEEP_STARTED);
-        createPendingIntentForWakehimUp();
+//       TODO uncomment after done sleep
+//        Log.d(TAG,"notification alarm start active");
+//        SharePrefrancClass.getInstance(getApplicationContext()).clearPref(CommonMethod.SLEEP_STARTED);
+//        createPendingIntentForWakehimUp();
+
+
 //        Intent intent=new Intent(getApplicationContext(),.class);
 //        startActivity(intent);
     }
 
     private void createPendingIntentForWakehimUp() {
         Intent intent = new Intent(getApplicationContext(), WakeupAlarmActivity.class);
-        intent.putExtra("WAKEUP",Calendar.getInstance().getTimeInMillis());
+        intent.putExtra("WAKEUP", Calendar.getInstance().getTimeInMillis());
         PendingIntent pi = PendingIntent.getActivity(this, WAKE_UP, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         try {
             pi.send();
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
-        if(dataManager!=null) {
+        if (dataManager != null) {
             dataManager.onSleepStarted(false);
         }
     }

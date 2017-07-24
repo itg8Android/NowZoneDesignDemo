@@ -8,4 +8,6 @@ public interface ConnectionManager {
     void selectedDevice(String address, String name);
 
     void disconnect();
+
+    void isDisconnectedByUser(boolean b);
 }

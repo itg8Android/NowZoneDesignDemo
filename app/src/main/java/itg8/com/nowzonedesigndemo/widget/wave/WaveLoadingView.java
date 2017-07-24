@@ -20,6 +20,7 @@ import android.graphics.Shader;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -47,6 +48,9 @@ public class WaveLoadingView extends View {
      * |                        |  |
      * +------------------------+__|_______
      */
+
+    private static final String TAG = WaveLoadingView.class.getSimpleName();
+
     private static final float DEFAULT_AMPLITUDE_RATIO = 0.1f;
     private static final float DEFAULT_AMPLITUDE_VALUE = 50.0f;
     private static final float DEFAULT_WATER_LEVEL_RATIO = 0.5f;
@@ -382,8 +386,10 @@ public class WaveLoadingView extends View {
             if (width > 0 && height > 0) {
                 double defaultAngularFrequency = 2.0f * Math.PI / DEFAULT_WAVE_LENGTH_RATIO / width;
                 float defaultAmplitude = height * DEFAULT_AMPLITUDE_RATIO;
-                mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO;
-
+                mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO+250;
+                Log.d(TAG, String.valueOf(mDefaultWaterLevel));
+                if(bitmap!=null)
+                    bitmap.recycle();
                 bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 canvas = new Canvas(bitmap);
 

@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
@@ -56,6 +57,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                 .setContentTitle(state)
                 .setContentText(message).setSmallIcon(R.drawable.ic_launcher)
                 .setContentIntent(pIntent)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setColor(Color.parseColor(color)).build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         // hide the notification after its selected

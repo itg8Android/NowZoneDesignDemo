@@ -5,7 +5,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -84,6 +87,15 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     private DeviceListAdapter deviceListAdapter;
     private boolean firstResult = true;
     private ProgressDialog dialog;
+    private BluetoothAdapter mBluetoothAdapter;
+    private android.bluetooth.BluetoothGattCallback mGattCallback= new BluetoothGattCallback() {
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            super.onConnectionStateChange(gatt, status, newState);
+            Log.d(TAG,"Connection state changed: "+(newState== BluetoothProfile.STATE_CONNECTED?"Connected":"Disconnected"));
+        }
+    };
+    private BluetoothGatt mGatt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -329,6 +341,8 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
         DeviceModel model = deviceListAdapter.getItem(position);
         presenter.selectedDevice(model, getBaseContext());
     }
+
+
 
     @Override
     public void startHomeActivity() {
