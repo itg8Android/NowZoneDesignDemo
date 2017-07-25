@@ -6,6 +6,7 @@
     <string name="action_contact">Contact Us</string>
     <string name="action_step_goal">Step Goal</string>
     <string name="action_meditation">Meditation</string>
+    <string name="action_device_history">Device History</string>
     <string name="action_smart">Smart</string>
     <string name="action_logout">Logout</string>
     <string name="action_about">About Us</string>
@@ -16,10 +17,10 @@
     <string name="step">Step</string>
     <string name="breath">Breath</string>
     <string name="breath_rate">Breath Rate</string>
-    <string name="status">Status</string>
+    <string name="status"> Device Name</string>
     <string name="sleep_value">HRS</string>
-    <string name="calm">calm</string>
-    <string name="focus">focus</string>
+    <string name="calm">Compose</string>
+    <string name="focus">Attentive</string>
     <string name="stress">Stress</string>
     <string name="step_value">Steps</string>
     <string name="breath_value">Average</string>
@@ -73,8 +74,11 @@
     <string name="title_activity_breath_history_list">BreathHistoryList</string>
     <string name="action_device_sleep_start">ACTION_NW_DEVICE_SLEEP_STARTED</string>
     <string name="action_device_sleep_end">ACTION_NW_DEVICE_SLEEP_ENDED</string>
+    <string name="title_activity_device_history">Device</string>
+    <string name="title_activity_setting_main">Setting</string>
 
     <string name="title_activity_wakeup_alarm">Wakeup</string>
+    <string name="setting">Setting</string>
     <string name="stop_button">STOP ALARM</string>
     <string name="wakeup_alarm_content">WAKE UP..\nWAKE UP… \nWAKE UP....</string>
     <string name="msg_device_disconnect">Please connect device manually...</string>

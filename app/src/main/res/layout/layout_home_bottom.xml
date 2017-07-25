@@ -44,7 +44,7 @@
                             android:layout_alignParentBottom="true"
                             android:layout_marginLeft="05dp"
                             android:layout_marginRight="05dp"
-                            android:src="@drawable/ic_breaths" />
+                            app:srcCompat="@drawable/ic_breaths" />
 
                         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                             android:id="@+id/txt_breath"
@@ -117,7 +117,7 @@
                             android:layout_alignParentBottom="true"
                             android:layout_marginLeft="05dp"
                             android:layout_marginRight="05dp"
-                            android:src="@drawable/ic_sleeping" />
+                            app:srcCompat="@drawable/ic_sleeping" />
 
                         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                             app:font_value="0"
@@ -189,7 +189,7 @@
                             android:layout_marginLeft="05dp"
                             android:layout_marginRight="05dp"
                             android:layout_alignParentBottom="true"
-                            android:src="@drawable/ic_steps" />
+                            app:srcCompat="@drawable/ic_steps" />
 
                         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                             app:font_value="0"
@@ -207,7 +207,7 @@
                             android:text="@string/step" />
                     </RelativeLayout>
 
-                    <TextView
+                    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                       android:layout_centerHorizontal="true"
                         android:id="@+id/txt_stepCount"
                         style="@style/home_textView"
@@ -215,7 +215,6 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/txt_stepCountValue"
                         android:layout_marginTop="5dp"
-
                         android:text="@string/step_value"
                         android:textSize="@dimen/txt_lbl_dash_bottom" />
 

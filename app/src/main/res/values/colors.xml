@@ -53,5 +53,9 @@
 
     <color name="black_overlay">#66000000</color>
 
+    <color name="firstColor">#8b00bcd4</color>
+    <color name="secondColor">#8ae91e63</color>
+    <color name="thirdColor">#8af5be7a</color>
+
 
 </resources>

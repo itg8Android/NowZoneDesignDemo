@@ -17,7 +17,7 @@
             android:id="@+id/img_left"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             app:srcCompat="@drawable/ic_left_arrow" />
 
@@ -37,18 +37,18 @@
             android:id="@+id/img_right"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/ic_right_arrow" />
+            app:srcCompat="@drawable/ic_right_arrow" />
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/barchart"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_below="@+id/txt_day"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="30dp"
             android:scaleType="fitXY"
             android:src="@drawable/stacked_bar_chart" />
@@ -64,8 +64,8 @@
             android:id="@+id/txt_sleepTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="3dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="3dp"
             android:layout_marginTop="5dp"
             android:text="11:30"
             android:textColor="@color/colorWhite"
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/txt_sleepTime"
+            android:layout_toEndOf="@+id/txt_sleepTime"
             android:text="PM"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_hr" />
@@ -85,8 +85,8 @@
             android:id="@+id/txt_sleepEndValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="05dp"
             android:text="AM"
             android:textColor="@color/colorWhite"
@@ -96,9 +96,9 @@
             android:id="@+id/txt_sleepEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="03dp"
+            android:layout_marginEnd="03dp"
             android:layout_marginTop="05dp"
-            android:layout_toLeftOf="@+id/txt_sleepEndValue"
+            android:layout_toStartOf="@+id/txt_sleepEndValue"
             android:text="8:30"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_hr" />

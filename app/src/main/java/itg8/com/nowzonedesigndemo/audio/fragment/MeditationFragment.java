@@ -123,8 +123,8 @@ public class MeditationFragment extends Fragment implements View.OnClickListener
         meditationFragment.setSharedElementReturnTransition(changeTransform);
         meditationFragment.setExitTransition(explodeTransform);
         // nextFragment
-        meditationSingleFragment = new MeditationSingleFragment();
 
+        meditationSingleFragment = new MeditationSingleFragment();
         meditationSingleFragment.setSharedElementEnterTransition(changeTransform);
         meditationSingleFragment.setEnterTransition(explodeTransform);
 
@@ -143,7 +143,7 @@ public class MeditationFragment extends Fragment implements View.OnClickListener
              case R.id.img_play:
                  ViewCompat.setTransitionName(v.findViewById(R.id.img_play), "1");
                  FragmentTransaction ft = getFragmentManager().beginTransaction()
-                         .replace(R.id.frameLayout, meditationSingleFragment)
+                         .replace(R.id.frameLayout_setting, meditationSingleFragment)
                          .addToBackStack(getClass().getSimpleName())
                          .addSharedElement(v.findViewById(R.id.img_play), "1").addToBackStack(getClass().getSimpleName());
                  // Apply the transaction

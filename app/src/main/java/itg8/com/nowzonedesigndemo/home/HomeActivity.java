@@ -3,25 +3,25 @@ package itg8.com.nowzonedesigndemo.home;
 import android.Manifest;
 import android.content.ComponentCallbacks2;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,26 +38,23 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
-import itg8.com.nowzonedesigndemo.alarm.AlarmActivity;
-import itg8.com.nowzonedesigndemo.audio.AudioActivity;
 import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
 import itg8.com.nowzonedesigndemo.common.BaseActivity;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.connection.BleService;
+import itg8.com.nowzonedesigndemo.home.fragment.HomeFragment;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenter;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
 import itg8.com.nowzonedesigndemo.home.mvp.StateTimeModel;
-import itg8.com.nowzonedesigndemo.profile.ProfileActivity;
 import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.setting.AlarmSettingActivity;
+import itg8.com.nowzonedesigndemo.setting.SettingMainActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
-import itg8.com.nowzonedesigndemo.steps.StepGoalActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
@@ -68,7 +65,8 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, BreathView, EasyPermissions.PermissionCallbacks, ComponentCallbacks2 {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, BreathView, EasyPermissions.PermissionCallbacks, ComponentCallbacks2 {
+    //, NavigationView.OnNavigationItemSelectedListener
 
 
     private static final int RC_STORAGE_PERM = 20;
@@ -89,11 +87,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final double PI_MAX = 8.02d;
     private static final double MIN_PRESSURE = 1100;
     private static final double MAX_PRESSURE = 8100;
-    private static final float MAX_CIRCLE_SIZE=1f;
-    private static final float MIN_CIRCLE_SIZE = 0f;
+    private static final float MAX_CIRCLE_SIZE = 100f;
+    private static final float MIN_CIRCLE_SIZE = 1f;
     private final String TAG = this.getClass().getSimpleName();
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+
     @BindView(R.id.rl_wave)
     FrameLayout rlWave;
     @BindView(R.id.txt_breathRate)
@@ -108,43 +105,34 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     TextView txtMinute;
     @BindView(R.id.rl_breath)
     RelativeLayout rlBreath;
-    @BindView(R.id.txt_calm)
-    TextView txtCalm;
-    @BindView(R.id.txt_calm_value)
-    TextView txtCalmValue;
-    //    @BindView(R.id.txt_calm_time)
+
+    @BindView(R.id.txt_focus_value)
+    TextView txtFocusValue;
+    @BindView(R.id.txt_stress_value)
+    TextView txtStressValue;
+
+//        @BindView(R.id.txt_calm_time)
 //    TextView txtCalmTime;
-
-    //    @BindView(R.id.txt_focus_time)
+//
+//        @BindView(R.id.txt_focus_time)
 //    TextView txtFocusTime;
-
-    //    @BindView(R.id.txt_stress_time)
+//
+//        @BindView(R.id.txt_stress_time)
 //    TextView txtStressTime;
 
-    @BindView(R.id.img_breath)
-    ImageView imgBreath;
-    @BindView(R.id.txt_breath)
-    TextView txtBreath;
-    @BindView(R.id.txt_breathCount)
-    TextView txtBreathCount;
+
     @BindView(R.id.txt_AvgBreathValue)
     TextView txtAvgBreathValue;
-    @BindView(R.id.img_sleep)
-    ImageView imgSleep;
-    @BindView(R.id.txt_forth)
-    TextView txtForth;
+
+
     @BindView(R.id.txt_hour)
     TextView txtHour;
     @BindView(R.id.txt_hourValue)
     TextView txtHourValue;
     @BindView(R.id.ll_sleep_main)
     LinearLayout llSleepMain;
-    @BindView(R.id.img_step)
-    ImageView imgStep;
-    @BindView(R.id.txt_step)
-    TextView txtStep;
-    @BindView(R.id.txt_stepCount)
-    TextView txtStepCount;
+
+
     @BindView(R.id.txt_stepCountValue)
     TextView txtStepCountValue;
     @BindView(R.id.rlSteps)
@@ -153,9 +141,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     RelativeLayout rlMainBottom;
     @BindView(R.id.fab)
     FloatingActionButton fab;
-    @BindView(R.id.nav_view)
-    NavigationView navView;
-        @BindView(R.id.waveLoadingView)
+
+    @BindView(R.id.frameLayout)
+    FrameLayout frameLayout;
+
+    @BindView(R.id.waveLoadingView)
     WaveLoadingView waveLoadingView;
     @BindView(R.id.breathview)
     BreathwaveView breathview;
@@ -166,17 +156,39 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @BindView(R.id.main_FrameLayout)
     FrameLayout mainFrameLayout;
 
+
     BreathPresenter presenter;
-    @BindView(R.id.txt_focus_value)
-    CustomFontTextView txtFocusValue;
-    @BindView(R.id.txt_stress_value)
-    TextView txtStressValue;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.appbar)
+    AppBarLayout appbar;
+
+    @BindView(R.id.txt_calm_value)
+    TextView txtCalmValue;
     @BindView(R.id.rl_main_top)
     RelativeLayout rlMainTop;
+    @BindView(R.id.img_breath)
+    ImageView imgBreath;
+    @BindView(R.id.txt_breath)
+    CustomFontTextView txtBreath;
+    @BindView(R.id.txt_breathCount)
+    CustomFontTextView txtBreathCount;
     @BindView(R.id.ll_breath_avg)
     LinearLayout llBreathAvg;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
+    @BindView(R.id.img_sleep)
+    ImageView imgSleep;
+    @BindView(R.id.txt_forth)
+    CustomFontTextView txtForth;
+    @BindView(R.id.img_step)
+    ImageView imgStep;
+    @BindView(R.id.txt_step)
+    CustomFontTextView txtStep;
+    @BindView(R.id.txt_stepCount)
+    CustomFontTextView txtStepCount;
+    @BindView(R.id.coordinator)
+    CoordinatorLayout coordinator;
+    @BindView(R.id.navigation)
+    BottomNavigationView navigation;
 
 
     private ActionBarDrawerToggle toggle;
@@ -190,11 +202,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     Rolling rolling;
     private double dLast;
     private float a = 0.96f;
-    private Double lastPressure=null;
+    private Double lastPressure;
+    private Fragment fragment;
+    private FragmentManager fm;
+
+//
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -203,59 +220,42 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setContentView(R.layout.activity_home);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         ButterKnife.bind(this);
+        // setIds();
+        setFragment();
+
         Timber.tag(TAG);
 
         rolling = new Rolling(8);
         if (!getIntent().hasExtra(CommonMethod.FROMWEEk)) {
             startService(new Intent(this, BleService.class));
+            checkDeviceConnection(rlWave);
 
-            //   checkDeviceConnection(rlWave);
         }
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setTitle("Home");
+        toolbar.setTitleTextColor(R.color.colorWhite);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         presenter = new BreathPresenterImp(this);
         presenter.passContext(HomeActivity.this);
         presenter.onCreate();
         checkStoragePermission();
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.setDrawerIndicatorEnabled(true);
-
-
-        toggle.syncState();
-        drawer.addDrawerListener(toggle);
-        rlSteps.setOnClickListener(this);
-        llSleepMain.setOnClickListener(this);
-        llBreathAvg.setOnClickListener(this);
-
         setType();
-        int waveBg;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            waveBg=getResources().getColor(R.color.color_wave_normal,null);
-        else
-            waveBg=getResources().getColor(R.color.color_wave_normal);
 
-        int color;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            color=getResources().getColor(R.color.color_wave_normal_bg,null);
-        else
-            color=getResources().getColor(R.color.color_wave_normal_bg);
-
-        waveLoadingView.setWaveBgColor(waveBg);
-        waveLoadingView.setWaveColor(color);
-
-        initOtherView();
-//        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
-//        setFontOpenSansSemiBold(FontType.ROBOTOlIGHT, txtCalm, txtCalmValue, txtStress, txtStressValue, txtFocus,  txtFocusValue);
 
     }
+
+    private void setIds() {
+        View includeBottom = findViewById(R.id.layout_include);
+        ImageView imgSleep = (ImageView) includeBottom.findViewById(R.id.img_sleep);
+        ImageView imgBreath = (ImageView) includeBottom.findViewById(R.id.img_breath);
+        RelativeLayout rlMainBottom = (RelativeLayout) includeBottom.findViewById(R.id.rl_main_bottom);
+        TextView txtAvgBreathValue = (TextView) includeBottom.findViewById(R.id.txt_AvgBreathValue);
+
+    }
+
 
     @AfterPermissionGranted(RC_STORAGE_PERM)
     private void checkStoragePermission() {
@@ -272,6 +272,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
+    private void setFragment() {
+        fragment = new HomeFragment();
+        fm = getSupportFragmentManager();
+        fm.beginTransaction().replace(R.id.frameLayout, fragment).commit();
+    }
+
     private void onPermissionGrantedForStorage() {
         File extStorageDir = Environment.getExternalStorageDirectory();
         File newExternalStorageDir = new File(extStorageDir, getResources().getString(R.string.app_name));
@@ -286,19 +292,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
-    private void initOtherView() {
-        int mAvgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
-        if (mAvgCount > 0) {
-            setAvgValue(mAvgCount);
-        }
-    }
-
-    private void setAvgValue(int mAvgCount) {
-        txtAvgBreathValue.setVisibility(View.VISIBLE);
-        txtAvgBreathValue.setText(String.valueOf(mAvgCount));
-    }
-
-
     @Override
     protected void onDestroy() {
         waveLoadingView.cancelAnimation();
@@ -307,11 +300,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void setType() {
-        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
 
-        waveLoadingView.setAmplitudeRatio(20);
-        waveLoadingView.setProgressValue(90);
-        waveLoadingView.setBorderWidth(1f);
+
+        // Change Now
+//        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
+//
+//        waveLoadingView.setAmplitudeRatio(20);
+//        waveLoadingView.setProgressValue(10);
+//        waveLoadingView.setBorderWidth(1f);
+
+
 //        waveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
 //        waveLoadingView.setAmplitudeRatio(20);
 //        waveLoadingView.setProgressValue(50);
@@ -340,8 +338,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         // Sets the length of the animation, default is 1000.
 
 
-        waveLoadingView.setAnimDuration(3000);
-        waveLoadingView.startAnimation();
+//        waveLoadingView.setAnimDuration(3000);
+//        waveLoadingView.startAnimation();
 
 
         //  waveLoadingView.cancelAnimation();
@@ -374,86 +372,50 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(getApplicationContext(), AlarmSettingActivity.class));
                 break;
             case R.id.action_profile:
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                callSettingActvity(CommonMethod.FROM_PROFILE);
+//                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 break;
             case R.id.action_device:
-                //startActivity(new Intent(getApplicationContext(),AudioActivity.class));
+                callSettingActvity(CommonMethod.FROM_DEVICE);
                 break;
             case R.id.action_meditation:
-                startActivity(new Intent(getApplicationContext(),AudioActivity.class));
+                //startActivity(new Intent(getApplicationContext(),AudioActivity.class));
+                callSettingActvity(CommonMethod.FROM_MEDITATION);
 
                 break;
             case R.id.action_alram:
-                startActivity(new Intent(getApplicationContext(), AlarmActivity.class));
+                //startActivity(new Intent(getApplicationContext(), AlarmActivity.class));
+                callSettingActvity(CommonMethod.FROM_ALARM_SETTING);
                 break;
             case R.id.action_step_goal:
-                startActivity(new Intent(getApplicationContext(), StepGoalActivity.class));
+                callSettingActvity(CommonMethod.FROM_STEP_GOAL);
+                //  startActivity(new Intent(getApplicationContext(), StepGoalActivity.class));
                 break;
             case R.id.action_about:
-                startActivity(new Intent(getApplicationContext(),StepMovingActivity.class));
+                startActivity(new Intent(getApplicationContext(), StepMovingActivity.class));
                 break;
             case R.id.action_logout:
                 onDeviceDisconnected();
+                break;
+            case R.id.action_device_history:
+                callSettingActvity(CommonMethod.FROM_DEVICE_HISTORY);
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.rlSteps:
-                Intent intent = new Intent(this, StepsActivity.class);
-                overridePendingTransition(R.animator.slid_up, R.animator.slid_down);
-                startActivity(intent);
-                break;
-            case R.id.ll_sleep_main:
-                startActivity(new Intent(this, SleepActivity.class));
-                break;
-            case R.id.ll_breath_avg:
-                startActivity(new Intent(this, BreathHistoryActivity.class));
-                break;
-        }
+    private void callSettingActvity(String fromDevice) {
+        Intent intent = new Intent(this, SettingMainActivity.class);
+        intent.putExtra(CommonMethod.BREATH, fromDevice);
+        startActivity(intent);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_breath:
-                break;
-            case R.id.nav_sleep:
-                break;
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return false;
-
-    }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        toggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-        toggle.onConfigurationChanged(newConfig);
+        super.onBackPressed();
     }
 
 
@@ -466,13 +428,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
 //                firstPreference(pressure);
-
                 secondPref(pressure);
                 e.onNext(calculateProportion(pressure));
             }
         })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Double>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -486,11 +446,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            secondPref(pressure);
 //            breathview.addSample(SystemClock.elapsedRealtime(),calculateProportion(smoothedValue(pressure)));
 //                            breathview.addSample(SystemClock.elapsedRealtime(), aDouble);
-                            Log.d(TAG,"Progress wave: "+aDouble.intValue());
-
-                                waveLoadingView.setWaterLevelRatio(aDouble.floatValue());
-//                            }
-//                            lastPressure=aDouble;
+                            Log.d(TAG, "Progress wave: " + aDouble.intValue());
+                            if (!Objects.equals(lastPressure, aDouble)) {
+                                //    waveLoadingView.setProgressValue(aDouble.intValue());
+                            }
+                            lastPressure = aDouble;
                         } else {
                             count++;
                         }
@@ -498,7 +458,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+
                     }
 
                     @Override
@@ -584,7 +544,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //        update(pressure);
 //        Log.d(TAG, String.valueOf(var()));
 
-        return (MIN_CIRCLE_SIZE + ((MAX_CIRCLE_SIZE- MIN_CIRCLE_SIZE) * ((d - (lastMin)) / (lastMax - lastMin))));
+        return (MIN_CIRCLE_SIZE + ((MAX_CIRCLE_SIZE - MIN_CIRCLE_SIZE) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
 //        return (lastMin + ((lastMax- lastMin) * ((d - (MIN_PRESSURE)) / (MAX_PRESSURE - MIN_PRESSURE))));
     }
 
@@ -632,7 +592,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onBreathCountAvailable(int intExtra) {
         Log.d(TAG, "Breath count: " + intExtra);
-        new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)), 30);
+        //new Handler().postDelayed(() -> breathValue.setText(String.valueOf(intExtra)), 30);
     }
 
     @Override
@@ -640,7 +600,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                txtStepCountValue.setText(String.valueOf(intExtra));
+                //  txtStepCountValue.setText(String.valueOf(intExtra));
 
             }
         });
@@ -649,7 +609,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onStartDeviceScanActivity() {
-//        Timber.i("Start device activity");
+        Timber.i("Start device activity");
 //        startActivity(new Intent(this, ScanDeviceActivity.class));
 //        finish();
         checkDeviceConnection(rlWave);
@@ -660,7 +620,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onBreathingStateAvailable(BreathState state) {
         initOtherView();
         setStateRelatedDetails(state);
-        presenter.onInitTimeHistory();
+        // presenter.onInitTimeHistory();
     }
 
     @Override
@@ -702,18 +662,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 txtStatusValue.setText(name);
             }
         }, 60);
-//        waveLoadingView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                waveLoadingView.setWaveColor(m);
-//            }
-//        },30);
-//        waveLoadingView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                waveLoadingView.setWaveBgColor(s);
-//            }
-//        },90);
+
+        //change now.....
+        waveLoadingView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                waveLoadingView.setWaveColor(m);
+            }
+        }, 30);
+        waveLoadingView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                waveLoadingView.setWaveBgColor(s);
+            }
+        }, 90);
     }
 
     private void reactFocusedState() {
@@ -744,4 +706,36 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         startActivity(new Intent(getBaseContext(), ScanDeviceActivity.class));
         finish();
     }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rlSteps:
+                Intent intent = new Intent(getApplicationContext(), StepsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.ll_sleep_main:
+                startActivity(new Intent(getApplicationContext(), SleepActivity.class));
+                break;
+            case R.id.ll_breath_avg:
+                startActivity(new Intent(getApplicationContext(), BreathHistoryActivity.class));
+                break;
+
+        }
+    }
+
+
+    private void initOtherView() {
+        int mAvgCount = SharePrefrancClass.getInstance(getApplicationContext()).getIPreference(CommonMethod.USER_CURRENT_AVG);
+        if (mAvgCount > 0) {
+            setAvgValue(mAvgCount);
+        }
+    }
+
+    private void setAvgValue(int mAvgCount) {
+        txtAvgBreathValue.setVisibility(View.VISIBLE);
+        txtAvgBreathValue.setText(String.valueOf(mAvgCount));
+    }
 }
+

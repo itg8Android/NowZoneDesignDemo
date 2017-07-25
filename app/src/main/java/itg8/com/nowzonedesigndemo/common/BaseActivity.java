@@ -12,6 +12,8 @@ import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Trigger;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
+import java.util.Calendar;
+
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.connection.BleService;
 import itg8.com.nowzonedesigndemo.db.DbHelper;
@@ -30,7 +32,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(BaseActivity.this));
+//        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(BaseActivity.this));
 //        initDispatcher();
     }
 
@@ -42,12 +44,12 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     }
 
     public void checkDeviceConnection(View v) {
-//        long currentTimeStamp= Calendar.getInstance().getTimeInMillis();
-//        long oldTimeStamp= SharePrefrancClass.getInstance(this).getLPref(CommonMethod.TIMESTAMP);
-//        if(currentTimeStamp-oldTimeStamp>120000){
-//            deviceDisconnected=true;
-//            checkDeviceDisconnected(v);
-//        }
+        long currentTimeStamp= Calendar.getInstance().getTimeInMillis();
+        long oldTimeStamp= SharePrefrancClass.getInstance(this).getLPref(CommonMethod.TIMESTAMP);
+        if(currentTimeStamp-oldTimeStamp>120000){
+            deviceDisconnected=true;
+            checkDeviceDisconnected(v);
+        }
         String state = SharePrefrancClass.getInstance(getApplicationContext()).getPref(CommonMethod.STATE);
         if (state == null || state.equalsIgnoreCase(DeviceState.DISCONNECTED.name())) {
             deviceDisconnected = true;
@@ -77,11 +79,12 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     void checkDeviceDisconnected(View v) {
         Log.d(TAG, "DISCONNECTED ALREADY");
         if (deviceDisconnected) {
-            showSnackbar(v);
+          //  showSnackbar(v);
         }
     }
 
     private void showSnackbar(View v) {
+
         snackbar = Snackbar.make(v, R.string.dialog_disconnected_device, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("OK", new View.OnClickListener() {
             @Override

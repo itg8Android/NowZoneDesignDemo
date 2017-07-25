@@ -125,7 +125,11 @@
             android:name=".WakeupAlarmActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_wakeup_alarm"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme"/>
+        <activity
+            android:name=".setting.SettingMainActivity"
+            android:label="@string/setting"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <receiver
             android:name=".connection.BootCompleteReceiver"

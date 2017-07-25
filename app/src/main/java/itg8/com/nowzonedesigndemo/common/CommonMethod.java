@@ -60,6 +60,12 @@ public class CommonMethod {
     public static final String FROMMEDITATION = "FROMMEDITATION";
     public static final String SAVE_DAYS_FOR_MEDITATION = "SAVEDAYSFORMEDITATION";
     public static final String BLUETOOTH_OFF = "BLUETOOTH_OFF";
+    public static final String FROM_DEVICE = "FROM_DEVICE";
+    public static final String FROM_STEP_GOAL = "FROM_STEP_GOAL";
+    public static final String FROM_PROFILE = "FROM_PROFILE";
+    public static final String FROM_ALARM_SETTING = "FROM_ALARM_SETTING";
+    public static final String FROM_MEDITATION = "FROM_MEDITATION";
+    public static final String FROM_DEVICE_HISTORY = "FROM_DEVICE_HISTORY";
 
 
     private static Typeface typeface;

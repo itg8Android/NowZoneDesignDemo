@@ -112,6 +112,7 @@ public class MeditationAllFragment extends Fragment implements View.OnClickListe
     }
 
     private void setInit() {
+        getActivity().setTitle("Meditation");
 
         setupViewpager();
 

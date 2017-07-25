@@ -42,8 +42,6 @@ public class AudioActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.frameLayout, new MeditationAllFragment(), getClass().getSimpleName()).commit();
 
     }
 

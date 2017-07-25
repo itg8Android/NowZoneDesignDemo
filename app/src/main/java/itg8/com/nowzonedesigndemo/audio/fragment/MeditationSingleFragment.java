@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -46,7 +47,8 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
     @BindView(R.id.img_like)
     ImageView imgLike;
     Unbinder unbinder;
-    private String fromPlay="fromPlay";
+    Animation myAnim = null;
+    private String fromPlay = "fromPlay";
 
     public MeditationSingleFragment() {
         // Required empty public constructor
@@ -79,7 +81,9 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        Animation myAnim = null;
+        if (myAnim != null) {
+            myAnim.cancel();
+        }
         switch (v.getId()) {
 
             case R.id.img_pause:
@@ -87,17 +91,20 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
                 //checkAnimation(fromPlay);
 
                 myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_down);
-                myAnim.setDuration(2000);
+                myAnim.setInterpolator(new AccelerateInterpolator());
+                myAnim.setDuration(300);
+                imgPlay.startAnimation(myAnim);
+
 
                 myAnim.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-                        imgPlay.startAnimation(animation);
-
+                        imgPause.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
+                        imgPause.setVisibility(View.GONE);
                         imgPlay.setVisibility(View.VISIBLE);
                     }
 
@@ -105,27 +112,33 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
                     public void onAnimationRepeat(Animation animation) {
 
                     }
+
+
                 });
                 break;
             case R.id.img_play:
                 imgPlay.setVisibility(View.GONE);
-              //  checkAnimation(fromPlay);
-              myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_up);
-               // imgPause.startAnimation(myAnim);
-                myAnim.setDuration(2000);
+                //  checkAnimation(fromPlay);
+                myAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce_up);
+                myAnim.setInterpolator(new AccelerateInterpolator());
+
+                // imgPause.startAnimation(myAnim);
+                myAnim.setDuration(300);
+                imgPause.startAnimation(myAnim);
 
 
                 myAnim.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-                        imgPause.startAnimation(animation);
-
+                        imgPlay.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
+                        imgPlay.setVisibility(View.GONE);
                         imgPause.setVisibility(View.VISIBLE);
                     }
+
                     @Override
                     public void onAnimationRepeat(Animation animation) {
 
