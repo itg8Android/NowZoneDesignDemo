@@ -20,7 +20,7 @@ class AlgoAsync extends AsyncTask<DataModel[],Void,Integer> {
     private static final String TAG = AlgoAsync.class.getSimpleName();
     private static final long ONE_MINUTE = 60000;
     private PAlgoCallback callback;
-    private long bpmInMinute;
+    private int bpmInMinute;
 
     AlgoAsync(PAlgoCallback callback) {
         this.callback = callback;
@@ -37,7 +37,7 @@ class AlgoAsync extends AsyncTask<DataModel[],Void,Integer> {
             if (listModel.length > 0) {
                 long timeTaken = listModel[listModel.length - 1].getTimestamp() - listModel[0].getTimestamp();
                 if (timeTaken > 1000) {
-                    bpmInMinute = ((ONE_MINUTE * count) / timeTaken);
+                    bpmInMinute = (int) ((ONE_MINUTE * count) / timeTaken);
 //                    callback.onCountResultAvailable(bpmInMinute, listModel.get(listModel.size() - 1).getTimestamp());
                 }
                     /**
@@ -46,7 +46,7 @@ class AlgoAsync extends AsyncTask<DataModel[],Void,Integer> {
                 Log.d(TAG,"hashmap : "+new Gson().toJson(data));
                 Log.d(TAG,"hashmap BPMInMinute: "+bpmInMinute);
                 Log.d(TAG,"hashmap timestamp : "+listModel[0].getTimestamp()+" "+listModel[listModel.length-1].getTimestamp());
-                    callback.onCountResultAvailable(Math.toIntExact(bpmInMinute), listModel[listModel.length-1].getTimestamp());
+                    callback.onCountResultAvailable(bpmInMinute, listModel[listModel.length-1].getTimestamp());
 //                    callback.onCountResultAvailable(count, listModel.get(listModel.size() - 1).getTimestamp());
             }
         }

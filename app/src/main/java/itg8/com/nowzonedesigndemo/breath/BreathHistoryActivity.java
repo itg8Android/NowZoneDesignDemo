@@ -244,8 +244,8 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
                 list) {
             if (dateWiseStates.containsKey(states.getDate())) {
                 object = dateWiseStates.get(states.getDate());
-
-            }
+            }else
+                object=new Object[COLUMN_NAMES.length];
             object[0] = states.getTimestampEnd();
             if (states.getState().equalsIgnoreCase(CALM.toString())) {
                 if (object[1] == null)

@@ -5,6 +5,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -88,8 +89,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final double PI_MAX = 8.02d;
     private static final double MIN_PRESSURE = 1100;
     private static final double MAX_PRESSURE = 8100;
-    private static final float MAX_CIRCLE_SIZE=100f;
-    private static final float MIN_CIRCLE_SIZE = 1f;
+    private static final float MAX_CIRCLE_SIZE=1f;
+    private static final float MIN_CIRCLE_SIZE = 0f;
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -235,9 +236,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         llBreathAvg.setOnClickListener(this);
 
         setType();
+        int waveBg;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            waveBg=getResources().getColor(R.color.color_wave_normal,null);
+        else
+            waveBg=getResources().getColor(R.color.color_wave_normal);
 
-        waveLoadingView.setWaveBgColor(getResources().getColor(R.color.color_wave_normal,null));
-        waveLoadingView.setWaveColor(getResources().getColor(R.color.color_wave_normal_bg,null));
+        int color;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            color=getResources().getColor(R.color.color_wave_normal_bg,null);
+        else
+            color=getResources().getColor(R.color.color_wave_normal_bg);
+
+        waveLoadingView.setWaveBgColor(waveBg);
+        waveLoadingView.setWaveColor(color);
 
         initOtherView();
 //        setFontOxygenRegular(FontType.ROBOTOlIGHT, txtBreathRate, txtStatus, txtMinute, txtStatusValue, breathValue);
@@ -455,8 +467,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Double> e) throws Exception {
 //                firstPreference(pressure);
 
-//                secondPref(pressure);
-//                e.onNext(calculateProportion(pressure));
+                secondPref(pressure);
+                e.onNext(calculateProportion(pressure));
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -476,7 +488,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                            breathview.addSample(SystemClock.elapsedRealtime(), aDouble);
                             Log.d(TAG,"Progress wave: "+aDouble.intValue());
 
-                                waveLoadingView.setProgressValue(aDouble.intValue());
+                                waveLoadingView.setWaterLevelRatio(aDouble.floatValue());
 //                            }
 //                            lastPressure=aDouble;
                         } else {

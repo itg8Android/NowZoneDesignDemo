@@ -60,9 +60,11 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     private AlgoAsync async;
     private DataModel[] tempHolderRaw;
     private long startAlarmTime, endAlarmTime;
+    private StringBuilder sb;
 
     public RDataManagerImp(RDataManagerListener listener, Context mContext) {
         this.listener = listener;
+        sb=new StringBuilder();
         isSleepStarted = false;
         startAlarmTime = 0;
         endAlarmTime = 0;
@@ -119,7 +121,8 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     @Override
     public void onRawDataModel(DataModel model, Context context) {
         if (model != null) {
-            Log.d(TAG, "pressure max : " + model.getPressure());
+            sb.setLength(0);
+            Log.d(TAG, sb.append("pressure max : ").append(model.getPressure()).toString());
 
             //  Log.d(RDataManagerImp.class.getSimpleName(), "data received:" + model.getPressure());
             Observable.create(new ObservableOnSubscribe<String>() {

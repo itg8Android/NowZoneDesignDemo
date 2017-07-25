@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -386,7 +387,7 @@ public class WaveLoadingView extends View {
             if (width > 0 && height > 0) {
                 double defaultAngularFrequency = 2.0f * Math.PI / DEFAULT_WAVE_LENGTH_RATIO / width;
                 float defaultAmplitude = height * DEFAULT_AMPLITUDE_RATIO;
-                mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO+250;
+                mDefaultWaterLevel = height * DEFAULT_WATER_LEVEL_RATIO;
                 Log.d(TAG, String.valueOf(mDefaultWaterLevel));
                 if(bitmap!=null)
                     bitmap.recycle();
@@ -559,7 +560,7 @@ public class WaveLoadingView extends View {
     public void setProgressValue(int progress) {
         mProgressValue = progress;
         waterLevelAnim = ObjectAnimator.ofFloat(this, "waterLevelRatio", mWaterLevelRatio, ((float) mProgressValue / 100));
-        waterLevelAnim.setDuration(50);
+        waterLevelAnim.setDuration(0);
         waterLevelAnim.setInterpolator(new DecelerateInterpolator());
         if(animatorSetProgress==null)
             animatorSetProgress = new AnimatorSet();
@@ -572,10 +573,8 @@ public class WaveLoadingView extends View {
 //            animatorSetProgress.playSequentially();
 //
 //        }
-        if(waterAnimList.size()>=10)
-            waterAnimList.remove(0);
-
-        waterAnimList.add(waterLevelAnim);
+//        if(waterAnimList.size()>=10)
+//            waterAnimList.remove(0);
 
         animatorSetProgress.play(waterLevelAnim);
             animatorSetProgress.start();
@@ -868,5 +867,9 @@ public class WaveLoadingView extends View {
         SOUTH,
         EAST,
         WEST
+    }
+
+    public void moveObject(float y){
+        this.setY(y);
     }
 }

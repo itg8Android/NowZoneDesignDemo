@@ -135,13 +135,14 @@ class CheckAccelImp {
     String log;
     StringBuilder sb;
     private Observable<Integer> checkMovement(DataModel model) {
-        sb=new StringBuilder();
-        sb.append("RawXYZ: X: ").append(model.getX()).append(" Y: ").append(model.getY()).append(" Z: ").append(model.getZ());
-        Log.d(TAG, sb.toString());
+
         return Observable.create(e -> {
             double xG = (model.getX()>32768)?model.getX():model.getX()-65536;
             double yG = (model.getY() >32768) ?model.getY():model.getY()-65536;
             double zG = (model.getZ() >32768) ?model.getZ():model.getZ()-65536;
+            sb=new StringBuilder();
+            sb.append("RawXYZ: X: ").append(xG).append(" Y: ").append(yG).append(" Z: ").append(zG);
+            Log.d(TAG, sb.toString());
             calculatePitchRoll(xG,yG,zG);
             xG = (xG * G) / 1000;
             yG = (yG * G) / 1000;
@@ -153,30 +154,34 @@ class CheckAccelImp {
 //            log="X:"+formatter.format( (model.getX() * 0.224)/1000)+ " Y:"+formatter.format((model.getY() * 0.224)/1000)+" Z:"+formatter.format((model.getZ() * 0.224)/1000);
 //            log="X:"+formatter.format( (model.getX() * 0.224)/1000)+ " Y:"+formatter.format((model.getY() * 0.224)/1000)+" Z:"+formatter.format((model.getZ() * 0.224)/1000);
 //              Log.d("gdata:",String.valueOf(log));
-            Observable.create((ObservableOnSubscribe<String>) e1 -> {
-                //createFile(String.valueOf(roll));
-            }).subscribeOn(Schedulers.computation())
-                    .subscribe(new Observer<String>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+            /**
+             * This is for creating file with roll
+             */
+//            Observable.create((ObservableOnSubscribe<String>) e1 -> {
+//                //createFile(String.valueOf(roll));
+//            }).subscribeOn(Schedulers.computation())
+//                    .subscribe(new Observer<String>() {
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(String s) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//
+//                        }
+//                    });
 
-                        }
-
-                        @Override
-                        public void onNext(String s) {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
 //                    print(" Y =   %fG  #####" % ((ACCy * 0.224)/1000)),
 //                    print(" Z =  %fG  #####" % ((ACCz * 0.224)/1000))
             pitch = atan2(-model.getX(), sqrt((model.getY() * model.getY()) + (model.getZ() * model.getZ()))) * degconvert;

@@ -110,7 +110,7 @@ public class CommonMethod {
         if (data != null && data.length > 0) {
             byte value1 = data[8]; //Convert to double [Higher bit of pressure]
             byte value2 = data[9]; //Convert to double [Lower bit of pressure]
-            createFile(String.valueOf(value1)+" "+String.valueOf(value2));
+//            createFile(String.valueOf(value1)+" "+String.valueOf(value2));
             byte xHValue = data[0];
             byte xLValue = data[1];
             byte yHValue = data[2];

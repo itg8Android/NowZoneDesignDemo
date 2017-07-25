@@ -33,8 +33,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.R;
@@ -135,6 +137,8 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     private RDataManager dataManager;
     private TblState tblState;
     private ProfileModel profileModel;
+    private NotificationManager notificationManager;
+    private boolean isNotificationShown;
 
 
     public BleService() {
@@ -262,7 +266,27 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
     public void onDataAvail(byte[] data) {
         //        SharePrefrancClass.getInstance(this).savePref(CommonMethod.TIMESTAMP, Calendar.getInstance().getTimeInMillis());
 
-        dataManager.onRawDataModel(getArragedData(data), getApplicationContext());
+        Observable.just(getArragedData(data)).subscribeOn(Schedulers.computation()).subscribe(new Observer<DataModel>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(DataModel dataModel) {
+                dataManager.onRawDataModel(dataModel, getApplicationContext());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
 //        Log.d(TAG, "value : " + getArragedData(data).getPressure() + " , " + " timestamp: " + CommonMethod.getTimeFromTMP(getArragedData(data).getTimestamp()));
 
@@ -279,11 +303,23 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                 manager.isDisconnectedByUser(false);
             }
             Intent intent = new Intent(this, HomeActivity.class);
-            createNotification(DISCONNECTED, COLOR_STRESS_M, getResources().getString(R.string.msg_device_disconnect),intent);
+            if(!isNotificationShown) {
+                createNotification(DISCONNECTED, COLOR_STRESS_M, getResources().getString(R.string.msg_device_disconnect), intent);
+                isNotificationShown=true;
+            }
+        }else if(state == DeviceState.CONNECTED){
+            cancelDisconnectNotification();
+            isNotificationShown=false;
         }
         Log.d(TAG, "state is: " + state.name());
         SharePrefrancClass.getInstance(getApplicationContext()).savePref(CommonMethod.STATE, state.name());
         CommonMethod.resetTmpstmp();
+    }
+
+    private void cancelDisconnectNotification() {
+        if(notificationManager!=null){
+            notificationManager.cancel(getIdByState(DISCONNECTED));
+        }
     }
 
     @Override
@@ -459,7 +495,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
                 .setContentIntent(pIntent)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setColor(Color.parseColor(color)).build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // hide the notification after its selected
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
 
@@ -558,7 +594,7 @@ public class BleService extends OrmLiteBaseService<DbHelper> implements Connecti
             else
                 stepDao.update(count);
 
-        }).subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.computation())
                 .subscribe(new Observer<Void>() {
                     @Override
                     public void onSubscribe(Disposable d) {
