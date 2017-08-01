@@ -284,7 +284,7 @@ public class SleepMainFragment extends Fragment implements View.OnClickListener 
 
 
     private void setUpViewPager() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentManager fm = getChildFragmentManager();
         viewPager.setAdapter(new ViewPagerSleepAdapter(getActivity(), fm));
 
     }
@@ -370,5 +370,11 @@ public class SleepMainFragment extends Fragment implements View.OnClickListener 
             //    mChart.setData(data);
             mChart.invalidate();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Sleep");
     }
 }

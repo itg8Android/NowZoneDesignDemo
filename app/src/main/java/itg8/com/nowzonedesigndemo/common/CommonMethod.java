@@ -66,6 +66,8 @@ public class CommonMethod {
     public static final String FROM_ALARM_SETTING = "FROM_ALARM_SETTING";
     public static final String FROM_MEDITATION = "FROM_MEDITATION";
     public static final String FROM_DEVICE_HISTORY = "FROM_DEVICE_HISTORY";
+    public static final String FROM_ALARM_HOME = "FROM_ALARM_HOME";
+    public static final String SAVETIMEINMILI = "SAVETIMEINMILI";
 
 
     private static Typeface typeface;
@@ -290,6 +292,53 @@ public class CommonMethod {
 
     public interface alarmListener{
         void onAlarmListener(List<AlarmDaysModel> abc, String from);
+    }
+
+    public static   CharSequence calculateHours(long startTime, long endTime) {
+        String hourses;
+
+        long diff = endTime - startTime;
+
+        long seconds = diff / 1000; // seconds is milliseconds / 1000
+     //   long milliseconds = (endTime - startTime) % 1000; // remainder is milliseconds that are not composing seconds.
+        long minutes = seconds / 60;
+        seconds = seconds % 60;
+        long hours = minutes / 60;
+        minutes = minutes % 60;
+
+        long hr = 0;
+        long min = 0;
+        if (hours < 0) {
+            hr = hours * 60;
+            Log.d("CommonMethod", "diff:" + diff);
+
+        }
+//        if(hours==0 && minutes <0)
+//        {
+//            minutes = (60+minutes) * -1;
+//        }
+        if (minutes < 0) {
+            hr = hr + minutes;
+        }
+
+        hr = 1440 + hr;
+        hours = hr / 60;
+        minutes = hr % 60;
+        Log.d("CommonMethod", "diff:" + hr + "min" + min);
+        if (hours < 0 || minutes < 0) {
+//            hr = hours*60;
+//            hr= hr+minutes;
+//            hr+=1440;
+//             min=  hr%60;
+//           hr= hr/60;
+
+            Log.d("CommonMethod", "diff:" + hours + "min" + min);
+            return hr + ":" + min;
+        }
+        hourses = hours + ":" + minutes;
+
+
+        return hourses;
     }
 
 

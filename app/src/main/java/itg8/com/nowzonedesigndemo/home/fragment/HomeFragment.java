@@ -2,8 +2,6 @@ package itg8.com.nowzonedesigndemo.home.fragment;
 
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +19,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
-import itg8.com.nowzonedesigndemo.breath.BreathHistoryActivity;
 import itg8.com.nowzonedesigndemo.breath.fragment.BreathFragment;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
@@ -48,7 +44,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     Unbinder unbinder;
     Fragment fragment;
-
     @BindView(R.id.frameLayout_home)
     FrameLayout frameLayoutHome;
     @BindView(R.id.waveLoadingView)
@@ -57,7 +52,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     BreathwaveView breathview;
     @BindView(R.id.rl_wave)
     FrameLayout rlWave;
-
+    @BindView(R.id.img_breath)
+    ImageView imgBreath;
     @BindView(R.id.txt_breathRate)
     TextView txtBreathRate;
     @BindView(R.id.txt_statusValue)
@@ -84,10 +80,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     TextView txtStressValue;
     @BindView(R.id.main_FrameLayout)
     FrameLayout mainFrameLayout;
-    @BindView(R.id.rl_main_top)
-    RelativeLayout rlMainTop;
-    @BindView(R.id.img_breath)
-    ImageView imgBreath;
     @BindView(R.id.txt_breath)
     CustomFontTextView txtBreath;
     @BindView(R.id.txt_breathCount)
@@ -95,9 +87,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.txt_AvgBreathValue)
     TextView txtAvgBreathValue;
     @BindView(R.id.ll_breath_avg)
-    LinearLayout llBreathAvg;
-    @BindView(R.id.img_sleep)
-    ImageView imgSleep;
+    RelativeLayout llBreathAvg;
     @BindView(R.id.txt_forth)
     CustomFontTextView txtForth;
     @BindView(R.id.txt_hour)
@@ -105,19 +95,87 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.txt_hourValue)
     TextView txtHourValue;
     @BindView(R.id.ll_sleep_main)
-    LinearLayout llSleepMain;
-    @BindView(R.id.img_step)
-    ImageView imgStep;
+    RelativeLayout llSleepMain;
     @BindView(R.id.txt_step)
     CustomFontTextView txtStep;
     @BindView(R.id.txt_stepCount)
-    TextView txtStepCount;
+    CustomFontTextView txtStepCount;
     @BindView(R.id.txt_stepCountValue)
     TextView txtStepCountValue;
     @BindView(R.id.rlSteps)
-    LinearLayout rlSteps;
-    @BindView(R.id.rl_main_bottom)
-    RelativeLayout rlMainBottom;
+    RelativeLayout rlSteps;
+    @BindView(R.id.rl_main_top)
+    RelativeLayout rlMainTop;
+
+//    @BindView(R.id.frameLayout_home)
+//    FrameLayout frameLayoutHome;
+//    @BindView(R.id.waveLoadingView)
+//    WaveLoadingView waveLoadingView;
+//    @BindView(R.id.breathview)
+//    BreathwaveView breathview;
+//    @BindView(R.id.rl_wave)
+//    FrameLayout rlWave;
+//
+//    @BindView(R.id.txt_breathRate)
+//    TextView txtBreathRate;
+//    @BindView(R.id.txt_statusValue)
+//    TextView txtStatusValue;
+//    @BindView(R.id.txt_status)
+//    TextView txtStatus;
+//    @BindView(R.id.breathValue)
+//    TextView breathValue;
+//    @BindView(R.id.txt_minute)
+//    TextView txtMinute;
+//    @BindView(R.id.rl_breath)
+//    RelativeLayout rlBreath;
+//    @BindView(R.id.txt_calm)
+//    TextView txtCalm;
+//    @BindView(R.id.txt_calm_value)
+//    TextView txtCalmValue;
+//    @BindView(R.id.txt_focus)
+//    CustomFontTextView txtFocus;
+//    @BindView(R.id.txt_focus_value)
+//    CustomFontTextView txtFocusValue;
+//    @BindView(R.id.txt_stress)
+//    TextView txtStress;
+//    @BindView(R.id.txt_stress_value)
+//    TextView txtStressValue;
+//    @BindView(R.id.main_FrameLayout)
+//    FrameLayout mainFrameLayout;
+//    @BindView(R.id.rl_main_top)
+//    RelativeLayout rlMainTop;
+//    @BindView(R.id.img_breath)
+//    ImageView imgBreath;
+//    @BindView(R.id.txt_breath)
+//    CustomFontTextView txtBreath;
+//    @BindView(R.id.txt_breathCount)
+//    CustomFontTextView txtBreathCount;
+//    @BindView(R.id.txt_AvgBreathValue)
+//    TextView txtAvgBreathValue;
+//    @BindView(R.id.ll_breath_avg)
+//    RelativeLayout llBreathAvg;
+//    @BindView(R.id.img_sleep)
+//    ImageView imgSleep;
+//    @BindView(R.id.txt_forth)
+//    CustomFontTextView txtForth;
+//    @BindView(R.id.txt_hour)
+//    TextView txtHour;
+//    @BindView(R.id.txt_hourValue)
+//    TextView txtHourValue;
+//    @BindView(R.id.ll_sleep_main)
+//    RelativeLayout llSleepMain;
+//    @BindView(R.id.img_step)
+//    ImageView imgStep;
+//    @BindView(R.id.txt_step)
+//    CustomFontTextView txtStep;
+//    @BindView(R.id.txt_stepCount)
+//    TextView txtStepCount;
+//    @BindView(R.id.txt_stepCountValue)
+//    TextView txtStepCountValue;
+//    @BindView(R.id.rlSteps)
+//    RelativeLayout rlSteps;
+//    @BindView(R.id.rl_main_bottom)
+//    LinearLayout rlMainBottom;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
@@ -169,7 +227,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         init();
         setType();
         initOtherView();
-         callBottomNavigation();
+        callBottomNavigation();
 
         return view;
     }
@@ -177,7 +235,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void callBottomNavigation() {
         int[] image = {R.drawable.ic_breaths, R.drawable.ic_sleeping,
                 R.drawable.ic_steps};
-        int[] color = {ContextCompat.getColor(getActivity(), R.color.firstColor),R.drawable.gradient_block,
+        int[] color = {ContextCompat.getColor(getActivity(), R.color.firstColor), R.drawable.gradient_block,
                 R.drawable.gradientblocktwo};
 
         if (bottomNavigationView != null) {
@@ -186,18 +244,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             bottomNavigationView.isColoredBackground(true);
             bottomNavigationView.setTextActiveSize(getResources().getDimension(R.dimen.text_active));
             bottomNavigationView.setTextInactiveSize(getResources().getDimension(R.dimen.text_inactive));
-            bottomNavigationView.setItemActiveColorWithoutColoredBackground(ContextCompat.getColor(getActivity(),R.color.firstColor));
+            bottomNavigationView.setItemActiveColorWithoutColoredBackground(ContextCompat.getColor(getActivity(), R.color.firstColor));
 
             // bottomNavigationView.setFont(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Noh_normal.ttf"));
         }
 
         BottomNavigationItem bottomNavigationItem = new BottomNavigationItem
-                ("Breath", color[0], image[0],"hr", "7:30","2000");
+                ("Breath", color[0], image[0], "hr", "7:30", "2000");
         BottomNavigationItem bottomNavigationItem1 = new BottomNavigationItem
-                ("Sleep", color[1], image[1],"hr", "8","Sleep");
+                ("Sleep", color[1], image[1], "hr", "8", "Sleep");
         BottomNavigationItem bottomNavigationItem2 = new BottomNavigationItem
-                ("Steps", color[2], image[2],"hr", "5","1450");
-
+                ("Steps", color[2], image[2], "hr", "5", "1450");
 
 
         bottomNavigationView.addTab(bottomNavigationItem);
@@ -210,7 +267,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 fm = getActivity().getSupportFragmentManager();
                 switch (index) {
                     case 0:
-                      //  startActivity(new Intent(getActivity(), BreathHistoryActivity.class));
+                        //  startActivity(new Intent(getActivity(), BreathHistoryActivity.class));
                         fm.beginTransaction().replace(R.id.frameLayout, BreathFragment.newInstance("", "")).addToBackStack(BreathFragment.class.getSimpleName()).commit();
                         break;
                     case 1:
@@ -227,9 +284,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void init() {
-//        rlSteps.setOnClickListener(this);
-//        llSleepMain.setOnClickListener(this);
-//        llBreathAvg.setOnClickListener(this);
+        rlSteps.setOnClickListener(this);
+        llSleepMain.setOnClickListener(this);
+        llBreathAvg.setOnClickListener(this);
     }
 
     @Override
@@ -248,10 +305,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             waveLoadingView.setWaveBgColor(getResources().getColor(R.color.color_wave_normal, null));
             waveLoadingView.setWaveColor(getResources().getColor(R.color.color_wave_normal_bg, null));
 
-        }else {
+        } else {
 
             waveLoadingView.setWaveBgColor(ContextCompat.getColor(getActivity(), R.color.color_wave_normal));
-            waveLoadingView.setWaveColor( ContextCompat.getColor(getActivity(), R.color.color_wave_normal_bg));
+            waveLoadingView.setWaveColor(ContextCompat.getColor(getActivity(), R.color.color_wave_normal_bg));
 
         }
 
@@ -305,6 +362,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        fm = getActivity().getSupportFragmentManager();
         switch (v.getId()) {
             case R.id.rlSteps:
                 Intent intent = new Intent(getActivity(), StepsActivity.class);
@@ -312,13 +370,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.ll_sleep_main:
                 // startActivity(new Intent(getActivity(), SleepActivity.class));
-                fm = getActivity().getSupportFragmentManager();
                 fm.beginTransaction().replace(R.id.frameLayout, SleepMainFragment.newInstance("", "")).addToBackStack(SleepMainFragment.class.getSimpleName()).commit();
                 break;
             case R.id.ll_breath_avg:
-                startActivity(new Intent(getActivity(), BreathHistoryActivity.class));
-//                fm = getActivity().getSupportFragmentManager();
-     //           fm.beginTransaction().replace(R.id.frameLayout, BreathFragment.newInstance("", "")).addToBackStack(BreathFragment.class.getSimpleName()).commit();
+                fm.beginTransaction().replace(R.id.frameLayout, BreathFragment.newInstance("", "")).addToBackStack(SleepMainFragment.class.getSimpleName()).commit();
+
+//              startActivity(new Intent(getActivity(), BreathHistoryActivity.class));
                 break;
 
         }

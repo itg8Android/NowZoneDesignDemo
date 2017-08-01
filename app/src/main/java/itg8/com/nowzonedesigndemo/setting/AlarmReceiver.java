@@ -1,11 +1,13 @@
 package itg8.com.nowzonedesigndemo.setting;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -50,12 +52,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
             String time = SharePrefrancClass.getInstance(context).getPref(CommonMethod.SAVEALARMTIME);
             String amPm = SharePrefrancClass.getInstance(context).getPref(CommonMethod.ALARM_AP);
-            Intent intents = new Intent(context, AlarmNotification.class);
-            intents.putExtra(CommonMethod.SAVEALARMTIME, time);
-            intents.putExtra(CommonMethod.START_ALARM_TIME, startTime);
-            intents.putExtra(CommonMethod.END_ALARM_TIME, endTime);
+
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.item_rv_alarm_notification);
             remoteView.setTextViewText(R.id.txt_app_name, "NowZone");
             remoteView.setTextViewText(R.id.txt_times, time + " " + amPm);
@@ -71,14 +71,17 @@ public class AlarmReceiver extends BroadcastReceiver {
             remoteView.setOnClickPendingIntent(R.id.btn_close, createSelfPendingIntent(context));
             Log.d(getClass().getSimpleName(), "Time:" + time);
             noti = new NotificationCompat.Builder(context)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
+                    .setAutoCancel(true)
                     .setSmallIcon(R.drawable.ic_alarms)
                     .setContentIntent(pendingIntent)
                     .setCustomBigContentView(remoteView)
+                    .setPriority(Notification.PRIORITY_MIN)
                     .setCustomContentView(remoteView)
-                    .setFullScreenIntent(pendingIntent, true)
-                    .setContent(remoteView);
+                    .setVisibility(Notification.PRIORITY_MIN)
+                    .setFullScreenIntent(pendingIntent, true);
+
+
+                  //  .setContent(remoteView)
 
 
             // hide the notification after its selected
@@ -88,7 +91,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             intent1.putExtra(CommonMethod.END_ALARM_TIME, endTime);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent1);
             notificationManager.notify(ALARM_ID, noti.build());
-
+           // notificationManager.cancel(ALARM_ID);
 
         } else if (intent.hasExtra(CommonMethod.ALARM_END)) {
             notificationManager.cancel(ALARM_ID);
@@ -153,6 +156,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         return hourses;
     }
+
 
 
 }

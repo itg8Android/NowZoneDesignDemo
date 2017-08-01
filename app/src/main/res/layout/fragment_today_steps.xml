@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView xmlns:custom="http://schemas.android.com/apk/res/itg8.com.nowzonedesigndemo"
+            <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                xmlns:custom="http://schemas.android.com/apk/res/itg8.com.nowzonedesigndemo"
                 android:id="@+id/txt_calories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

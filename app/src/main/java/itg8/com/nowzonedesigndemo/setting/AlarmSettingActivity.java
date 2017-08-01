@@ -205,8 +205,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                             btnAlarmStarted.startAnimation(zoomIn);
                             txtAlarmStatus.setVisibility(View.VISIBLE);
                             txtAlarmStatus.setText(" Alarm Started");
-                            ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
-                            objectAnimator.start();
+//                            ObjectAnimator objectAnimator = ObjectAnimator.ofInt(progressBar, "progress", 100);
+//                            objectAnimator.start();
                             sendBroadCast(true);
                         }
 

@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,7 +51,6 @@ import itg8.com.nowzonedesigndemo.home.mvp.BreathPresenterImp;
 import itg8.com.nowzonedesigndemo.home.mvp.BreathView;
 import itg8.com.nowzonedesigndemo.home.mvp.StateTimeModel;
 import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
-import itg8.com.nowzonedesigndemo.setting.AlarmSettingActivity;
 import itg8.com.nowzonedesigndemo.setting.SettingMainActivity;
 import itg8.com.nowzonedesigndemo.sleep.SleepActivity;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
@@ -90,9 +88,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private static final float MAX_CIRCLE_SIZE = 100f;
     private static final float MIN_CIRCLE_SIZE = 1f;
     private final String TAG = this.getClass().getSimpleName();
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.appbar)
+    AppBarLayout appbar;
+    @BindView(R.id.frameLayout)
+    FrameLayout frameLayout;
+    @BindView(R.id.frameLayout_home)
+    FrameLayout frameLayoutHome;
+    @BindView(R.id.waveLoadingView)
+    WaveLoadingView waveLoadingView;
+    @BindView(R.id.breathview)
+    BreathwaveView breathview;
     @BindView(R.id.rl_wave)
     FrameLayout rlWave;
+    @BindView(R.id.img_breath)
+    ImageView imgBreath;
     @BindView(R.id.txt_breathRate)
     TextView txtBreathRate;
     @BindView(R.id.txt_statusValue)
@@ -105,90 +116,151 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     TextView txtMinute;
     @BindView(R.id.rl_breath)
     RelativeLayout rlBreath;
-
+    @BindView(R.id.txt_calm)
+    TextView txtCalm;
+    @BindView(R.id.txt_calm_value)
+    TextView txtCalmValue;
+    @BindView(R.id.txt_focus)
+    CustomFontTextView txtFocus;
     @BindView(R.id.txt_focus_value)
-    TextView txtFocusValue;
+    CustomFontTextView txtFocusValue;
+    @BindView(R.id.txt_stress)
+    TextView txtStress;
     @BindView(R.id.txt_stress_value)
     TextView txtStressValue;
-
-//        @BindView(R.id.txt_calm_time)
-//    TextView txtCalmTime;
-//
-//        @BindView(R.id.txt_focus_time)
-//    TextView txtFocusTime;
-//
-//        @BindView(R.id.txt_stress_time)
-//    TextView txtStressTime;
-
-
+    @BindView(R.id.main_FrameLayout)
+    FrameLayout mainFrameLayout;
+    @BindView(R.id.rl_main_top)
+    RelativeLayout rlMainTop;
+    @BindView(R.id.txt_breath)
+    CustomFontTextView txtBreath;
+    @BindView(R.id.txt_breathCount)
+    CustomFontTextView txtBreathCount;
     @BindView(R.id.txt_AvgBreathValue)
     TextView txtAvgBreathValue;
-
-
+    @BindView(R.id.ll_breath_avg)
+    RelativeLayout llBreathAvg;
+    @BindView(R.id.txt_forth)
+    CustomFontTextView txtForth;
     @BindView(R.id.txt_hour)
     TextView txtHour;
     @BindView(R.id.txt_hourValue)
     TextView txtHourValue;
     @BindView(R.id.ll_sleep_main)
-    LinearLayout llSleepMain;
-
-
-    @BindView(R.id.txt_stepCountValue)
-    TextView txtStepCountValue;
-    @BindView(R.id.rlSteps)
-    LinearLayout rlSteps;
-    @BindView(R.id.rl_main_bottom)
-    RelativeLayout rlMainBottom;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-
-    @BindView(R.id.frameLayout)
-    FrameLayout frameLayout;
-
-    @BindView(R.id.waveLoadingView)
-    WaveLoadingView waveLoadingView;
-    @BindView(R.id.breathview)
-    BreathwaveView breathview;
-    @BindView(R.id.txt_focus)
-    CustomFontTextView txtFocus;
-    @BindView(R.id.txt_stress)
-    TextView txtStress;
-    @BindView(R.id.main_FrameLayout)
-    FrameLayout mainFrameLayout;
-
-
-    BreathPresenter presenter;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.appbar)
-    AppBarLayout appbar;
-
-    @BindView(R.id.txt_calm_value)
-    TextView txtCalmValue;
-    @BindView(R.id.rl_main_top)
-    RelativeLayout rlMainTop;
-    @BindView(R.id.img_breath)
-    ImageView imgBreath;
-    @BindView(R.id.txt_breath)
-    CustomFontTextView txtBreath;
-    @BindView(R.id.txt_breathCount)
-    CustomFontTextView txtBreathCount;
-    @BindView(R.id.ll_breath_avg)
-    LinearLayout llBreathAvg;
-    @BindView(R.id.img_sleep)
-    ImageView imgSleep;
-    @BindView(R.id.txt_forth)
-    CustomFontTextView txtForth;
-    @BindView(R.id.img_step)
-    ImageView imgStep;
+    RelativeLayout llSleepMain;
     @BindView(R.id.txt_step)
     CustomFontTextView txtStep;
     @BindView(R.id.txt_stepCount)
     CustomFontTextView txtStepCount;
+    @BindView(R.id.txt_stepCountValue)
+    TextView txtStepCountValue;
+    @BindView(R.id.rlSteps)
+    RelativeLayout rlSteps;
     @BindView(R.id.coordinator)
     CoordinatorLayout coordinator;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
+
+//    @BindView(R.id.rl_wave)
+//    FrameLayout rlWave;
+//    @BindView(R.id.txt_breathRate)
+//    TextView txtBreathRate;
+//    @BindView(R.id.txt_statusValue)
+//    TextView txtStatusValue;
+//    @BindView(R.id.txt_status)
+//    TextView txtStatus;
+//    @BindView(R.id.breathValue)
+//    TextView breathValue;
+//    @BindView(R.id.txt_minute)
+//    TextView txtMinute;
+//    @BindView(R.id.rl_breath)
+//    RelativeLayout rlBreath;
+//
+//    @BindView(R.id.txt_focus_value)
+//    TextView txtFocusValue;
+//    @BindView(R.id.txt_stress_value)
+//    TextView txtStressValue;
+//
+////        @BindView(R.id.txt_calm_time)
+////    TextView txtCalmTime;
+////
+////        @BindView(R.id.txt_focus_time)
+////    TextView txtFocusTime;
+////
+////        @BindView(R.id.txt_stress_time)
+////    TextView txtStressTime;
+//
+//
+//    @BindView(R.id.txt_AvgBreathValue)
+//    TextView txtAvgBreathValue;
+//
+//
+//    @BindView(R.id.txt_hour)
+//    TextView txtHour;
+//    @BindView(R.id.txt_hourValue)
+//    TextView txtHourValue;
+//    @BindView(R.id.ll_sleep_main)
+//    RelativeLayout llSleepMain;
+//
+//
+//    @BindView(R.id.txt_stepCountValue)
+//    TextView txtStepCountValue;
+//    @BindView(R.id.rlSteps)
+//    RelativeLayout rlSteps;
+////    @BindView(R.id.rl_main_bottom)
+////    LinearLayout rlMainBottom;
+//    @BindView(R.id.fab)
+//    FloatingActionButton fab;
+//
+//    @BindView(R.id.frameLayout)
+//    FrameLayout frameLayout;
+//
+//    @BindView(R.id.waveLoadingView)
+//    WaveLoadingView waveLoadingView;
+//    @BindView(R.id.breathview)
+//    BreathwaveView breathview;
+//    @BindView(R.id.txt_focus)
+//    CustomFontTextView txtFocus;
+//    @BindView(R.id.txt_stress)
+//    TextView txtStress;
+//    @BindView(R.id.main_FrameLayout)
+//    FrameLayout mainFrameLayout;
+//
+//
+    BreathPresenter presenter;
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
+//    @BindView(R.id.appbar)
+//    AppBarLayout appbar;
+//
+//    @BindView(R.id.txt_calm_value)
+//    TextView txtCalmValue;
+//    @BindView(R.id.rl_main_top)
+//    RelativeLayout rlMainTop;
+////    @BindView(R.id.img_breath)
+////    ImageView imgBreath;
+//    @BindView(R.id.txt_breath)
+//    CustomFontTextView txtBreath;
+//    @BindView(R.id.txt_breathCount)
+//    CustomFontTextView txtBreathCount;
+//    @BindView(R.id.ll_breath_avg)
+//    RelativeLayout llBreathAvg;
+////    @BindView(R.id.img_sleep)
+////    ImageView imgSleep;
+//    @BindView(R.id.txt_forth)
+//    CustomFontTextView txtForth;
+////    @BindView(R.id.img_step)
+////    ImageView imgStep;
+//    @BindView(R.id.txt_step)
+//    CustomFontTextView txtStep;
+//    @BindView(R.id.txt_stepCount)
+//    CustomFontTextView txtStepCount;
+//    @BindView(R.id.coordinator)
+//    CoordinatorLayout coordinator;
+//    @BindView(R.id.navigation)
+//    BottomNavigationView navigation;
 
 
     private ActionBarDrawerToggle toggle;
@@ -236,7 +308,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         toolbar.setTitleTextColor(R.color.colorWhite);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         presenter = new BreathPresenterImp(this);
         presenter.passContext(HomeActivity.this);
@@ -369,7 +441,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(getApplicationContext(), AlarmSettingActivity.class));
+                callSettingActvity(CommonMethod.FROM_ALARM_HOME);
+
+                // startActivity(new Intent(getApplicationContext(), AlarmSettingActivity.class));
+
                 break;
             case R.id.action_profile:
                 callSettingActvity(CommonMethod.FROM_PROFILE);
@@ -406,7 +481,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void callSettingActvity(String fromDevice) {
-        Intent intent = new Intent(this, SettingMainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), SettingMainActivity.class);
         intent.putExtra(CommonMethod.BREATH, fromDevice);
         startActivity(intent);
     }

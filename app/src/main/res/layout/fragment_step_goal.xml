@@ -17,6 +17,7 @@
             android:layout_marginBottom="30dp"
             android:scaleType="centerInside"
             android:layout_marginTop="30dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/goal" />
 
 
@@ -27,6 +28,7 @@
             android:layout_below="@+id/flag"
             android:layout_marginStart="40dp"
             android:background="@drawable/btn_minus"
+            android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_remove_circle_black_24dp" />
 
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
@@ -46,6 +48,7 @@
             android:inputType="number"
             android:text="0"
             android:textColor="@color/colorWhite"
+            android:adjustViewBounds="true"
             android:textSize="@dimen/txt_sleep_value"
             app:font_value="0" />
 
@@ -102,7 +105,6 @@
             android:textOff=""
             android:checked="false"
             android:background="@drawable/selector_track"
-
             android:visibility="visible"
             android:layout_above="@+id/line_3"
             android:layout_alignEnd="@+id/lbl_maximumGoal" />

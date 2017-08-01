@@ -100,7 +100,7 @@ public class BreathFragment extends Fragment implements View.OnClickListener {
 
     private final SimpleDateFormat DATETIME_FORMATTER =
             new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private final String[] COLUMN_NAMES = {"timestamp", "Calm", "Focus", "Stress"};
+    private final String[] COLUMN_NAMES = {"timestamp", "Compose", "Attentive", "Stress"};
 
     private List<TblState> listState = new ArrayList<>();
     private int[] mColor = new int[]{Color.parseColor("#81C784"), Color.parseColor("#64B5F6"), Color.parseColor("#E57373")};

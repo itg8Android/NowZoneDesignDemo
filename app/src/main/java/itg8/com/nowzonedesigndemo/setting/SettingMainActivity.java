@@ -11,6 +11,7 @@ import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.audio.fragment.MeditationAllFragment;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.setting.fragment.AlarmFragment;
+import itg8.com.nowzonedesigndemo.setting.fragment.AlarmSettingFragment;
 import itg8.com.nowzonedesigndemo.setting.fragment.DeviceHistoryFragment;
 import itg8.com.nowzonedesigndemo.setting.fragment.FragmentDevice;
 import itg8.com.nowzonedesigndemo.setting.fragment.ProfileFragment;
@@ -66,6 +67,10 @@ public class SettingMainActivity extends AppCompatActivity {
             case CommonMethod.FROM_DEVICE_HISTORY:
                     //fragment = new DeviceHistoryFragment();
                   //  callFragmentInstaance(fragment);
+                    break;
+                case CommonMethod.FROM_ALARM_HOME:
+                    fragment = new AlarmSettingFragment();
+                    callFragmentInstaance(fragment);
                     break;
 
             }

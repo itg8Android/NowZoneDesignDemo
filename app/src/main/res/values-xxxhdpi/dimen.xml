@@ -6,7 +6,7 @@
     <dimen name="marginBottomHomeImage">30dp</dimen>
     <dimen name="marginRightHomeImage">10dp</dimen>
     <dimen name="txt_breath_value">30sp</dimen>
-    <dimen name="txt_sleep_value">2sp</dimen>
+    <dimen name="txt_sleep_value">20sp</dimen>
     <dimen name="text_sleep_normal">19sp</dimen>
     <dimen name="fabSize">56dp</dimen>
     <dimen name="lbl_breath_value">20sp</dimen>
@@ -18,7 +18,7 @@
     <dimen name="txt_value_time">13sp</dimen>
     <dimen name="txt_value_time_steps">10sp</dimen>
     <dimen name="txt_lbl_dash_bottom">12sp</dimen>
-    <dimen name="txt_hr">14sp</dimen>
+    <dimen name="txt_hr">16sp</dimen>
 
 
 
@@ -39,7 +39,7 @@
     <dimen name="marginLeftProfile">20sp</dimen>
     <dimen name="marginRightProfile">20sp</dimen>
     <dimen name="txt_edit_text_size">14sp</dimen>
-    <dimen name="txt_step_goal">20sp</dimen>
+    <dimen name="txt_step_goal">19sp</dimen>
 
 
 

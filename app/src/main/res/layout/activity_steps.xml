@@ -8,7 +8,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".ui.activities.MainActivity">
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
@@ -17,9 +18,6 @@
     android:layout_above="@+id/navigation"
     android:fitsSystemWindows="true"
     tools:context="itg8.com.nowzonedesigndemo.steps.StepsActivity">
-
-
-
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

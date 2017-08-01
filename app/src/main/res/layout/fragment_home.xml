@@ -257,12 +257,13 @@
             </LinearLayout>
         </FrameLayout>
         <include layout="@layout/layout_home_bottom"
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/include_home" />
         <itg8.com.nowzonedesigndemo.widget.bottomnavigation.BottomNavigationView
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_alignParentBottom="true"
+            android:visibility="gone"
             android:id="@+id/bottom_navigation"/>
 
     </RelativeLayout>
