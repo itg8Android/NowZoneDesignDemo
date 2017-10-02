@@ -6,6 +6,12 @@ import android.util.Log;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.Job;
 
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -15,11 +21,15 @@ import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import itg8.com.nowzonedesigndemo.common.AppApplication;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.tosort.RDataManager;
 import itg8.com.nowzonedesigndemo.tosort.RDataManagerListener;
+import itg8.com.nowzonedesigndemo.utility.model.breath.BreathingModel;
+import itg8.com.nowzonedesigndemo.utility.model.breath.ItemDetail;
+import itg8.com.nowzonedesigndemo.utility.model.step.StepsModel;
 
 /**
  * This is responsible for calculation uploading and all.
@@ -30,7 +40,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     /**
      * this veriable use to define rolling average window. W=30
      */
-    private static final int ROLLING_AVG_SIZE = 30;
+    private static final int ROLLING_AVG_SIZE = 25;
 
     /**
      * this will check if packet receiving is completed.
@@ -60,11 +70,26 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     private AlgoAsync async;
     private DataModel[] tempHolderRaw;
     private long startAlarmTime, endAlarmTime;
+    private String serverIp;
+    private boolean connected;
+    private PrintWriter out;
+    private DataModel pModel;
+    private boolean changed = false;
+    private Thread thread;
+    private String toSendSocket;
+
     private StringBuilder sb;
+    private NetworkUtility utility;
+    private int lastStep;
+    private double mSmallestPressure;
+    private int mPressureCount;
+    private boolean isStillSmallest=false;
+    private boolean isNotSmallest=true;
+    private boolean attached;
 
     public RDataManagerImp(RDataManagerListener listener, Context mContext) {
         this.listener = listener;
-        sb=new StringBuilder();
+        sb = new StringBuilder();
         isSleepStarted = false;
         startAlarmTime = 0;
         endAlarmTime = 0;
@@ -106,8 +131,28 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
 
     }
 
+    @Override
+    public void setServerIp(String serverIp) {
+        this.serverIp = serverIp;
+    }
+
     public void setSleepStarted(boolean sleepStarted) {
         isSleepStarted = sleepStarted;
+        if(!isSleepStarted){
+            accelImp.setSleepsEnd();
+        }else {
+            accelImp.setSleepNotEnded();
+        }
+    }
+
+    @Override
+    public void onDeepsleepGot(long nextTmstmp, long lastTmstmp, long diffMinutes) {
+        listener.onDeepsleepGot(nextTmstmp,lastTmstmp,diffMinutes);
+    }
+
+    @Override
+    public void onSleepEnded() {
+        listener.onSleepEnded();
     }
 
     public void setStartAlarmTime(long startAlarmTime) {
@@ -119,7 +164,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     }
 
     @Override
-    public void onRawDataModel(DataModel model, Context context) {
+    public void onRawDataModel(final DataModel model, Context context) {
         if (model != null) {
             sb.setLength(0);
             Log.d(TAG, sb.append("pressure max : ").append(model.getPressure()).toString());
@@ -190,6 +235,7 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
 
     private DataModel copy(DataModel model) {
         modelTemp = new DataModel();
+        modelTemp.setRawString(model.getRawString());
         modelTemp.setTimestamp(model.getTimestamp());
         modelTemp.setBattery(model.getBattery());
         modelTemp.setPressure(model.getPressure());
@@ -206,6 +252,29 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     }
 
     private void processModelData(DataModel model, Context context) {
+        if (mSmallestPressure <= 0 || mSmallestPressure > model.getPressure())
+            mSmallestPressure = model.getPressure();
+        if (mPressureCount > 100) {
+            if (isStillSmallest && !isNotSmallest) {
+                attached=false;
+                listener.onDeviceNotAttached();
+            }else {
+                attached=true;
+                listener.onDeviceAttached();
+            }
+            mPressureCount = 0;
+            isStillSmallest=false;
+            isNotSmallest=false;
+        }
+        if(Math.abs(model.getPressure()-mSmallestPressure)<100){
+            isStillSmallest=true;
+        }else
+        {
+            isNotSmallest=true;
+        }
+
+        mPressureCount+=1;
+
         dataModel = copy(model);
         rolling.add(model.getPressure());
         model.setPressure(rolling.getaverage());
@@ -213,9 +282,162 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
         rolling2.add(rolling.getaverage());
         model.setPressure(rolling2.getaverage());
         checkIfDataGatheringCompleted(model, context, dataModel);
+        pModel = model;
+        toSendSocket = "R " + dataModel.getRawString() + " P " + model.getAllInHex();
+        Log.i("serverIp", toSendSocket);
+        changed = true;
+//        executor.execute(new SocketWorker(dataModel,model,serverIp));
+
+//        new Thread(new SocketWorker(dataModel,model,serverIp)).start();
+
 //        rolling3.add(rolling2.getaverage());
 //        dataModel=new DataModel();
 //        dataModel.setPressure(rolling3.getaverage());
+    }
+
+    @Override
+    public void startSendingData(String stringExtra) {
+        startSocket(stringExtra);
+
+    }
+
+    @Override
+    public void onSocketStopped() {
+        connected = false;
+        if (thread != null && !thread.isInterrupted()) {
+            thread.interrupt();
+        }
+    }
+
+    @Override
+    public void arrangeBreathingForServer(String url, int count, long timestamp, BreathState currentState) {
+        ItemDetail detail = new ItemDetail();
+        detail.setCount(count);
+        detail.setTimeStamp(Helper.convertTimestampToTime(timestamp));
+        detail.setStateofmindFkid(Helper.getIdByState(currentState));
+        BreathingModel model = AppApplication.getInstance().addBreathing(detail);
+        utility = new NetworkUtility.NetworkBuilder().setHeader().build();
+        utility.saveBreath(url, model, new NetworkUtility.ResponseListener() {
+            @Override
+            public void onSuccess(Object message) {
+//                TODO response
+                AppApplication.getInstance().removeBreathing(detail);
+            }
+
+            @Override
+            public void onFailure(Object err) {
+//                TODO response
+                ((Throwable) err).printStackTrace();
+            }
+
+            @Override
+            public void onSomethingWrong(Object e) {
+//                TODO response
+
+            }
+        });
+    }
+
+    @Override
+    public void arrangeStepsForServer(String url, int step) {
+        if (lastStep == step)
+            return;
+
+        lastStep = step;
+        StepsModel model = new StepsModel();
+        itg8.com.nowzonedesigndemo.utility.model.step.ItemDetail detail = new itg8.com.nowzonedesigndemo.utility.model.step.ItemDetail();
+        List<itg8.com.nowzonedesigndemo.utility.model.step.ItemDetail> details = new ArrayList<>();
+        detail.setDate(Helper.convertTimestampToTime(System.currentTimeMillis()));
+        detail.setSteps(step);
+        details.add(detail);
+        model.setItemDetails(details);
+        if (utility == null)
+            utility = new NetworkUtility.NetworkBuilder().setHeader().build();
+        utility.saveSteps(url, model, new NetworkUtility.ResponseListener() {
+            @Override
+            public void onSuccess(Object message) {
+                //TODO do something
+            }
+
+            @Override
+            public void onFailure(Object err) {
+                ((Throwable) err).printStackTrace();
+            }
+
+            @Override
+            public void onSomethingWrong(Object e) {
+
+            }
+        });
+    }
+
+
+    @Override
+    public void resetCountAndAverage() {
+        if(accelImp!=null){
+            accelImp.resetStepCount();
+        }
+    }
+
+    private void startSocket(String ipAddress) {
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InetAddress serverAddr = InetAddress.getByName(ipAddress);
+                    Log.d("ClientActivity", "C: Connecting...");
+                    Socket socket = new Socket(serverAddr, 8080);
+                    connected = true;
+                    while (connected) {
+                        try {
+                            if (changed) {
+                                Log.d("ClientActivity", "C: Sending command.");
+                                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket
+                                        .getOutputStream())), true);
+                                // WHERE YOU ISSUE THE COMMANDS
+
+
+//                                out.println
+//                                        ("Raw: " + dataModel.getTimestamp() + " " + dataModel.getPressure() + " "
+//                                        + dataModel.getX()
+//                                        + " "
+//                                        + dataModel.getY()
+//                                        + " "
+//                                        + dataModel.getZ()
+//                                        + " Processed: "
+//                                        + pModel.getPressure() + " "
+//                                        + pModel.getX() + " "
+//                                        + pModel.getY() + " "
+//                                        + pModel.getZ());
+
+//                                out.println
+//                                        ("Raw: " +dataModel.getRawString()
+//                                        + " Processed: "
+//                                        +pModel.getAllInHex());
+
+                                if (toSendSocket != null)
+                                    out.println
+                                            (toSendSocket);
+
+
+                                Log.d("ClientActivity", "C: Sent.");
+                                changed = false;
+                            }
+                        } catch (Exception e) {
+                            Log.e("ClientActivity", "S: Error", e);
+                        }
+                    }
+                    socket.close();
+                    Log.d("ClientActivity", "C: Closed.");
+                } catch (Exception e) {
+                    Log.e("ClientActivity", "C: Error", e);
+                    listener.onSocketInterrupted();
+                    connected = false;
+                }
+            }
+        });
+        thread.start();
+
     }
 
     private synchronized void checkIfDataGatheringCompleted(DataModel model, Context context, DataModel rawData) {
@@ -294,6 +516,10 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     @Override
     public void onCountResultAvailable(int count, long timestamp) {
         Log.d(TAG, "bpmCount = " + count);
+        if (!attached) {
+            listener.onDeviceNotAttached();
+            return;
+        }
         listener.onCountAvailable(count, timestamp);
     }
 
@@ -327,5 +553,20 @@ public class RDataManagerImp implements RDataManager, PAlgoCallback, AccelVerify
     @Override
     public void startWakeupService() {
         listener.onStartWakeupSevice();
+    }
+
+    @Override
+    public void onMovement(float mAccel) {
+        listener.onMovement(mAccel);
+    }
+
+    @Override
+    public void onNoMovement(float i) {
+        listener.onNoMovement(i);
+    }
+
+    @Override
+    public void onAngleAvail(double something) {
+        listener.onAxisDataAvail(something,0);
     }
 }

@@ -13,7 +13,7 @@
         android:layout_marginTop="20dp"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/lbl_alarm_time"
-        app:font_value="1"
+        app:font_value="juraMedium"
         android:visibility="visible"
         android:text="Select Height"/>
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
@@ -27,7 +27,7 @@
         android:textSize="@dimen/txt_value_sleep"
         android:background="@drawable/textview_ripple_effect"
         android:clickable="true"
-        app:font_value="0"
+        app:font_value="robotoLight"
         android:text="CM" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
@@ -41,7 +41,7 @@
         android:background="@drawable/textview_ripple_effect"
         android:clickable="true"
         android:textSize="@dimen/txt_value_sleep"
-        app:font_value="0"
+        app:font_value="robotoLight"
         android:text="FEET" />
 
     <Button

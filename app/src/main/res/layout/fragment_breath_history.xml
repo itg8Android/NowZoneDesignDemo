@@ -16,7 +16,7 @@
         android:text="Calm"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/lbl_alarm_time"
-        app:font_value="0" />
+        app:font_value="robotoLight" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_focus"
@@ -28,7 +28,7 @@
         android:text="focus"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/lbl_alarm_time"
-        app:font_value="0" />
+        app:font_value="robotoLight" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_stress"
@@ -41,7 +41,7 @@
         android:text="@string/stress"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/lbl_alarm_time"
-        app:font_value="0" />
+        app:font_value="robotoLight" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/txt_calm_value"
@@ -54,7 +54,7 @@
         android:text="10 "
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/lbl_breath_value"
-        app:font_value="2" />
+        app:font_value="juraMedium" />
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_calm_time"
         android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
         android:text="min "
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/txt_value_time_steps"
-        app:font_value="2" />
+        app:font_value="juraMedium" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/txt_focus_value"
@@ -80,7 +80,7 @@
         android:text="10 "
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/txt_sleep_value"
-        app:font_value="2" />
+        app:font_value="juraMedium" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_focus_time"
@@ -95,7 +95,7 @@
         android:text="min "
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/txt_value_time_steps"
-        app:font_value="2" />
+        app:font_value="juraMedium" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/txt_stress_value"
@@ -108,7 +108,7 @@
         android:text="10 "
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/txt_sleep_value"
-        app:font_value="2" />
+        app:font_value="juraMedium" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_stress_time"
@@ -123,7 +123,7 @@
         android:text="min "
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/txt_value_time_steps"
-        app:font_value="2" />
+        app:font_value="juraMedium" />
 
 
 

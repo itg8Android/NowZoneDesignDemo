@@ -16,7 +16,6 @@
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:editTextStyle">@style/App_EditTextStyle</item>
         <item name="android:actionMenuTextColor">@color/colorBlack</item>
     </style>
@@ -29,7 +28,28 @@
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">@dimen/txt_lbl_dash_bottom</item>
         <item name="android:textAllCaps">true</item>
+
+
     </style>
+
+    <style name="breath_textView">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/txt_value_time</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="breath_textView_value">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/lbl_breath_value</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="breath_textView_value_number">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/lbl_breath_value_history</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@android:color/white</item>
@@ -119,4 +139,54 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
+
+
+    <!-- for Bottom Bar-->
+
+    <style name="BB_BottomBarItem">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:layout_width">wrap_content</item>
+        <!-- layout_height is ignored since the height is set programmatically in BottomBar
+        .updateItems() -->
+        <item name="android:layout_height">@dimen/bb_height</item>
+    </style>
+
+    <style name="BB_BottomBarItem_TitleStyle">
+        <!-- Material spec: "Avoid long text labels as these labels do not truncate or wrap." -->
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="BB_BottomBarItem_Fixed.TitleAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BB_BottomBarItem_Shifting.TitleAppearance" parent="BB_BottomBarItem_Fixed.TitleAppearance">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="BB_BottomBarItem_Tablet">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="BB_BottomBarBadge_Text" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_top</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+
+    <style name="input_text_style">
+        <item name="android:textColorHint">@color/colorWhite</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/colorWhite</item>
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
+
+    </style>
+
 </resources>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:id="@+id/nestedScrolling"
+    tools:context="itg8.com.nowzonedesigndemo.breath_history.SleepDetailActivity"
+    tools:showIn="@layout/activity_sleep_detail">
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+
+        <!--<android.support.v7.widget.CardView-->
+            <!--android:id="@+id/cardView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginEnd="20dp"-->
+            <!--android:layout_marginStart="20dp"-->
+            <!--app:cardPreventCornerOverlap="true"-->
+            <!--app:cardUseCompatPadding="true">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_margin="10dp"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:weightSum="3">-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="Awake"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_time_front"-->
+                        <!--app:font_value="robotoLight" />-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="1:50"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_breath_value_history"-->
+                        <!--app:font_value="oxigenRagular" />-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="Hr"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_time_front"-->
+                        <!--app:font_value="robotoLight" />-->
+
+                <!--</LinearLayout>-->
+
+                <!--<View-->
+                    <!--android:layout_width="1dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_margin="05dp"-->
+                    <!--android:background="@color/divider" />-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="Light"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_time_front"-->
+                        <!--app:font_value="robotoLight" />-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="2:50"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_breath_value_history"-->
+                        <!--app:font_value="oxigenRagular" />-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="Hr"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_time_front"-->
+                        <!--app:font_value="robotoLight" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--<View-->
+                    <!--android:layout_width="1dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_margin="05dp"-->
+                    <!--android:background="@color/divider" />-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="Deep"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_time_front"-->
+                        <!--app:font_value="robotoLight" />-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="1"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_breath_value_history"-->
+                        <!--app:font_value="oxigenRagular" />-->
+
+                    <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="Hr"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="@dimen/lbl_time_front"-->
+                        <!--app:font_value="robotoLight" />-->
+
+
+                <!--</LinearLayout>-->
+
+
+            <!--</LinearLayout>-->
+        <!--</android.support.v7.widget.CardView>-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/cardView"-->
+            <!--android:layout_marginTop="20dp">-->
+
+
+            <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="20dp"-->
+                <!--android:text="About"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:textSize="@dimen/lbl_breath_value"-->
+                <!--app:font_value="oxigenRagular" />-->
+        <!--</RelativeLayout>-->
+
+    <!--</RelativeLayout>-->
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:id="@+id/ll_main"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Awake"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/lbl_time_front"
+                android:visibility="visible"
+                app:font_value="robotoLight" />
+
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_margin="05dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Light"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/lbl_time_front"
+                android:visibility="visible"
+                app:font_value="robotoLight" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_margin="05dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Deep"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/lbl_time_front"
+                android:visibility="visible"
+                app:font_value="robotoLight" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_main"
+        android:layout_marginTop="10dp"
+        android:id="@+id/recyclerView"
+        />
+</RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import java.util.Random;
 
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
+import itg8.com.nowzonedesigndemo.common.Prefs;
 import itg8.com.nowzonedesigndemo.utility.BreathState;
+import itg8.com.nowzonedesigndemo.utility.DeviceState;
 
+import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_DEVICE_NOT_ATTACHED_TO_BODY;
+import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_SOCKET_INERRUPTED;
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STATE_ARRIVED;
 import static itg8.com.nowzonedesigndemo.connection.BleService.ACTION_STEP_COUNT;
 
@@ -48,6 +51,28 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
                     onStateReceived((BreathState) intent.getSerializableExtra(ACTION_STATE_ARRIVED));
                 }if(intent.hasExtra(CommonMethod.ACTION_GATT_DISCONNECTED)){
                     startShowingDevicesList();
+                }if(intent.hasExtra(ACTION_SOCKET_INERRUPTED)){
+                    if(view!=null){
+                        view.setSocketClosed();
+                    }
+                }if(intent.hasExtra(CommonMethod.DEVICE_STATE)){
+                    if(view!=null)
+                        view.onDeviceStateAvail((DeviceState) intent.getSerializableExtra(CommonMethod.DEVICE_STATE));
+                }if(intent.hasExtra(CommonMethod.ACTION_MOVEMENT)){
+                    if(view!=null)
+                        view.onMovementStarted();
+                }if(intent.hasExtra(CommonMethod.ACTION_MOVEMENT_STOPPED)) {
+                    if (view != null)
+                        view.onMovementStopped();
+                }if(intent.hasExtra(ACTION_DEVICE_NOT_ATTACHED_TO_BODY)){
+                    boolean isNotAttached=intent.getBooleanExtra(ACTION_DEVICE_NOT_ATTACHED_TO_BODY,false);
+
+                    if(view!=null) {
+                        if (isNotAttached)
+                            view.onDeviceNotAttachedToBody();
+                        else
+                            view.onDeviceAttached();
+                    }
                 }
             }
         }
@@ -96,6 +121,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     public void onCreate() {
             LocalBroadcastManager.getInstance(context).registerReceiver(receiver,new IntentFilter(context.getResources().getString(R.string.action_data_avail)));
         model.onInitStateTime();
+
 //        mTimer2 = new Runnable() {
 //            @Override
 //            public void run() {
@@ -144,7 +170,7 @@ public class BreathPresenterImp implements BreathPresenter, BreathPresenter.Brea
     @Override
     public void onPressureReceived(double pressure, long ts) {
         if (checkNotNull()) {
-//            view.onPressureDataAvail(pressure,ts);
+            view.onPressureDataAvail(pressure,ts);
         }
     }
 

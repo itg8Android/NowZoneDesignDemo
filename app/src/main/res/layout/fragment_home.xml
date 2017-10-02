@@ -190,7 +190,7 @@
                     android:gravity="center">
 
                     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
-                        app:font_value="3"
+                        app:font_value="robotoMedium"
                         android:id="@+id/txt_focus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -211,7 +211,7 @@
                         android:layout_below="@+id/txt_focus"
                         android:layout_centerHorizontal="true"
                         android:text="1:30 HR"
-                        app:font_value="2"
+                        app:font_value="juraMedium"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/txt_value" />
 

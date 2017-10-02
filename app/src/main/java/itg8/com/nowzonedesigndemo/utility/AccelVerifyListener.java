@@ -14,4 +14,14 @@ package itg8.com.nowzonedesigndemo.utility;
     void onSleepInterrupted(long timestamp);
 
     void startWakeupService();
+
+    void onMovement(float mAccel);
+
+   void onNoMovement(float i);
+
+    void onAngleAvail(double something);
+
+    void onDeepsleepGot(long timestamp, long lastTimestamp, long diffMinutes);
+
+    void onSleepEnded();
 }

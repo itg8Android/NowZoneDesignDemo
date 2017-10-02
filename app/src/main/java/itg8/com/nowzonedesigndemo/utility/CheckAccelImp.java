@@ -3,22 +3,28 @@ package itg8.com.nowzonedesigndemo.utility;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.common.DataModel;
 
 import static java.lang.Math.atan2;
@@ -33,9 +39,10 @@ class CheckAccelImp {
     private static final int X = 0;
     private static final int Y = 1;
     private static final int Z = 2;
-    private static final int TOTAL_SIZE_OF_DATA_COLLECTION = 33;
+    private static final int TOTAL_SIZE_OF_DATA_COLLECTION = 20;
     private static final double G = 0.244;
     private static final double M_PI = 3.1415;
+    private static final long MIN_DEEP_SLEEP_DURATION = 3;
     private static int nStepCount = 0;
     private AccelVerifyListener listener;
     private Observer observer;
@@ -79,13 +86,18 @@ class CheckAccelImp {
     private double sleep_threshold = 0;
     private boolean isSleepThresholdCalculated = false;
     private long alarmStartTime;
-    private int stepListener=0;
+    private int stepListener = 0;
     private File completeFileStructure;
     private String info;
-    private static final float alpha=0.5f;
-    private double fXg=0;
-    private double fYg=0;
-    private double fZg=0;
+    private static final float alpha = 0.5f;
+    private double fXg = 0;
+    private double fYg = 0;
+    private double fZg = 0;
+    private double mAccelLast = 0;
+    private float mAccel = 0;
+    private double roll2 = 0;
+    private int countSleep = 0;
+    private boolean sleepEnded;
 
     /**
      * We will pass the listener and latest step count received before service destroyed.
@@ -97,6 +109,7 @@ class CheckAccelImp {
         this.listener = listener;
         initPedometer(mPreviousStepCount);
         nStepCount = mPreviousStepCount;
+        stepListener = mPreviousStepCount;
         rolling = new Rolling(2000);
         models = new DataModel[TOTAL_SIZE_OF_DATA_COLLECTION];
         observer = new Observer<Integer>() {
@@ -127,27 +140,61 @@ class CheckAccelImp {
 
     }
 
+//    private void sendToServer(int steps) {
+//        NetworkUtility utility=new NetworkUtility.NetworkBuilder().setHeader().build();
+//        utility.saveSteps();
+//    }
+
     public void resetStepCount() {
         pedi_step_counter = 0;
+        stepListener = 0;
     }
 
     private DecimalFormat formatter = new DecimalFormat("#0.00");
     String log;
     StringBuilder sb;
+
+    /**
+     * this is actual method to calculate steps and sleep. Here we took G(Sensitivity) as
+     * 0.224 for removing acceleration due to gravity.
+     * CheckMovementForView is to check whether accelerometer having large movement or not.
+     * When there is large movement we notify about movement in HomeActivity
+     * We have check angle of movement in accelerometer for gesture recognition.
+     * checkForSteps() is an actual method to calculate steps.
+     * @param model
+     * @return
+     */
     private Observable<Integer> checkMovement(DataModel model) {
 
         return Observable.create(e -> {
-            double xG = (model.getX()>32768)?model.getX():model.getX()-65536;
-            double yG = (model.getY() >32768) ?model.getY():model.getY()-65536;
-            double zG = (model.getZ() >32768) ?model.getZ():model.getZ()-65536;
-            sb=new StringBuilder();
+//            double xG = (model.getX()>32768)?model.getX():model.getX()-65536;
+//            double yG = (model.getY() >32768) ?model.getY():model.getY()-65536;
+//            double zG = (model.getZ() >32768) ?model.getZ():model.getZ()-65536;
+            double xG = model.getX();
+            double yG = model.getY();
+            double zG = model.getZ();
+            sb = new StringBuilder();
             sb.append("RawXYZ: X: ").append(xG).append(" Y: ").append(yG).append(" Z: ").append(zG);
             Log.d(TAG, sb.toString());
-            calculatePitchRoll(xG,yG,zG);
+
+            checkMovementForView(xG, yG, zG);
+            double something = calculatePitchRoll(xG, yG, zG);
+            listener.onAngleAvail(something);
+
+            Log.d(TAG, "SOMETHING: " + something);
+
             xG = (xG * G) / 1000;
             yG = (yG * G) / 1000;
             zG = (zG * G) / 1000;
+
+
+//            mAccelLast = roll;
+
             roll = sqrt((xG * xG) + (yG * yG) + (zG * zG));
+
+//            float delta = (float) (roll - mAccelLast);
+//            mAccel = mAccel * 0.9f + delta; // perform low-cut filter
+
 //            Log.d("gdata:","X:"+xG+" Y:"+yG+" Z:"+zG);
 //              Log.d("Rollng avg:",String.valueOf(roll));
 
@@ -216,10 +263,65 @@ class CheckAccelImp {
              * My old method from step calculation in AbcApp
              */
             e.onNext(checkForSteps(roll));
-
+            e.onComplete();
 //                if (updateStepParameter((int) model.getX(), (int) model.getY(), (int) model.getZ()) != lastStepVal){
             lastStepVal = pedi_step_counter;
         });
+    }
+
+    private synchronized void checkMovementForView(double xG, double yG, double zG) {
+        mAccelLast = roll2;
+        roll2 = sqrt((xG * xG) + (yG * yG) + (zG * zG));
+        Log.d(TAG, "ROLLING VECTOR:" + roll2);
+
+        float delta = (float) (roll2 - mAccelLast);
+        mAccel = mAccel * 0.9f + delta; // perform low-cut filter
+        Log.d(TAG, "ACCEL:" + mAccel + " DELTA:" + delta);
+
+
+        detectPeak(mAccel);
+//        listener.onMovement(mAccel);
+
+
+    }
+
+    private List<Double> accList = new ArrayList<>(20);
+
+    private void detectPeak(float accel) {
+        if (accList.size() >= 20) {
+            detect();
+        }
+        accList.add((double) accel);
+    }
+
+    private void detect() {
+
+        List<Map<Integer, Double>> result = CommonMethod.peak_detection(accList, 50.0);
+        if (result.size() > 0) {
+            if (result.get(0) != null && result.get(1) != null) {
+                Log.i(TAG, "peaks in accel: " + result.get(0).size());
+                if (result.get(0).size() >= 1
+                        && result.get(0).size() <= 3
+                        && result.get(1).size() >= 1
+                        && result.get(1).size() <= 3) {
+
+                    count += 1;
+//                    btnAdd.setText("Movement");
+                    listener.onMovement(0);
+                } else if (result.get(0).size() > 3) {
+//                    feedMultiple();
+//                    btnAdd.setText("Movement");
+                    listener.onMovement(0);
+
+                } else {
+//                    shouldStart=false;
+                    listener.onNoMovement(0);
+                }
+            }
+        }
+//        if(accel>80){
+//        }
+        accList.clear();
     }
 
     private void createFile(String log) {
@@ -250,9 +352,9 @@ class CheckAccelImp {
         fZg = z * alpha + (fZg * (1.0 - alpha));
 
         //Roll & Pitch Equations
-        roll  = (atan2(-fYg, fZg)*360.0)/M_PI;
-        pitch = (atan2(fXg, sqrt(fYg*fYg + fZg*fZg))*360.0)/M_PI;
-        Log.d(TAG,"Roll: "+roll+" Pitch: "+pitch);
+        roll = (atan2(-fYg, fZg) * 360.0) / M_PI;
+        pitch = (atan2(fXg, sqrt(fYg * fYg + fZg * fZg)) * 360.0) / M_PI;
+        Log.d(TAG, "Roll: " + roll + " Pitch: " + pitch);
 
         return atan2(x, y) * 180 / 2.14f;
     }
@@ -435,7 +537,7 @@ class CheckAccelImp {
             n3D[i] = (float) sqrt(nX[i] * nX[i] + nY[i] * nY[i] + nZ[i] * nZ[i]);
 //            Log.d("###","#"+n3D[i]);
         }
-        Log.d(TAG,"n3D "+ Arrays.toString(n3D));
+        Log.d(TAG, "n3D " + Arrays.toString(n3D));
 
         //PeakDetector peakDetect = new PeakDetector(nY);
         PeakDetector peakDetect = new PeakDetector(n3D);
@@ -545,7 +647,7 @@ class CheckAccelImp {
 			/**
 			 * Make your own analyzing code here.
 			 */
-			/*
+            /*
 			if(co.mAccelData != null) {
 				int last_x = 0;
 				int last_y = 0;
@@ -727,27 +829,31 @@ class CheckAccelImp {
 
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
-                sb=new StringBuilder();
+                sb = new StringBuilder();
                 info = sb.append("Timestamp: ").append(model.getTimestamp()).append(" X: ").append(model.getX()).append(" Y: ").append(model.getY()).append(" Z: ").append(model.getZ()).toString();
 
                 calendar = Calendar.getInstance();
                 if (!calibarated) {
                     if (!isSleepThresholdCalculated) {
-                        if (count < 2000) {
+                        if (countSleep < 2000) {
                             rolling.add(calculateVector(model));
-                            count++;
+                            countSleep++;
                         } else {
                             sleep_threshold = rolling.getaverage();
                             isSleepThresholdCalculated = true;
                             calibarated = true;
+                            countSleep = 0;
                             createFileSleep(info);
                         }
                         return;
                     }
                 }
                 createFileSleep(info);
-                Log.d(TAG,"sleep started");
-                double vector=calculateVector(model);
+                Log.d(TAG, "sleep started");
+                model.setX(model.getX() >= 0 ? model.getX() : 65535 + model.getX());
+                model.setY(model.getY() >= 0 ? model.getY() : 65535 + model.getY());
+                model.setZ(model.getZ() >= 0 ? model.getZ() : 65535 + model.getZ());
+                double vector = calculateVector(model);
                 if (vector + 1000 < sleep_threshold || vector - 1000 > sleep_threshold) {
                     sleepInterrupted(model.getTimestamp());
                     if (checkTime(model.getTimestamp()) > checkTime(alarmStartTime) && checkTime(model.getTimestamp()) < checkTime(alarmEndsTime)) {
@@ -786,7 +892,7 @@ class CheckAccelImp {
     }
 
     private void createFileSleep(String timeInMillis) {
-        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", Helper.getCurrentDate()+"_sleep.txt");
+        completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", Helper.getCurrentDate() + "_sleep.txt");
         try {
             FileWriter fWriter;
             fWriter = new FileWriter(completeFileStructure, true);
@@ -816,5 +922,58 @@ class CheckAccelImp {
 
     private double calculateVector(DataModel model) {
         return sqrt((model.getX() * model.getX()) + (model.getY() * model.getY()) + (model.getZ() * model.getZ()));
+    }
+
+    public void setSleepsEnd() {
+        sleepEnded = true;
+        startCalculationForSleep();
+    }
+
+    public void setSleepNotEnded() {
+        sleepEnded = false;
+    }
+
+    private void startCalculationForSleep() {
+        File completeFileStructure = new File(Environment.getExternalStorageDirectory() + File.separator + "nowzone", "sleep_cal.txt");
+        if (completeFileStructure.exists()) {
+            try {
+                FileInputStream is = new FileInputStream(completeFileStructure);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                String line = reader.readLine();
+                long lastTimestamp = 0;
+                long diffMinutes;
+                long diffLong;
+                while (line != null) {
+                    Log.d("StackOverflow", line);
+                    line = reader.readLine();
+                    if (line != null) {
+                        long timestamp = Long.parseLong(line);
+                        if (timestamp > 0) {
+                            if (lastTimestamp <= 0) {
+                                lastTimestamp = timestamp;
+                                continue;
+                            }
+                            diffLong = timestamp - lastTimestamp;
+                            diffMinutes = diffLong / (60 * 1000) % 60;
+                            if (diffMinutes >= MIN_DEEP_SLEEP_DURATION) {
+                                listener.onDeepsleepGot(timestamp, lastTimestamp, diffMinutes);
+                            }
+                            lastTimestamp = timestamp;
+                        }
+                    }
+                }
+                listener.onSleepEnded();
+                if (completeFileStructure.delete()) {
+
+                    Log.d(TAG, "Deleted");
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }

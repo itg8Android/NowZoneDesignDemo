@@ -15,7 +15,9 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import itg8.com.nowzonedesigndemo.common.BaseModuleOrm;
 import itg8.com.nowzonedesigndemo.common.CommonMethod;
@@ -110,12 +112,34 @@ public class BreathModelImp extends BaseModuleOrm implements BreathFragmentModel
     public void onInitStateTime() {
         Observable.create((ObservableOnSubscribe<StateTimeModel>) e ->{
             e.onNext(getStateModelClass());
+            e.onComplete();
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(stateTimeModel -> listener.onStateTimeReceived(stateTimeModel),
-                        Throwable::printStackTrace,
-                        () -> Timber.d("On Complete"));
+                .subscribe(new Observer<StateTimeModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(StateTimeModel stateTimeModel) {
+                         listener.onStateTimeReceived(stateTimeModel);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                      Timber.d("On Complete");
+
+                    }
+                })
+                ;
 
 
     }

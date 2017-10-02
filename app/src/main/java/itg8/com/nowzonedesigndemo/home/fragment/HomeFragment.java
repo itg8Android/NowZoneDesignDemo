@@ -4,6 +4,7 @@ package itg8.com.nowzonedesigndemo.home.fragment;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -25,9 +26,9 @@ import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.sleep.fragment.SleepMainFragment;
 import itg8.com.nowzonedesigndemo.steps.StepsActivity;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
-import itg8.com.nowzonedesigndemo.widget.bottomnavigation.BottomNavigationItem;
-import itg8.com.nowzonedesigndemo.widget.bottomnavigation.BottomNavigationView;
-import itg8.com.nowzonedesigndemo.widget.bottomnavigation.OnBottomNavigationItemClickListener;
+//import itg8.com.nowzonedesigndemo.widget.bottomnavigation.BottomNavigationItem;
+//import itg8.com.nowzonedesigndemo.widget.bottomnavigation.BottomNavigationView;
+//import itg8.com.nowzonedesigndemo.widget.bottomnavigation.OnBottomNavigationItemClickListener;
 import itg8.com.nowzonedesigndemo.widget.wave.BreathwaveView;
 import itg8.com.nowzonedesigndemo.widget.wave.WaveLoadingView;
 
@@ -177,7 +178,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //    @BindView(R.id.rl_main_bottom)
 //    LinearLayout rlMainBottom;
     @BindView(R.id.bottom_navigation)
-    BottomNavigationView bottomNavigationView;
+BottomNavigationView bottomNavigationView;
 
 
     // TODO: Rename and change types of parameters
@@ -227,61 +228,61 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         init();
         setType();
         initOtherView();
-        callBottomNavigation();
+//        callBottomNavigation();
 
         return view;
     }
 
-    private void callBottomNavigation() {
-        int[] image = {R.drawable.ic_breaths, R.drawable.ic_sleeping,
-                R.drawable.ic_steps};
-        int[] color = {ContextCompat.getColor(getActivity(), R.color.firstColor), R.drawable.gradient_block,
-                R.drawable.gradientblocktwo};
-
-        if (bottomNavigationView != null) {
-            bottomNavigationView.isWithText(true);
-            // bottomNavigationView.activateTabletMode();
-            bottomNavigationView.isColoredBackground(true);
-            bottomNavigationView.setTextActiveSize(getResources().getDimension(R.dimen.text_active));
-            bottomNavigationView.setTextInactiveSize(getResources().getDimension(R.dimen.text_inactive));
-            bottomNavigationView.setItemActiveColorWithoutColoredBackground(ContextCompat.getColor(getActivity(), R.color.firstColor));
-
-            // bottomNavigationView.setFont(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Noh_normal.ttf"));
-        }
-
-        BottomNavigationItem bottomNavigationItem = new BottomNavigationItem
-                ("Breath", color[0], image[0], "hr", "7:30", "2000");
-        BottomNavigationItem bottomNavigationItem1 = new BottomNavigationItem
-                ("Sleep", color[1], image[1], "hr", "8", "Sleep");
-        BottomNavigationItem bottomNavigationItem2 = new BottomNavigationItem
-                ("Steps", color[2], image[2], "hr", "5", "1450");
-
-
-        bottomNavigationView.addTab(bottomNavigationItem);
-        bottomNavigationView.addTab(bottomNavigationItem1);
-        bottomNavigationView.addTab(bottomNavigationItem2);
-
-        bottomNavigationView.setOnBottomNavigationItemClickListener(new OnBottomNavigationItemClickListener() {
-            @Override
-            public void onNavigationItemClick(int index) {
-                fm = getActivity().getSupportFragmentManager();
-                switch (index) {
-                    case 0:
-                        //  startActivity(new Intent(getActivity(), BreathHistoryActivity.class));
-                        fm.beginTransaction().replace(R.id.frameLayout, BreathFragment.newInstance("", "")).addToBackStack(BreathFragment.class.getSimpleName()).commit();
-                        break;
-                    case 1:
-                        fm.beginTransaction().replace(R.id.frameLayout, SleepMainFragment.newInstance("", "")).addToBackStack(SleepMainFragment.class.getSimpleName()).commit();
-                        break;
-                    case 2:
-                        Intent intent = new Intent(getActivity(), StepsActivity.class);
-                        startActivity(intent);
-                        break;
-
-                }
-            }
-        });
-    }
+//    private void callBottomNavigation() {
+//        int[] image = {R.drawable.ic_breaths, R.drawable.ic_sleeping,
+//                R.drawable.ic_steps};
+//        int[] color = {ContextCompat.getColor(getActivity(), R.color.firstColor), R.drawable.gradient_block,
+//                R.drawable.gradientblocktwo};
+//
+//        if (bottomNavigationView != null) {
+//            bottomNavigationView.isWithText(true);
+//            // bottomNavigationView.activateTabletMode();
+//            bottomNavigationView.isColoredBackground(true);
+//            bottomNavigationView.setTextActiveSize(getResources().getDimension(R.dimen.text_active));
+//            bottomNavigationView.setTextInactiveSize(getResources().getDimension(R.dimen.text_inactive));
+//            bottomNavigationView.setItemActiveColorWithoutColoredBackground(ContextCompat.getColor(getActivity(), R.color.firstColor));
+//
+//            // bottomNavigationView.setFont(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Noh_normal.ttf"));
+//        }
+//
+//        BottomNavigationItem bottomNavigationItem = new BottomNavigationItem
+//                ("Breath", color[0], image[0], "hr", "7:30", "2000");
+//        BottomNavigationItem bottomNavigationItem1 = new BottomNavigationItem
+//                ("Sleep", color[1], image[1], "hr", "8", "Sleep");
+//        BottomNavigationItem bottomNavigationItem2 = new BottomNavigationItem
+//                ("Steps", color[2], image[2], "hr", "5", "1450");
+//
+//
+//        bottomNavigationView.addTab(bottomNavigationItem);
+//        bottomNavigationView.addTab(bottomNavigationItem1);
+//        bottomNavigationView.addTab(bottomNavigationItem2);
+//
+//        bottomNavigationView.setOnBottomNavigationItemClickListener(new OnBottomNavigationItemClickListener() {
+//            @Override
+//            public void onNavigationItemClick(int index) {
+//                fm = getActivity().getSupportFragmentManager();
+//                switch (index) {
+//                    case 0:
+//                        //  startActivity(new Intent(getActivity(), BreathHistoryActivity.class));
+//                        fm.beginTransaction().replace(R.id.frameLayout, BreathFragment.newInstance("", "")).addToBackStack(BreathFragment.class.getSimpleName()).commit();
+//                        break;
+//                    case 1:
+//                        fm.beginTransaction().replace(R.id.frameLayout, SleepMainFragment.newInstance("", "")).addToBackStack(SleepMainFragment.class.getSimpleName()).commit();
+//                        break;
+//                    case 2:
+//                        Intent intent = new Intent(getActivity(), StepsActivity.class);
+//                        startActivity(intent);
+//                        break;
+//
+//                }
+//            }
+//        });
+//    }
 
     private void init() {
         rlSteps.setOnClickListener(this);

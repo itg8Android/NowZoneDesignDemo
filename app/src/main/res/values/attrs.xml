@@ -214,7 +214,12 @@
     </declare-styleable>
 
     <declare-styleable name="CustomFontTextView">
-        <attr name="font_value" format="integer" />
+        <attr name="font_value" format="integer" >
+            <enum name="robotoLight" value="0" />
+            <enum name="juraMedium" value="1" />
+            <enum name="oxigenRagular" value="2" />
+            <enum name="robotoMedium" value="3" />
+            </attr>
     </declare-styleable>
     <!--    for steps screen to show steps in arc Double Bounds -->
     <attr name="SpinKitViewStyle" format="reference" />
@@ -328,6 +333,57 @@
             <!-- The color of an activated tab. Will only be considered if bnv_colored_background is false, no default is set -->
             <attr name="bnv_active_color" format="color" />
         </declare-styleable>
+    <!--- for navigation bar -->
+
+    <declare-styleable name="BottomBar">
+        <attr name="bb_tabXmlResource" format="reference" />
+        <attr name="bb_tabletMode" format="boolean" />
+        <attr name="bb_behavior">
+            <flag name="shifting" value="1" />
+            <flag name="shy" value="2" />
+            <flag name="underNavbar" value="4" />
+            <flag name="iconsOnly" value="8" />
+        </attr>
+        <attr name="bb_longPressHintsEnabled" format="boolean" />
+        <attr name="bb_inActiveTabAlpha" format="float" />
+        <attr name="bb_activeTabAlpha" format="float" />
+        <attr name="bb_inActiveTabColor" format="color" />
+        <attr name="bb_activeTabColor" format="color" />
+        <attr name="bb_badgeBackgroundColor" format="color" />
+        <attr name="bb_badgesHideWhenActive" format="boolean" />
+        <attr name="bb_titleTextAppearance" format="reference" />
+        <attr name="bb_titleTypeFace" format="string" />
+        <attr name="bb_showShadow" format="boolean" />
+    </declare-styleable>
+
+    <!-- for Navigation drawer-->
+    <declare-styleable name="DuoDrawerLayout">
+        <attr name="menu" format="reference"/>
+        <attr name="content" format="reference"/>
+        <attr name="contentScaleClosed" format="float"/>
+        <attr name="clickToCloseScale" format="float"/>
+        <attr name="contentScaleOpen" format="float"/>
+        <attr name="menuScaleClosed" format="float"/>
+        <attr name="menuScaleOpen" format="float"/>
+        <attr name="menuAlphaClosed" format="float"/>
+        <attr name="menuAlphaOpen" format="float"/>
+        <attr name="marginFactor" format="float"/>
+    </declare-styleable>
+    <declare-styleable name="DuoMenuView">
+        <attr name="header" format="reference"/>
+        <attr name="footer" format="reference"/>
+        <attr name="background" format="reference"/>
+    </declare-styleable>
+
+    <!-- for  Collapsing Behavioure-->
+
+    <declare-styleable name="AvatarImageBehavior">
+        <attr name="finalYPosition" format="dimension"/>
+        <attr name="startXPosition" format="dimension"/>
+        <attr name="startToolbarPosition" format="dimension"/>
+        <attr name="startHeight" format="dimension"/>
+        <attr name="finalHeight" format="dimension"/>
+    </declare-styleable>
 
 
 </resources>

@@ -101,7 +101,7 @@ public class BottomNavigationBehavior <V extends View> extends VerticalScrolling
     }
 
 
-    void setHidden(@NonNull V view, boolean bottomLayoutHidden) {
+    public  void setHidden(@NonNull V view, boolean bottomLayoutHidden) {
         if (!bottomLayoutHidden && hidden) {
             animateOffset(view, defaultOffset);
         } else if (bottomLayoutHidden && !hidden) {
@@ -111,7 +111,7 @@ public class BottomNavigationBehavior <V extends View> extends VerticalScrolling
     }
 
 
-    static <V extends View> BottomNavigationBehavior<V> from(@NonNull V view) {
+     public  static <V extends View> BottomNavigationBehavior<V> from(@NonNull V view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
 
         if (!(params instanceof CoordinatorLayout.LayoutParams)) {

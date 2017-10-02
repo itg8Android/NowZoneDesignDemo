@@ -1,0 +1,119 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:gravity="center"
+    tools:context="itg8.com.nowzonedesigndemo.breath_history.fragment.CustomDialogFragment">
+
+
+    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+        android:id="@+id/txt_dialogue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="@string/calibrate"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/lbl_alarm_time" />
+
+    <LinearLayout
+        android:id="@+id/ll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_dialogue"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/ll_bad_position"
+            android:gravity="center">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_bad_posture"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_margin="@dimen/fab_margin"
+                android:background="@color/colorWhite"
+                android:visibility="visible"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_bad_postures" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:id="@+id/ll_ok"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_Ok"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_margin="@dimen/fab_margin"
+            android:background="@color/colorWhite"
+            android:visibility="visible"
+            android:layout_gravity="center"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_ok" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/ll_good_position"
+            android:gravity="center">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_good"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:background="@color/colorWhite"
+                    android:visibility="visible"
+                    app:fabSize="normal"
+                    app:srcCompat="@drawable/ic_good_posture" />
+
+                <ProgressBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/progress_view"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
+        android:id="@+id/txt_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_parent"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:text="To calibrate your posture choose good posture to cancel choose bad posture"
+        android:textSize="@dimen/txt_edit_text_size" />
+
+</RelativeLayout>

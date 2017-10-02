@@ -27,7 +27,7 @@
             android:text="MON"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/homeText"
-            app:font_value="1" />
+            app:font_value="juraMedium" />
 
         <ImageView
             android:visibility="gone"

@@ -10,15 +10,27 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <permission
+        android:name="your.package.name.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="your.package.name.permission.MAPS_RECEIVE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
+    <permission
+        android:name="com.myapp.android.locationapi.maps.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
     <application
         android:name=".common.AppApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,10 +38,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        tools:replace="android:icon,android:allowBackup">
         <activity
             android:name=".home.HomeActivity"
-            android:label=""
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,9 +88,9 @@
             android:name=".setting.AlarmSettingActivity"
             android:label="@string/title_activity_alarm_setting"
             android:theme="@style/AppTheme.NoActionBar" />
-        android:name=".setting.SettingActivity"
-        android:label="@string/title_activity_setting"
-        android:theme="@style/AppTheme.NoActionBar" />
+        <!-- android:name=".setting.SettingActivity" -->
+        <!-- android:label="@string/title_activity_setting" -->
+        <!-- android:theme="@style/AppTheme.NoActionBar" /> -->
         <activity
             android:name=".steps.StepGoalActivity"
             android:label="@string/title_activity_step_goal"
@@ -125,11 +137,11 @@
             android:name=".WakeupAlarmActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_wakeup_alarm"
-            android:theme="@style/FullscreenTheme"/>
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".setting.SettingMainActivity"
             android:label="@string/setting"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
             android:name=".connection.BootCompleteReceiver"
@@ -139,6 +151,63 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver
+            android:name=".connection.DateChangeReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".breath_history.BreathsHistoryActivity"
+            android:label="@string/title_activity_breaths_history"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".breath_history.BreathHistoryDetailsActivity"
+            android:label="@string/title_activity_breath_history_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".breath_history.SingleDetailActivity"
+            android:label="@string/title_activity_single_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".breath_history.SleepDetailActivity"
+            android:label="@string/title_activity_sleep_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.maps.v2.API_KEY" -->
+        <!-- android:value="@string/map_api_key" /> -->
+
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".tosort.MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
+
+        <service
+            android:name=".service.LocationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

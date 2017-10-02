@@ -2,15 +2,22 @@ package itg8.com.nowzonedesigndemo.common;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -20,6 +27,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import itg8.com.nowzonedesigndemo.alarm.model.AlarmDaysModel;
+import itg8.com.nowzonedesigndemo.db.tbl.TblState;
+import itg8.com.nowzonedesigndemo.utility.BreathState;
+
+import static java.lang.Long.parseLong;
 
 /**
  * Created by Android itg 8 on 4/20/2017.
@@ -28,15 +39,18 @@ import itg8.com.nowzonedesigndemo.alarm.model.AlarmDaysModel;
 public class CommonMethod {
 
 
+    static final String TEMPTOKEN="HcENDQvJAk3UG2qIWyXKTS6UYbxg4SxBE98He6Cr29hAA4GaI7ZZ1sf_FPCqfRL3Yvjie8J6Q6370IQm0z628xmcI7Gm_HjdAFinQktoLpDSl_ANma3kA_KNUZT5WJJD-2AQB-wltgbgHVXlOBQRIPVpHZr8ejdRq7QNlDTIY0iwnz10a9Gjkqpu5l0SMWbspcWl1p3w39kZ_6heDMP_0y5rMZ-fI6hd-VrbSiDI_8bMl3JDm7sA2wn9JyMksGkCGrMfzMfqdnIjN_E-I0SFyydsn1_8FBeHXEy87LQnsBFayuytZUNZmjSg_w7N5Xxkn3cp_x_5j2bV0WFGkj23T1nEZHmqaY2Amj7W9OaXeD_0Le3_uCsgR3-L20Lm5WbpjSW9ZEMTOhCFcy3awwEDWrGZWjMw-Doy2WS7mzz-R0pQOxmWYd7wmV9k-I--QRi9liJ3Dd5J3mSrM7As4y0AC2BfmyPUp0EkYQuEKuhpCcI";
+
     public static final String USER_CURRENT_AVG = "USER_CURRENT_AVG";
 
 
     public static final String SAVEDAYS = "SAVEDAYS";
 
+    public static final long CONST_30_MIN=1800000;
 
     public static final String DATE_FORMAT = "dd-MM-yyyy";
     public static final String DATE_FORMAT_WITH_TIME = "hh:mm a";
-
+    public static final String DATE_FORMAT_SERVER="yyyy-MM-dd HH:mm:ss";
     public static final String SAVEALARMTIME = "SAVEALARMTIME";
 
     public static final String AVG_MILE_BY_HEIGHT = "avgKmHeight";
@@ -68,6 +82,28 @@ public class CommonMethod {
     public static final String FROM_DEVICE_HISTORY = "FROM_DEVICE_HISTORY";
     public static final String FROM_ALARM_HOME = "FROM_ALARM_HOME";
     public static final String SAVETIMEINMILI = "SAVETIMEINMILI";
+    public static final String IP_ADDRESS = "IpAddress";
+    public static final String SOCKET_STOP_CLICKED = "stopClicked";
+    public static final String DEVICE_STATE = "device state";
+    public static final String TOKEN = "MYTOKEN";
+    static final String BASE_URL = "http://103.229.24.44:8090";
+//    public static final String BASE_URL = "http://192.168.1.58:8090";
+    public static final String ACTION_MOVEMENT = "ACTION_MOVEMENT";
+    public static final String ACTION_MOVEMENT_STOPPED = "ACTION_MOVEMENT_STOPPED";
+    public static final String ISLOGIN = "loginComplete";
+    public static final String ACTION_AXIS_ACCEL = "ACTION_AXIS_YZ";
+    public static final String STAGE_HEARED = "heardStage";
+
+    public static final String DEEP_SLEEP = "1";
+    public static final String LIGHT_SLEEP = "2";
+    public static final String SLEEP_ENDED = "SLEEP_ENDED_NZ";
+    public static final String COMPOSED_CLICK ="COMPOSED_CLICK" ;
+    public static final String ATTENTIVE_CLICK = "ATTENTIVE_CLICK";
+    public static final String STRESS_CLICK = "STRESS_CLICK";
+    public static final String NORMAL_CLICK = "NORMAL_CLICK";
+    public static final String COLOR = "COLOR";
+    public static final String CALIBRATE = "CALIBRATE";
+    public static final String FROM_POSTURE = "FROM_POSTURE";
 
 
     private static Typeface typeface;
@@ -102,6 +138,7 @@ public class CommonMethod {
     public static final String ALARM_END_TIME = "AlarmEndTime";
     private static List<Double> data;
     private static long currentMillies=0;
+    private static DataModel model;
 
 
     public static Typeface setFontOpenSansSemiBold(Context context) {
@@ -112,9 +149,10 @@ public class CommonMethod {
         return typeface;
     }
 
+    public CommonMethod() {
+    }
 
     public static DataModel getArragedData(byte[] data){
-        DataModel model=null;
         if (data != null && data.length > 0) {
             byte value1 = data[8]; //Convert to double [Higher bit of pressure]
             byte value2 = data[9]; //Convert to double [Lower bit of pressure]
@@ -133,19 +171,20 @@ public class CommonMethod {
 //            String valueForX=bytesToHex(new byte[]{xHValue,xLValue});
 //            String valueForY=bytesToHex(new byte[]{yHValue,yLValue});
 //            String valueForZ=bytesToHex(new byte[]{zHValue,zLValue});
-            model=new DataModel();
+            model=new DataModel(data);
             try {
                 model.setPressure(bytesToHex(new byte[]{value1,value2}));
                 model.setX(bytesToHex(new byte[]{xHValue,xLValue}));
                 model.setY(bytesToHex(new byte[]{yHValue,yLValue}));
                 model.setZ(bytesToHex(new byte[]{zHValue,zLValue}));
                 model.setBattery(bytesToHex(new byte[]{valueBattery1,valueBattery2}));
-                if(currentMillies<=0)
-                    currentMillies=System.currentTimeMillis();
-                else
-                    currentMillies+=50;
+//                Log.i("TAGCOMMON",model.getRawString()+" "+Double.toHexString(model.getPressure()));
+                Log.i("TAGCOMMON",model.getRawString()+" "+model.getAllInHex());
+//                if(currentMillies<=0)
+//                else
+//                    currentMillies+=50;
 
-                model.setTimestamp(currentMillies);
+                model.setTimestamp(System.currentTimeMillis());
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -183,7 +222,17 @@ public class CommonMethod {
     }
 
     private static int convertHexToInt(String s) {
-        return Integer.parseInt(s,16);
+//        BigInteger bigInt = new BigInteger(s, 16);
+//        Log.d("asasas","bigInt: "+bigInt
+//        );
+//        int i = (short) Integer.parseInt("FFFF", 16);
+//        Log.d("asasas","bigInt: "+ (short) Integer.parseInt(s,16));
+        try {
+            return (short) Integer.parseInt(s,16);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static List<Map<Integer, Double>> countBPM(DataModel[] models, double delta){
@@ -290,6 +339,8 @@ public class CommonMethod {
         currentMillies=0;
     }
 
+
+
     public interface alarmListener{
         void onAlarmListener(List<AlarmDaysModel> abc, String from);
     }
@@ -341,6 +392,12 @@ public class CommonMethod {
         return hourses;
     }
 
-
+    public interface  OnFragmentSendToActivityListener{
+        void   onBackFragmentSendListener(Fragment fragment);
+        void  onShowToggle();
+        void  onHideToggle();
+         void  onChangeToolbarColor(Intent color, BreathState type, Bundle sharedView);
+        void onSingleDetail(Intent intent ,TblState tblState,Bundle sharedView );
+    }
 
 }

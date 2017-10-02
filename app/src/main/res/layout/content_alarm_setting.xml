@@ -25,7 +25,7 @@
             android:text="Wakeup Time"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_value"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/txtAmPm"
@@ -41,7 +41,7 @@
         android:visibility="gone"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_sleep_normal"
-        app:font_value="0" />
+        app:font_value="robotoLight" />
 
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:id="@+id/txt_alarm_time"
@@ -54,7 +54,7 @@
             android:text="8:00"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/lbl_alarm_setting_time"
-            app:font_value="2" />
+            app:font_value="oxigenRagular" />
 
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
@@ -69,7 +69,7 @@
             android:id="@+id/txt_am"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_sleep_normal"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
 
     </RelativeLayout>

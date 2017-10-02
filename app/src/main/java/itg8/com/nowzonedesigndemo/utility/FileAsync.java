@@ -22,6 +22,7 @@ public class FileAsync extends AsyncTask<DataModel[], Void, Boolean> {
     private static final int ACTUAL_NUMBER_OF_COUNT_IN_FILE = 30;
     private static final String TAG = ServiceOnCheck.class.getSimpleName();
     private static String COMPLETE_FILE_PATH;
+
     private String[] fileList;
     private String content;
 
@@ -85,7 +86,8 @@ public class FileAsync extends AsyncTask<DataModel[], Void, Boolean> {
         if (allFileListByDt.length > 0) {
 //            Arrays.sort(allFileListByDt);
 //            writeContentToFile(content, allFileListByDt[allFileListByDt.length - 1]);
-            writeInFile(content, allFileListByDt[allFileListByDt.length - 1]);
+
+            createFile(content, checkIfNewFileOrOldFileReplace(allFileListByDt[allFileListByDt.length-1],models[0].getTimestamp()),"0");
         } else {
             createFile(content, getIntFromTSMP(models[0].getTimestamp()) + ".txt", "0");
         }
@@ -105,12 +107,14 @@ public class FileAsync extends AsyncTask<DataModel[], Void, Boolean> {
     //Timestamp is in full format. we dont want that much big . so eliminate millisecond
     private String getIntFromTSMP(long timestamp) {
         int count = 0;
+        int next30=0;
         try {
             count = (int) (timestamp / 1000);
+            next30=(int)count+1800;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return String.valueOf(count);
+        return String.valueOf(count)+"_"+String.valueOf(next30);
     }
 
     /**
@@ -132,21 +136,21 @@ public class FileAsync extends AsyncTask<DataModel[], Void, Boolean> {
      * @param count    actual count of json available in file
      */
     private void createFile(String content, String fileName, String count) {
-        String newFileName = count + "_" + fileName;
-        writeInFile(content, COMPLETE_FILE_PATH + File.separator + newFileName);
+//        String newFileName = count + "_" + fileName;
+        writeInFile(content,  fileName);
     }
 
     private void writeInFile(String content, String newFileName) {
 //        File completeFileStructure = new File(newFileName);
-        Log.d(TAG,"FileName:"+newFileName);
-        File completeFileStructure = new File(COMPLETE_FILE_PATH,Helper.getCurrentDate()+".txt");
+//        File completeFileStructure = new File(COMPLETE_FILE_PATH,Helper.getCurrentDate()+".txt");
+        File completeFileStructure = new File(COMPLETE_FILE_PATH,newFileName);
+        Log.d(TAG,"FileName:"+completeFileStructure);
         try {
             FileWriter fWriter;
+            fWriter = new FileWriter(completeFileStructure, true);
             if(completeFileStructure.exists()) {
-                 fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.append(content).append("\n");
             }else {
-                fWriter = new FileWriter(completeFileStructure, true);
                 fWriter.write(content);
             }
         fWriter.flush();
@@ -184,35 +188,48 @@ public class FileAsync extends AsyncTask<DataModel[], Void, Boolean> {
     }
 
     private void writeContentToFile(String s, String models) {
-        File newFileName = checkIfNewFileOrOldFileReplace(models);
-        if (newFileName != null) {
-            createFile(s, newFileName.getAbsolutePath());
-        }
+//        File newFileName = checkIfNewFileOrOldFileReplace(models);
+//        if (newFileName != null) {
+//            createFile(s, newFileName.getAbsolutePath());
+//        }
     }
 
-    private File checkIfNewFileOrOldFileReplace(String models) {
+    private String checkIfNewFileOrOldFileReplace(String models, long timestamp) {
+        if (models.indexOf(".") > 0)
+            models = models.substring(0, models.lastIndexOf("."));
         String[] getCountAndData = models.split("_");
-        File oldFile = new File(COMPLETE_FILE_PATH, models);
-        File newFile = null;
-        int count;
+
+//        File oldFile = new File(COMPLETE_FILE_PATH, models);
+//        File newFile = null;
+        long count1;
+        long count2;
+        long tempTP;
         if (getCountAndData.length > 1) {
             String countString = getCountAndData[0];
-            count = Integer.parseInt(countString);
-            if (count < ACTUAL_NUMBER_OF_COUNT_IN_FILE) {
-                count += 1;
-                newFile = new File(COMPLETE_FILE_PATH, String.valueOf(count) + "_" + getCountAndData[1]);
-                boolean b = oldFile.renameTo(newFile);
-                if (b)
-                    return newFile;
-                else
-                    return oldFile;
-            } else {
-                count = 0;
-                newFile = new File(oldFile.getParentFile(), String.valueOf(count) + getCountAndData[1]);
-                return newFile;
+            count1 = Long.parseLong(countString);
+            count2=Long.parseLong(getCountAndData[1]);
+
+            tempTP=(int)(timestamp/1000);
+            if(count1<tempTP && count2>=tempTP){
+                return models+".txt";
+            }else {
+                return getIntFromTSMP(timestamp) + ".txt";
             }
-        }
-        return newFile;
+
+//            if (count < ACTUAL_NUMBER_OF_COUNT_IN_FILE) {
+//                count += 1;
+//                newFile = new File(COMPLETE_FILE_PATH, String.valueOf(count) + "_" + getCountAndData[1]);
+//                boolean b = oldFile.renameTo(newFile);
+//                if (b)
+//                    return newFile;
+//                else
+//                    return oldFile;
+            } else {
+            Log.i(TAG,"Error please debug "+models);
+                return "Err.txt";
+            }
+//        }
+//        return newFile;
     }
 
     private String[] getFileList() {

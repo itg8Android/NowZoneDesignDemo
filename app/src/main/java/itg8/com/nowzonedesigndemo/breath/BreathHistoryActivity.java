@@ -93,7 +93,7 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 
     private final SimpleDateFormat DATETIME_FORMATTER =
             new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private final String[] COLUMN_NAMES = {"timestamp", "Calm", "Focus", "Stress"};
+    private final String[] COLUMN_NAMES = {"timestamp", "Compose", "Attentive", "Stress"};
 
 //    private final int[] MODES = {
 //            TimelineChartView.GRAPH_MODE_BARS,
@@ -201,13 +201,13 @@ public class BreathHistoryActivity extends AppCompatActivity implements BreathHi
 
     private void putValuesTotxt(@Nullable double[] object, @Nullable Object[] data) {
         if(object!=null) {
-            txtCalmValue.setText(String.valueOf(object[1]));
-            txtFocusValue.setText(String.valueOf(object[2]));
-            txtStressValue.setText(String.valueOf(object[3]));
+            txtCalmValue.setText(object.length>=1?String.valueOf(object[0]):String.valueOf(0));
+            txtFocusValue.setText(object.length>=2?String.valueOf(object[1]):String.valueOf(0));
+            txtStressValue.setText(object.length>=3?String.valueOf(object[2]):String.valueOf(0));
         }else if(data!=null){
-            txtCalmValue.setText(String.valueOf(data[1]));
-            txtFocusValue.setText(String.valueOf(data[2]));
-            txtStressValue.setText(String.valueOf(data[3]));
+            txtCalmValue.setText(data.length>=1?String.valueOf(data[0]):String.valueOf(0));
+            txtFocusValue.setText(data.length>=2?String.valueOf(data[1]):String.valueOf(0));
+            txtStressValue.setText(data.length>=3?String.valueOf(data[2]):String.valueOf(0));
         }
     }
 

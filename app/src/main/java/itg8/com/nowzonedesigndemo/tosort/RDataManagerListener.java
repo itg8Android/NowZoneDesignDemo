@@ -16,4 +16,20 @@ public interface RDataManagerListener {
     void onSleepInterrupted(long timestamp);
 
     void onStartWakeupSevice();
+
+    void onSocketInterrupted();
+
+    void onMovement(float mAccel);
+
+    void onNoMovement(float i);
+
+    void onDeviceNotAttached();
+
+    void onDeviceAttached();
+
+    void onAxisDataAvail(double y, double z);
+
+    void onDeepsleepGot(long nextTmstmp, long lastTmstmp, long diffMinutes);
+
+    void onSleepEnded();
 }

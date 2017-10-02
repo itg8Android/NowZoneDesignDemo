@@ -12,7 +12,13 @@ import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Trigger;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Calendar;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import itg8.com.nowzonedesigndemo.R;
 import itg8.com.nowzonedesigndemo.connection.BleService;
@@ -21,9 +27,13 @@ import itg8.com.nowzonedesigndemo.sanning.ScanDeviceActivity;
 import itg8.com.nowzonedesigndemo.utility.DeviceState;
 import itg8.com.nowzonedesigndemo.utility.ServiceOnCheck;
 
+import static itg8.com.nowzonedesigndemo.common.CommonMethod.TEMPTOKEN;
+import static itg8.com.nowzonedesigndemo.common.CommonMethod.TOKEN;
+
 
 public abstract class BaseActivity<T> extends AppCompatActivity {
     public static final String TAG_CLASS_BASE = BaseActivity.class.getCanonicalName();
+    private static final int BUFFER = 1024;
     public boolean deviceDisconnected;
     String TAG = BaseActivity.class.getSimpleName();
     private FirebaseJobDispatcher dispatcher;
@@ -32,8 +42,44 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Prefs.putString(TOKEN,TEMPTOKEN);
 //        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(BaseActivity.this));
 //        initDispatcher();
+        zipTest();
+    }
+
+    private void zipTest() {
+
+    }
+
+
+    public void zip(String[] _files, String zipFileName) {
+        try {
+            BufferedInputStream origin = null;
+            FileOutputStream dest = new FileOutputStream(zipFileName);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
+                    dest));
+            byte data[] = new byte[BUFFER];
+
+            for (int i = 0; i < _files.length; i++) {
+                Log.v("Compress", "Adding: " + _files[i]);
+                FileInputStream fi = new FileInputStream(_files[i]);
+                origin = new BufferedInputStream(fi, BUFFER);
+
+                ZipEntry entry = new ZipEntry(_files[i].substring(_files[i].lastIndexOf("/") + 1));
+                out.putNextEntry(entry);
+                int count;
+
+                while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                    out.write(data, 0, count);
+                }
+                origin.close();
+            }
+
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initDispatcher() {
@@ -79,7 +125,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     void checkDeviceDisconnected(View v) {
         Log.d(TAG, "DISCONNECTED ALREADY");
         if (deviceDisconnected) {
-          //  showSnackbar(v);
+            showSnackbar(v);
         }
     }
 
@@ -93,7 +139,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
 
             }
         });
-        snackbar.show();
+        //snackbar.show();
     }
 
     public void hideSnackbar(){

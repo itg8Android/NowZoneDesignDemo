@@ -22,7 +22,7 @@
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:font_value="2"
+            app:font_value="juraMedium"
             android:textSize="13sp"
             android:textColor="@color/divider"
             android:text="Thus Nov 4"
@@ -32,7 +32,7 @@
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:font_value="2"
+            app:font_value="juraMedium"
             android:textColor="@color/colorWhite"
             android:text="2000 Steps"
             android:paddingTop="4dp"
@@ -44,7 +44,7 @@
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:font_value="2"
+            app:font_value="juraMedium"
             android:layout_centerInParent="true"
             android:paddingTop="4dp"
             android:textColor="@color/colorWhite"
@@ -57,7 +57,7 @@
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:font_value="2"
+            app:font_value="juraMedium"
             android:layout_alignParentEnd="true"
             android:paddingTop="4dp"
             android:textSize="13sp"

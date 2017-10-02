@@ -2,8 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/nav_breath"
-        android:enabled="true"
         android:icon="@drawable/ic_breaths"
         android:title="Breath" />
     <item
@@ -17,5 +15,11 @@
         android:enabled="true"
         android:icon="@drawable/ic_sleeping"
         android:title="Sleep" />
+     <item
+        android:id="@+id/nav_statics"
+        android:enabled="true"
+        android:icon="@drawable/ic_sleeping"
+        android:title="Statics" />
+
 
 </menu>

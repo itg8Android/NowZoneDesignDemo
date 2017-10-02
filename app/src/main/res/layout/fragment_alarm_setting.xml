@@ -27,7 +27,7 @@
                 android:text="Wakeup Time"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/txt_value"
-                app:font_value="0" />
+                app:font_value="robotoLight" />
 
             <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                 android:id="@+id/txtAmPm"
@@ -43,7 +43,7 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_sleep_normal"
                 android:visibility="gone"
-                app:font_value="0" />
+                app:font_value="robotoLight" />
 
             <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                 android:id="@+id/txt_alarm_time"
@@ -56,7 +56,7 @@
                 android:text="8:00"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/lbl_alarm_setting_time"
-                app:font_value="2" />
+                app:font_value="juraMedium" />
 
             <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                 android:id="@+id/txt_am"
@@ -71,7 +71,7 @@
                 android:text=" "
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_sleep_normal"
-                app:font_value="0" />
+                app:font_value="robotoLight" />
 
 
         </RelativeLayout>
@@ -108,7 +108,7 @@
                 android:text="this is short description of alarm setting"
                 android:textColor="@color/colorWhite"
                 android:visibility="visible"
-                app:font_value="0" />
+                app:font_value="robotoLight" />
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -135,7 +135,7 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/txt_value"
                         android:textStyle="bold"
-                        app:font_value="3" />
+                        app:font_value="robotoMedium" />
 
                     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                         android:id="@+id/txt_start_time"
@@ -148,7 +148,7 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/lbl_alarm_time"
                         android:textStyle="bold"
-                        app:font_value="1" />
+                        app:font_value="juraMedium" />
 
                     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                         android:id="@+id/lbl_end_time"
@@ -161,7 +161,7 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/txt_value"
                         android:textStyle="bold"
-                        app:font_value="3" />
+                        app:font_value="robotoMedium" />
 
                     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                         android:id="@+id/txt_end_time"
@@ -177,7 +177,7 @@
                         android:textStyle="bold"
 
 
-                        app:font_value="1" />
+                        app:font_value="juraMedium" />
 
                     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                         android:id="@+id/lbl_remain_time"
@@ -190,7 +190,7 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/txt_value"
                         android:textStyle="bold"
-                        app:font_value="3" />
+                        app:font_value="robotoMedium" />
 
                     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                         android:id="@+id/txt_remain_time"
@@ -204,7 +204,7 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/lbl_alarm_time"
                         android:textStyle="bold"
-                        app:font_value="1" />
+                        app:font_value="juraMedium" />
 
 
                 </RelativeLayout>

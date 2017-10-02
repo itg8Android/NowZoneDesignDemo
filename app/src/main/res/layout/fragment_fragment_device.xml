@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context="itg8.com.nowzonedesigndemo.setting.fragment.FragmentDevice">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +18,7 @@
         android:text="About Device"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/lbl_breath_value"
-        app:font_value="3" />
+        app:font_value="robotoMedium" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_nowZone"
@@ -29,7 +30,7 @@
         android:text="noweZone"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/txt_hr"
-        app:font_value="0" />
+        app:font_value="robotoLight" />
 
 
 
@@ -53,7 +54,7 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/lbl_alarm_time"
         android:visibility="visible"
-        app:font_value="3" />
+        app:font_value="robotoMedium" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_status"
@@ -65,7 +66,7 @@
         android:text="Connected"
         android:textColor="@android:color/white"
         android:textSize="@dimen/txt_value_time_steps"
-        app:font_value="0" />
+        app:font_value="robotoLight" />
 
     <View
         android:id="@+id/view"
@@ -94,7 +95,7 @@
         android:text="84% approx"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/lbl_alarm_time"
-        app:font_value="3" />
+        app:font_value="robotoMedium" />
 
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:id="@+id/lbl_battery_status"
@@ -110,7 +111,7 @@
         android:text="1 day 5 hrs"
         android:textColor="@android:color/white"
         android:textSize="@dimen/txt_value_time_steps"
-        app:font_value="0" />
+        app:font_value="robotoLight" />
     <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
         android:layout_below="@+id/lbl_battery_status"
         android:id="@+id/lbl_about_device"
@@ -124,6 +125,6 @@
         android:text=" this is short description about Device this is short description about Devicethis is short description about Devicethis is short description about Devicethis is short description about Device this is short description about Device this is short description about Devicethis is short description about Devicethis is short description about Devicethis is short description about Device this is short description about Device this is short description about Devicethis is short description about Devicethis is short description about Devicethis is short description about Device"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/txt_hr"
-        app:font_value="3" />
+        app:font_value="robotoMedium" />
     </RelativeLayout>
 </ScrollView>

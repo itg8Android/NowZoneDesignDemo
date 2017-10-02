@@ -20,7 +20,7 @@
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:font_value="2"
+            app:font_value="juraMedium"
             android:textColor="@color/colorWhite"
             android:text="November"
             android:id="@+id/txt_month_name"
@@ -30,7 +30,7 @@
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:font_value="2"
+            app:font_value="juraMedium"
             android:textColor="@color/colorWhite"
             android:id="@+id/txt_lbl_step"
             android:layout_toStartOf="@+id/txt_lbl_step_count"
@@ -40,7 +40,7 @@
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:font_value="2"
+            app:font_value="juraMedium"
             android:textColor="@color/colorWhite"
             android:id="@+id/txt_lbl_step_count"
             android:layout_alignParentEnd="true"

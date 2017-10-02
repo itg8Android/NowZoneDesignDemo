@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="400dp">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorBlack"
+        android:textColor="@color/colorBlack"
+        android:gravity="center_vertical"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/edt_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Comment"
+            android:inputType="text"
+            android:textColorHint="@color/colorBlack"
+            android:lines="5"
+            android:maxLines="5"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value_sleep" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_omment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorBlack"
+        android:textColor="@color/colorBlack"
+        android:layout_below="@+id/input_comment"
+        android:gravity="center_vertical"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/edt_omment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Comment"
+            android:inputType="text"
+            android:textColorHint="@color/colorBlack"
+            android:lines="5"
+            android:maxLines="5"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_value_sleep" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/submit"
+        android:textColor="@color/colorWhite"
+        android:padding="05dp"
+        android:id="@+id/btn_submit"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/txt_value_sleep" />
+
+
+</RelativeLayout>

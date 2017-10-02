@@ -5,9 +5,10 @@ package itg8.com.nowzonedesigndemo.tosort;
  */
 public interface ConnectionManager {
     void onDistroy();
+
     void selectedDevice(String address, String name);
 
-    void disconnect();
+    boolean disconnect();
 
     void isDisconnectedByUser(boolean b);
 }

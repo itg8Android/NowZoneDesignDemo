@@ -19,6 +19,8 @@ public class Helper {
     private final static double walkingFactor = 0.57;
     public static SimpleDateFormat dateFormat = new SimpleDateFormat(CommonMethod.DATE_FORMAT, Locale.getDefault());
     public static SimpleDateFormat dateFormatWithTime = new SimpleDateFormat(CommonMethod.DATE_FORMAT_WITH_TIME, Locale.getDefault());
+    public static final SimpleDateFormat dateFormatForServer=
+            new SimpleDateFormat(CommonMethod.DATE_FORMAT_SERVER,Locale.getDefault());
     static NumberFormat formatter = new DecimalFormat("#0.00");
     private static Calendar calendar;
 
@@ -49,6 +51,20 @@ public class Helper {
         return newDate;
     }
 
+    public static String calculateMinuteDiffFromTimestamp(long lastTm, long nextTm) {
+        long diff=nextTm-lastTm;
+        long minDiff=diff / (60 * 1000) % 60;
+
+        return String.valueOf((int)minDiff);
+    }
+
+    public static String convertTimestampToTime(long timestamp) {
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        return dateFormatForServer.format(calendar.getTime());
+//        return calendar.getTime().toString();
+    }
+
     public static String getDateTimeFromMillies(long timestampEnd) {
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestampEnd);
@@ -59,6 +75,18 @@ public class Helper {
             e.printStackTrace();
         }
         return date;
+    }
+
+    public static String getDateFromMillies(long millies) {
+        String newDate = "";
+        try {
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTimeInMillis(millies);
+            newDate = dateFormat.format(calendar.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newDate;
     }
 
     public static double calculateCalBurnByStepCount(int stepsCount, ProfileModel model) {
@@ -126,4 +154,17 @@ public class Helper {
     }
 
 
+    public static int getIdByState(BreathState currentState) {
+        switch (currentState){
+            case CALM:
+                return 1;
+            case FOCUSED:
+                return 2;
+            case STRESS:
+                return 3;
+            case UNKNOWN:
+                return 4;
+        }
+        return 0;
+    }
 }

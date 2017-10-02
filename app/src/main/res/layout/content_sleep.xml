@@ -28,10 +28,10 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="10dp"
             android:text="Yesterday"
-            android:textStyle="bold"
             android:textAllCaps="true"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/txt_value" />
+            android:textSize="@dimen/txt_value"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/img_right"

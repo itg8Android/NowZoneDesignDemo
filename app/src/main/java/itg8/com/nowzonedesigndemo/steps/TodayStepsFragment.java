@@ -4,7 +4,6 @@ package itg8.com.nowzonedesigndemo.steps;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -19,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 
 /**
@@ -74,9 +74,10 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
 
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private TblStepCount  mParam1;
     private String mParam2;
     private boolean mShowUnit = true;
+    private Context mContext;
 
 
     public TodayStepsFragment() {
@@ -85,21 +86,23 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
 
     @Override
     public void onAttach(Context context) {
+         this.mContext = context;
         super.onAttach(context);
     }
 
     @Override
     public void onDetach() {
-        ((StepsActivity) getActivity()).removeTodaysListener();
+        //((StepsActivity) getActivity()).removeTodaysListener();
+        if(mContext!= null)
+            mContext= null;
         super.onDetach();
     }
 
     // TODO: Rename and change types and number of parameters
-    public static TodayStepsFragment newInstance(String param1, String param2) {
+    public static TodayStepsFragment newInstance(TblStepCount param1) {
         TodayStepsFragment fragment = new TodayStepsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,8 +111,7 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getParcelable(ARG_PARAM1);
         }
     }
 
@@ -119,11 +121,25 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_today_steps, container, false);
         unbinder = ButterKnife.bind(this, view);
-        ((StepsActivity) getActivity()).setListener(this);
+       // ((StepsActivity) getActivity()).setListener(this);
+         prepareData();
 
 //        setProgressbar((int) stepsToCover);
         rlStepValue.setVisibility(View.VISIBLE);
         return view;
+    }
+
+    private void prepareData() {
+        txtGoal.setText(String.valueOf(mParam1.getGoal()));
+        txtStepComplete.setText(String.valueOf(mParam1.getSteps()));
+//        txtWeekTotal.setText(String.valueOf(weekTotal));
+//        txtDaliyAvg.setText(String.valueOf(steps));
+        String calBurnText="";
+//                = new DecimalFormat("#.##").format(calBurn) + " Calories burned today";
+        float stepsToCover=((float) ((float)mParam1.getSteps()/(float)mParam1.getGoal())*100.0f);
+        setProgressbar((int)stepsToCover);
+        txtCalories.setText(calBurnText);
+
     }
 
     private void setProgressbar(int steps) {
@@ -150,8 +166,10 @@ public class TodayStepsFragment extends Fragment implements StepFragmentCommunic
         txtDaliyAvg.setText(String.valueOf(steps));
         String calBurnText="";
 //                = new DecimalFormat("#.##").format(calBurn) + " Calories burned today";
-        float stepsToCover=((float) ((float)steps/(float)goal)*100.0f);
+        float stepsToCover=((float) ((float)mParam1.getSteps()/(float)mParam1.getGoal())*100.0f);
         setProgressbar((int)stepsToCover);
         txtCalories.setText(calBurnText);
     }
+
+
 }

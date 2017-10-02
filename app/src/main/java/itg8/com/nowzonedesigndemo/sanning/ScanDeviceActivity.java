@@ -121,17 +121,23 @@ public class ScanDeviceActivity extends BaseActivity implements ScanDeviceView, 
     private void initBluetoothAdapter() {
 //        BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
 //        bluetoothAdapter = manager.getAdapter();
-        deviceListAdapter = new DeviceListAdapter(this);
+        deviceListAdapter = new DeviceListAdapter(this, new DeviceListAdapter.ConnectClickedListener() {
+            @Override
+            public void connectClicked(DeviceModel model) {
+//                Intent intent = new Intent(getApplicationContext(), BleService.class);
+//                intent.putExtra(CommonMethod.DEVICE_ADDRESS, model.getAddress());
+//                intent.putExtra(CommonMethod.DEVICE_NAME, model.getName());
+//                startService(intent);
+//                presenter.cancelScanning();
+                presenter.selectedDevice(model,ScanDeviceActivity.this);
+                presenter.refreshBtnClicked(linearLayout);
+            }
+        });
         listOfBluetoothDevices.setAdapter(deviceListAdapter);
         listOfBluetoothDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                DeviceModel mSelectedDevice = deviceListAdapter.getSelectedDevice(i);
-//                Intent intent = new Intent(view.getContext(), BleService.class);
-//                intent.putExtra(CommonMethod.DEVICE_ADDRESS, mSelectedDevice.getAddress());
-//                intent.putExtra(CommonMethod.DEVICE_NAME, mSelectedDevice.getName());
-//                view.getContext().startService(intent);
-                presenter.cancelScanning();
+
             }
         });
     }

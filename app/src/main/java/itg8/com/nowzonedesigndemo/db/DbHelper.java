@@ -12,19 +12,21 @@ import java.sql.SQLException;
 
 import itg8.com.nowzonedesigndemo.db.tbl.TblAverage;
 import itg8.com.nowzonedesigndemo.db.tbl.TblBreathCounter;
+import itg8.com.nowzonedesigndemo.db.tbl.TblSleep;
 import itg8.com.nowzonedesigndemo.db.tbl.TblState;
 import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 
 
 public class DbHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final String DB_NAME="Nowzone.db";
+    public static final String DB_NAME="Nowzone.db";
     private static final int DB_VERSION=2;
 
     private Dao<TblBreathCounter,Integer> breathDao=null;
     private Dao<TblState,Integer> stateDao=null;
     private Dao<TblAverage,Integer> avgDao=null;
     private Dao<TblStepCount,Integer> stepDao=null;
+    private Dao<TblSleep,Integer> sleepDao=null;
 
 
 
@@ -40,6 +42,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, TblState.class);
             TableUtils.createTable(connectionSource, TblAverage.class);
             TableUtils.createTable(connectionSource, TblStepCount.class);
+            TableUtils.createTable(connectionSource, TblSleep.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -53,6 +56,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, TblState.class, true);
             TableUtils.dropTable(connectionSource, TblAverage.class, true);
             TableUtils.dropTable(connectionSource, TblStepCount.class, true);
+            TableUtils.dropTable(connectionSource, TblSleep.class, true);
             onCreate(db, connectionSource);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -88,6 +92,17 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             stepDao=getDao(TblStepCount.class);
 
         return stepDao;
+    }
+
+    public Dao<TblSleep, Integer> getSleepDao() throws SQLException{
+        if(sleepDao == null)
+            sleepDao=getDao(TblSleep.class);
+
+        return sleepDao;
+    }
+
+    public void setSleepDao(Dao<TblSleep, Integer> sleepDao) {
+        this.sleepDao = sleepDao;
     }
 
     @Override

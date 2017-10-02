@@ -39,9 +39,6 @@ public class TblStepCount implements Parcelable {
 
     @DatabaseField(columnName = FIELD_GOAL)
     private int goal;
-
-
-
     public TblStepCount() {
     }
 

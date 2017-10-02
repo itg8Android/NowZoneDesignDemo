@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothProfile;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -54,9 +55,12 @@ public class BleConnectionManager implements ConnectionManager {
     private BluetoothGattCallback callback;
     private Queue<BluetoothGattCharacteristic> characteristicReadQueue = new LinkedList<BluetoothGattCharacteristic>();
     private int retryDescover=1;
-    private  boolean connecting;
+    private  boolean connecting=false;
 
 
+    private DeviceState lastState;
+    private long startTime;
+    private int bleCount;
     /**
      * All problem persist on connection can be solve by handler. Lets try it.
      * STATUS:
@@ -69,15 +73,28 @@ public class BleConnectionManager implements ConnectionManager {
             BluetoothGattCharacteristic characteristic;
             switch (msg.what){
                 case MSG_PRESSURE_ACCEL:
+                    if(lastState==null || lastState!=DeviceState.CONNECTED) {
+                        lastState=DeviceState.CONNECTED;
+                        listener.currentState(DeviceState.CONNECTED);
+                    }
                    characteristic=(BluetoothGattCharacteristic) msg.obj;
                     if(characteristic.getValue()==null){
                         Log.w(TAG,"Error obtaining prssure data");
                         return;
                     }
+                    if(startTime<=0)
+                        startTime=System.currentTimeMillis();
+                    if(bleCount==1200){
+                        bleCount=0;
+                        Log.d(TAG,"StartTime "+startTime+" EndTime "+ System.currentTimeMillis() +" diff: "+(System.currentTimeMillis()-startTime));
+                        startTime=System.currentTimeMillis();
+                    }
+                    bleCount++;
                     listener.onDataAvail(characteristic.getValue());
                     break;
                 case MSG_CURRENT_STATE:
                     listener.currentState((DeviceState) msg.obj);
+                    lastState=(DeviceState) msg.obj;
                     break;
             }
         }
@@ -148,8 +165,9 @@ public class BleConnectionManager implements ConnectionManager {
                     listener.currentState(DeviceState.CONNECTED);
                     connecting=false;
                     Log.d(TAG, "Connected to GATT Server");
-                    Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+
                     if (discoverServices()) {
+                        Log.i(TAG, "Attempting to start service discovery:");
                         mHandler.sendMessage(Message.obtain(null,MSG_CURRENT_STATE,DeviceState.DISCOVERING));
                     }else
                     {
@@ -306,16 +324,20 @@ public class BleConnectionManager implements ConnectionManager {
     }
 
     @Override
-    public void disconnect() {
-        if(mBluetoothGatt!=null){
+    public boolean disconnect() {
 
-            mBluetoothGatt.disconnect();
-            mBluetoothGatt.close();
-            callback=null;
-            mBluetoothGatt=null;
-            connecting=false;
+
+                    if(mBluetoothGatt!=null) {
+                        mBluetoothGatt.disconnect();
+                        mBluetoothGatt.close();
+                        callback=null;
+                        mBluetoothGatt=null;
+                        connecting=false;
+                        return true;
+                    }
+
 //            mBluetoothGatt=null;
-        }
+        return false;
     }
 
     @Override
@@ -384,6 +406,7 @@ public class BleConnectionManager implements ConnectionManager {
             initCallback();
         }
         if(!connecting) {
+            mBluetoothAdapter.cancelDiscovery();
             Log.d(TAG, "now in connecting,....");
             listener.connectGatt(device, callback);
             connecting = true;

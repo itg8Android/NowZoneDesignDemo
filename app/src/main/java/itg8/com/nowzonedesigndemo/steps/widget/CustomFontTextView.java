@@ -24,6 +24,7 @@ public class CustomFontTextView extends TextView {
     private  static final  int  JURA_MEDIUM =1;
     private  static final  int  OXYNGEN_REGULAR =2;
     private  static final  int ROBOTO_MEDIUM =3;
+    private  static final  int OPEN_SANS =4;
 
     int fontType=0;
     public CustomFontTextView(Context context) {
@@ -48,7 +49,7 @@ public class CustomFontTextView extends TextView {
 
     private void initeDef(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomFontTextView);
-        fontType = a.getInteger(R.styleable.CustomFontTextView_font_value, 0);
+        fontType = a.getInt(R.styleable.CustomFontTextView_font_value, 0);
         setFont(context);
         a.recycle();
 
@@ -73,9 +74,12 @@ public class CustomFontTextView extends TextView {
             case ROBOTO_MEDIUM:
                 customFont = Typeface.createFromAsset(context.getAssets(),"fonts/Roboto-Medium.ttf");
                 break;
+            case OPEN_SANS:
+                customFont = Typeface.createFromAsset(context.getAssets(),"fonts/OpenSans-Regular.ttf");
+                break;
 
             default:
-                customFont = Typeface.createFromAsset(context.getAssets(),"fonts/OpenSans-Regular.ttf");
+                customFont = Typeface.createFromAsset(context.getAssets(),"fonts/OpenSans-Semibold.ttf");
                 break;
         }
 

@@ -102,7 +102,7 @@
     <!--android:text="Calm"-->
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/lbl_alarm_time"-->
-    <!--app:font_value="0"-->
+    <!--app:font_value="robotoLight"-->
     <!--android:gravity="center"-->
     <!--android:layout_below="@+id/view"-->
     <!--android:layout_alignParentStart="true" />-->
@@ -119,7 +119,7 @@
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/lbl_breath_value"-->
     <!--android:textStyle="bold"-->
-    <!--app:font_value="2" />-->
+    <!--app:font_value="juraMedium" />-->
     <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
     <!--android:id="@+id/lbl_calm_time"-->
     <!--android:layout_width="wrap_content"-->
@@ -128,7 +128,7 @@
     <!--android:text="min"-->
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/txt_value_time_steps"-->
-    <!--app:font_value="2"-->
+    <!--app:font_value="juraMedium"-->
     <!--android:layout_alignBaseline="@+id/txt_calm_value"-->
     <!--android:layout_alignBottom="@+id/txt_calm_value"-->
     <!--android:layout_toEndOf="@+id/txt_calm_value" />-->
@@ -139,7 +139,7 @@
     <!--android:text="focus"-->
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/lbl_alarm_time"-->
-    <!--app:font_value="0"-->
+    <!--app:font_value="robotoLight"-->
     <!--android:gravity="center"-->
     <!--android:layout_below="@+id/view"-->
     <!--android:layout_alignStart="@+id/txt_focus_value" />-->
@@ -157,7 +157,7 @@
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/lbl_breath_value"-->
     <!--android:textStyle="bold"-->
-    <!--app:font_value="2" />-->
+    <!--app:font_value="juraMedium" />-->
 
     <!--<itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView-->
     <!--android:id="@+id/lbl_focus_time"-->
@@ -167,7 +167,7 @@
     <!--android:text="min"-->
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/txt_value_time_steps"-->
-    <!--app:font_value="2"-->
+    <!--app:font_value="juraMedium"-->
 
     <!--android:layout_centerHorizontal="true"-->
     <!--android:layout_alignBaseline="@+id/txt_focus_value"-->
@@ -181,7 +181,7 @@
     <!--android:text="@string/stress"-->
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/lbl_alarm_time"-->
-    <!--app:font_value="0"-->
+    <!--app:font_value="robotoLight"-->
     <!--android:gravity="center"-->
     <!--android:minWidth="70dp"-->
     <!--android:layout_below="@+id/view"-->
@@ -198,7 +198,7 @@
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/lbl_breath_value"-->
     <!--android:textStyle="bold"-->
-    <!--app:font_value="2"-->
+    <!--app:font_value="juraMedium"-->
     <!--android:layout_below="@+id/lbl_stress"-->
     <!--android:layout_toStartOf="@+id/lbl_stress_time" />-->
 
@@ -210,7 +210,7 @@
     <!--android:text="min"-->
     <!--android:textColor="@color/colorWhite"-->
     <!--android:textSize="@dimen/txt_value_time_steps"-->
-    <!--app:font_value="2"-->
+    <!--app:font_value="juraMedium"-->
     <!--android:layout_alignBaseline="@+id/txt_stress_value"-->
     <!--android:layout_alignBottom="@+id/txt_stress_value"-->
     <!--android:layout_alignEnd="@+id/graph" />-->
@@ -247,26 +247,27 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="08dp"
                     android:gravity="center"
-                    android:text="Calm"
-                    android:layout_alignEnd="@+id/lbl_calm_time"
-                    android:layout_alignStart="@+id/txt_calm_value"
+                    android:text="Compose"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_alarm_time"
-                    app:font_value="0" />
+                    app:font_value="robotoLight"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true" />
 
                 <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                     android:id="@+id/txt_calm_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/lbl_calm"
-                    android:layout_marginBottom="08dp"
                     android:gravity="center"
                     android:minWidth="40dp"
                     android:text="0"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_breath_value"
                     android:textStyle="bold"
-                    app:font_value="2" />
+                    app:font_value="oxigenRagular"
+                    android:layout_below="@+id/lbl_calm"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="51dp" />
 
                 <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                     android:id="@+id/lbl_calm_time"
@@ -281,7 +282,7 @@
                     android:text="min"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/txt_value_time_steps"
-                    app:font_value="2" />
+                    app:font_value="juraMedium" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -307,32 +308,33 @@
                     android:id="@+id/lbl_focus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_gravity="center"
                     android:layout_marginTop="08dp"
-
-                    android:layout_alignEnd="@+id/lbl_focus_time"
-                    android:layout_alignStart="@+id/txt_focus_value"
                     android:gravity="center_horizontal"
 
+                    android:text="Attentive"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_alarm_time"
-                    android:text="focus"
-                    app:font_value="0" />
+                    app:font_value="robotoLight"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true" />
 
                 <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                     android:id="@+id/txt_focus_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/lbl_focus"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="08dp"
                     android:gravity="center"
                     android:minWidth="40dp"
                     android:text="0"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/lbl_breath_value"
                     android:textStyle="bold"
-                    app:font_value="2" />
+                    app:font_value="juraMedium"
+                    android:layout_below="@+id/lbl_focus"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="47dp" />
 
                 <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                     android:id="@+id/lbl_focus_time"
@@ -346,7 +348,7 @@
                     android:layout_marginBottom="08dp"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/txt_value_time_steps"
-                    app:font_value="2" />
+                    app:font_value="juraMedium" />
 
             </RelativeLayout>
         </android.support.v7.widget.CardView>
@@ -382,7 +384,7 @@
                 android:text="@string/stress"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/lbl_alarm_time"
-                app:font_value="0" />
+                app:font_value="robotoLight" />
 
             <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                 android:id="@+id/txt_stress_value"
@@ -397,7 +399,7 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/lbl_breath_value"
                 android:textStyle="bold"
-                app:font_value="2" />
+                app:font_value="juraMedium" />
 
             <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
                 android:id="@+id/lbl_stress_time"
@@ -413,7 +415,7 @@
                 android:text="min"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/txt_value_time_steps"
-                app:font_value="2" />
+                app:font_value="juraMedium" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

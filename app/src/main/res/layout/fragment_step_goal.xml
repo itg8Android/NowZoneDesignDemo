@@ -50,7 +50,7 @@
             android:textColor="@color/colorWhite"
             android:adjustViewBounds="true"
             android:textSize="@dimen/txt_sleep_value"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
         <Button
             android:id="@+id/btn_add"
@@ -95,7 +95,7 @@
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_step_goal"
             android:visibility="visible"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
         <ToggleButton
             android:id="@+id/switch_notify"
@@ -120,7 +120,7 @@
             android:text="Minimum Goal"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_step_goal"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:id="@+id/lbl_minimumGoalValue"
@@ -133,7 +133,7 @@
             android:text="1000"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_sleep_value"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:id="@+id/lbl_maximumGoal"
@@ -148,7 +148,7 @@
             android:text="Maximum  Goal"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_step_goal"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
         <itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView
             android:id="@+id/lbl_maximumGoalValue"
@@ -163,7 +163,7 @@
             android:text="10000"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/txt_sleep_value"
-            app:font_value="0" />
+            app:font_value="robotoLight" />
 
         <View
             android:id="@+id/line_2"

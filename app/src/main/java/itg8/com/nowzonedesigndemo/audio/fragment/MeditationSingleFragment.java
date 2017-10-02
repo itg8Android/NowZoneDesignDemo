@@ -1,8 +1,12 @@
 package itg8.com.nowzonedesigndemo.audio.fragment;
 
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import itg8.com.nowzonedesigndemo.R;
+import itg8.com.nowzonedesigndemo.common.CommonMethod;
 import itg8.com.nowzonedesigndemo.steps.widget.CustomFontTextView;
 
 /**
@@ -26,6 +31,8 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
 
     @BindView(R.id.lbl_meditation)
     CustomFontTextView lblMeditation;
+    @BindView(R.id.txt_stage_count)
+    CustomFontTextView mTxtStageCount;
     @BindView(R.id.lbl_meditation_count)
     CustomFontTextView lblMeditationCount;
     @BindView(R.id.img_play)
@@ -55,13 +62,48 @@ public class MeditationSingleFragment extends Fragment implements View.OnClickLi
     }
 
 
+    public static MeditationSingleFragment newInstance(String transactionName, String transitionName, int position) {
+
+        Bundle args = new Bundle();
+        args.putString("PARAM1",transactionName);
+        args.putString("PARAM2",transitionName);
+        args.putInt("PARAM3",position);
+        MeditationSingleFragment fragment = new MeditationSingleFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        String transactionName=getArguments().getString("PARAM1");
+        String transactionName2=getArguments().getString("PARAM2");
+        String postiion= String.valueOf(getArguments().getInt("PARAM3")+1);
+        ViewCompat.setTransitionName(imgPause,transactionName);
+        ViewCompat.setTransitionName(mTxtStageCount,transactionName2);
+        mTxtStageCount.setText(postiion);
+        startPostponedEnterTransition();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        postponeEnterTransition();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+        }
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_meditation_single, container, false);
         unbinder = ButterKnife.bind(this, view);
-        setInit();
+//        setInit();
+
+
         return view;
     }
 

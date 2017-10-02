@@ -1,8 +1,6 @@
 package itg8.com.nowzonedesigndemo.sleep.widget_custom_progressbar;
 
-import android.graphics.Color;
 import android.graphics.RectF;
-import android.widget.SeekBar;
 
 /**
  * Created by Android itg 8 on 5/20/2017.
@@ -13,11 +11,9 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.widget.SeekBar;
 
-public class CustomProgressBar extends SeekBar {
+public class CustomProgressBar extends android.support.v7.widget.AppCompatSeekBar {
 
     private ArrayList<ProgressItem> mProgressItemsList;
 

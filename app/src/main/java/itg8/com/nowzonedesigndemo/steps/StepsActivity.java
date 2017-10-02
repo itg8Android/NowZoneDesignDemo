@@ -25,8 +25,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import itg8.com.nowzonedesigndemo.R;
-import itg8.com.nowzonedesigndemo.common.CommonMethod;
-import itg8.com.nowzonedesigndemo.common.SharePrefrancClass;
 import itg8.com.nowzonedesigndemo.db.tbl.TblStepCount;
 import itg8.com.nowzonedesigndemo.steps.mvp.StepMVP;
 import itg8.com.nowzonedesigndemo.steps.mvp.StepPresenterImp;
@@ -77,7 +75,7 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 
             switch (item.getItemId()) {
                 case R.id.nav_day:
-                    fragment = TodayStepsFragment.newInstance(" "," ");
+                    //fragment = TodayStepsFragment.newInstance(" ");
                     setFragmnet();
                     return true;
                 case R.id.nav_week:
@@ -175,8 +173,6 @@ public class StepsActivity extends AppCompatActivity implements RadioGroup.OnChe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
         if (item.getItemId() == android.R.id.home) {
             overridePendingTransition(R.animator.slid_down, R.animator.slid_up);
             onBackPressed();
